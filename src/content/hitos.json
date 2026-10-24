@@ -1,0 +1,89 @@
+[
+  {
+    "id": "1537-plaza",
+    "anio": 1537,
+    "titulo": "Se traza la plaza",
+    "texto": "Según las guías de la ciudad, ese año se traza la plaza que hoy es el Parque Caldas, rodeada por las casas de los fundadores.",
+    "lugar": "parque-caldas",
+    "fuente": { "titulo": "Colombia Reports: Popayán's Parque Caldas", "url": "https://colombiareports.com/popayans-parque-caldas/" }
+  },
+  {
+    "id": "1546-diocesis",
+    "anio": 1546,
+    "titulo": "Nace la diócesis",
+    "texto": "El papa Pablo III crea la diócesis de Popayán, bajo el patrocinio de Nuestra Señora de la Asunción. Las guías fechan ese mismo año La Ermita.",
+    "lugar": "la-ermita",
+    "fuente": { "titulo": "Vaticano: homilía de Juan Pablo II en Popayán (1986)", "url": "https://www.vatican.va/content/john-paul-ii/es/homilies/1986/documents/hf_jp-ii_hom_19860704_indigeni-cauca.pdf" }
+  },
+  {
+    "id": "1673-torre",
+    "anio": 1673,
+    "titulo": "Primera piedra de la torre",
+    "texto": "El obispo Cristóbal Bernaldo de Quiroz pone la primera piedra de la Torre del Reloj, que se termina hacia 1682.",
+    "lugar": "torre-del-reloj",
+    "fuente": { "titulo": "Wikipedia: Torre del Reloj (Popayán)", "url": "https://es.wikipedia.org/wiki/Torre_del_Reloj_(Popay%C3%A1n)" }
+  },
+  {
+    "id": "1736-sismo",
+    "anio": 1736,
+    "titulo": "Un terremoto derriba templos",
+    "texto": "El sismo del 2 de febrero destruye el convento de La Encarnación y la primera iglesia de San Agustín. La Torre del Reloj resiste.",
+    "lugar": "san-agustin",
+    "fuente": { "titulo": "Nomadic Niko: Church of San Agustín", "url": "https://nomadicniko.com/colombia/popayan/church-of-san-agustin" }
+  },
+  {
+    "id": "1737-reloj",
+    "anio": 1737,
+    "titulo": "Llega el reloj de una manecilla",
+    "texto": "Se instala en la torre el reloj inglés de bronce, con su única manecilla, la de las horas.",
+    "lugar": "torre-del-reloj",
+    "fuente": { "titulo": "Colombia.travel: Popayán", "url": "https://colombia.travel/es/popayan" }
+  },
+  {
+    "id": "1768-caldas",
+    "anio": 1768,
+    "titulo": "Nace Caldas",
+    "texto": "Nace en Popayán Francisco José de Caldas, el sabio que sería fusilado en 1816 y cuya estatua preside hoy la plaza.",
+    "lugar": "parque-caldas",
+    "fuente": { "titulo": "Wikipedia: Francisco José de Caldas", "url": "https://en.wikipedia.org/wiki/Francisco_Jos%C3%A9_de_Caldas" }
+  },
+  {
+    "id": "1827-unicauca",
+    "anio": 1827,
+    "titulo": "Se funda la Universidad del Cauca",
+    "texto": "Sus primeras aulas de Derecho funcionan en el claustro de Santo Domingo.",
+    "lugar": "santo-domingo",
+    "fuente": { "titulo": "Wikipedia: Universidad del Cauca", "url": "https://es.hispanopedia.com/wiki/Universidad_del_Cauca" }
+  },
+  {
+    "id": "1943-valencia",
+    "anio": 1943,
+    "titulo": "La casa del poeta se vuelve museo",
+    "texto": "Muere Guillermo Valencia y una ley ordena comprar su casa para convertirla en museo.",
+    "lugar": "museo-guillermo-valencia",
+    "fuente": { "titulo": "El Tiempo: la casa del maestro Valencia", "url": "https://www.eltiempo.com/archivo/documento/mam-215522" }
+  },
+  {
+    "id": "1957-morro",
+    "anio": 1957,
+    "titulo": "La colina era una pirámide",
+    "texto": "Un derrumbe deja ver muros con mosaicos de adobe en el Morro de Tulcán, y Julio César Cubillos dirige las excavaciones.",
+    "lugar": "morro-de-tulcan",
+    "fuente": { "titulo": "Wikipedia: Morro del Tulcán", "url": "https://en.wikipedia.org/wiki/Morro_del_Tulc%C3%A1n" }
+  },
+  {
+    "id": "1983-terremoto",
+    "anio": 1983,
+    "titulo": "El terremoto del Jueves Santo",
+    "texto": "El 31 de marzo un sismo de magnitud 5,6 derrumba la cúpula de la Catedral y daña buena parte del centro. La ciudad se reconstruye respetando su arquitectura.",
+    "lugar": "catedral",
+    "fuente": { "titulo": "Servicio Geológico Colombiano: 40 años del terremoto de Popayán", "url": "https://www2.sgc.gov.co/Noticias/Paginas/Aniversario-No-40-del-terremoto-de-Popayan-un-momento-para-pensar-en-la-importancia-de-construir-bien-en-Colombia.aspx" }
+  },
+  {
+    "id": "2009-unesco",
+    "anio": 2009,
+    "titulo": "La Semana Santa, patrimonio de la humanidad",
+    "texto": "Las procesiones de Semana Santa de Popayán entran en la lista de patrimonio cultural inmaterial de la UNESCO.",
+    "fuente": { "titulo": "MinCIT: destinos de turismo religioso 2024", "url": "https://www.mincit.gov.co/prensa/noticias/turismo/principales-destinos-de-turismo-religioso-2024" }
+  }
+]

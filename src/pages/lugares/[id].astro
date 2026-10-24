@@ -1,0 +1,231 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Icono from '../../components/Icono.astro';
+import Compartir from '../../components/Compartir.astro';
+import CabeceraFoto from '../../components/vidrio/CabeceraFoto.astro';
+import Circulo from '../../components/vidrio/Circulo.astro';
+import { CATEGORIAS } from '../../lib/lugares';
+import { fotoDe } from '../../lib/fotos';
+
+export async function getStaticPaths() {
+  const lugares = await getCollection('lugares');
+  return lugares.map((lugar) => ({ params: { id: lugar.id }, props: { lugar } }));
+}
+
+const { lugar } = Astro.props;
+const { Content } = await render(lugar);
+const rutas = (await getCollection('rutas'))
+  .filter((r) => r.data.paradas.some((p) => p.id === lugar.id))
+  .sort((a, b) => a.data.orden - b.data.orden);
+const { nombre, categoria, epoca, resumen, dato, fuentes, revision, direccion, negocio } = lugar.data;
+const foto = fotoDe(lugar.id);
+const tipo = CATEGORIAS[categoria];
+---
+
+<Base titulo={nombre} descripcion={resumen} imagen={`/tarjetas/og/lugares/${lugar.id}.jpg`}>
+  <CabeceraFoto foto={foto} alt={nombre} titulo={nombre} meta={`${tipo.singular} · ${epoca}`} icono={tipo.icono}>
+    <Fragment slot="controles">
+      <Circulo icono="caret-left" etiqueta="Volver" href="/mapa" data-volver="" />
+      <span class="controles__derecha">
+        <Circulo icono="map-pin" etiqueta="Ver en el mapa" href={`/mapa?lugar=${lugar.id}`} />
+        <Compartir
+          enlace={`/lugares/${lugar.id}`}
+          tarjeta={`/tarjetas/lugares/${lugar.id}.jpg`}
+          titulo={nombre}
+          texto={dato ?? resumen}
+        />
+      </span>
+    </Fragment>
+  </CabeceraFoto>
+
+  <!-- El contenido es sólido: se monta sobre la foto como una hoja -->
+  <article class="hoja">
+    <p class="resumen">{resumen}</p>
+
+    {
+      (direccion || negocio) && (
+        <ul class="celdas">
+          {direccion && (
+            <li>
+              <span class="celda">
+                <Icono nombre="map-pin-line" class="celda__icono" />
+                <span class="celda__texto">{direccion}</span>
+              </span>
+            </li>
+          )}
+          {negocio && (
+            <li>
+              <span class="celda">
+                <Icono nombre="storefront" class="celda__icono" />
+                <span class="celda__texto">Es un negocio local: confirma su horario y que siga abierto antes de ir.</span>
+              </span>
+            </li>
+          )}
+        </ul>
+      )
+    }
+
+    {
+      dato && (
+        <aside class="dato" aria-label="Dato curioso">
+          <svg class="dato__esfera" viewBox="0 0 48 48" aria-hidden="true">
+            <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="2.5" />
+            <line x1="24" y1="24" x2="33" y2="15" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" />
+            <circle cx="24" cy="24" r="3" fill="currentColor" />
+          </svg>
+          <div>
+            <h2>¿Sabías que…?</h2>
+            <p>{dato}</p>
+          </div>
+        </aside>
+      )
+    }
+
+    <div class="cuerpo">
+      <Content />
+    </div>
+
+    {
+      rutas.length > 0 && (
+        <section class="grupo" aria-labelledby="titulo-rutas">
+          <h2 class="grupo__titulo" id="titulo-rutas">
+            Está en {rutas.length === 1 ? 'esta ruta' : 'estas rutas'}
+          </h2>
+          <ul class="celdas">
+            {rutas.map((r) => (
+              <li>
+                <a class="celda" href={`/rutas/${r.id}`}>
+                  <Icono nombre={r.data.modo === 'carro' ? 'car-simple' : 'footprints'} class="celda__icono" />
+                  <span class="celda__texto">{r.data.nombre}</span>
+                  <Icono nombre="caret-right" class="celda__flecha" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <section class="grupo" aria-labelledby="titulo-fuentes">
+      <h2 class="grupo__titulo" id="titulo-fuentes">Fuentes</h2>
+      <ul class="celdas">
+        {
+          fuentes.map((f) => (
+            <li>
+              <a class="celda" href={f.url} rel="noopener noreferrer">
+                <Icono nombre="link-simple" class="celda__icono" />
+                <span class="celda__texto">{f.titulo}</span>
+                <Icono nombre="arrow-up-right" class="celda__flecha" />
+              </a>
+            </li>
+          ))
+        }
+        <li>
+          <a class="celda" href={`/tarjetas/lugares/${lugar.id}.jpg`} download={`${lugar.id}.jpg`}>
+            <Icono nombre="download-simple" class="celda__icono" />
+            <span class="celda__texto">Descargar la tarjeta para compartir</span>
+          </a>
+        </li>
+      </ul>
+      <p class="nota">
+        {
+          revision === 'pendiente' &&
+            'Ficha en revisión histórica: los datos vienen de las fuentes citadas y antes del lanzamiento los validará una persona experta en historia de Popayán. '
+        }
+        ¿Ves un error? Escríbenos desde <a href="/acerca">Acerca</a>.
+        {
+          foto && (
+            <>
+              {' '}
+              Foto: <a href={foto.credito.fuente} rel="noopener noreferrer">{foto.credito.autor}</a>, {foto.credito.licencia}, vía
+              Wikimedia Commons.
+            </>
+          )
+        }
+      </p>
+    </section>
+  </article>
+</Base>
+
+<script>
+  // "Volver" regresa a donde se venía si fue dentro del sitio; si no, al mapa
+  for (const volver of document.querySelectorAll<HTMLAnchorElement>('[data-volver]')) {
+    volver.addEventListener('click', (e) => {
+      if (document.referrer && new URL(document.referrer).origin === location.origin && history.length > 1) {
+        e.preventDefault();
+        history.back();
+      }
+    });
+  }
+</script>
+
+<style>
+  .controles__derecha {
+    display: flex;
+    gap: 10px;
+  }
+
+  .hoja {
+    position: relative;
+    display: grid;
+    gap: 2rem;
+    margin-top: -1.75rem;
+    padding: 2rem var(--margen) 0;
+    border-radius: var(--radio-l) var(--radio-l) 0 0;
+    background: var(--fondo);
+  }
+
+  .hoja > * {
+    width: 100%;
+    max-width: 42rem;
+    margin-inline: auto;
+  }
+
+  .resumen {
+    font-family: var(--fuente-titulos);
+    font-size: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.022em;
+  }
+
+  .dato {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 14px;
+    padding: 20px;
+    border-radius: var(--radio-l);
+    background: var(--fondo-elevado);
+  }
+
+  .dato__esfera {
+    width: 44px;
+    height: 44px;
+    color: var(--acento);
+  }
+
+  .dato h2 {
+    font-family: var(--fuente);
+    font-size: var(--t-nota);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--acento);
+  }
+
+  .dato p {
+    margin-top: 4px;
+    font-size: 1.1875rem;
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.018em;
+  }
+
+  .cuerpo {
+    display: grid;
+    gap: 1rem;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    letter-spacing: -0.012em;
+  }
+</style>

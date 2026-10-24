@@ -1,0 +1,296 @@
+[
+  {
+    "id": "congreso-gastronomico-2026",
+    "nombre": "XXIV Congreso Gastronómico de Popayán",
+    "enFrase": "el Congreso Gastronómico",
+    "cuando": "Del jueves 22 al domingo 25 de octubre de 2026, de 9:00 a. m. a 9:00 p. m. Estaba previsto para septiembre y se aplazó por el terremoto del 10 de agosto.",
+    "inicio": "2026-10-22",
+    "fin": "2026-10-25",
+    "confirmada": true,
+    "lugar": "parque-caldas",
+    "ruta": "gastronomia",
+    "resumen": "Arequipa (Perú) es el invitado internacional; Manizales y El Tambo, los nacionales. Hay demostraciones en la Tarima del Saber, música en la Tarima del Sabor, la Calle de la Niñez y un foro sobre cocina rural.",
+    "fuentes": [
+      {
+        "titulo": "El País: el Congreso Gastronómico se aplaza al 22-25 de octubre",
+        "url": "https://www.elpais.com.co/colombia/por-el-terremoto-el-xxii-congreso-gastronomico-de-popayan-se-realizara-ahora-del-22-al-25-de-octubre-de-2026-1356.html"
+      },
+      {
+        "titulo": "Periódico Virtual: Perú será el invitado internacional (14 de octubre de 2026)",
+        "url": "https://periodicovirtual.com/popayan-se-prepara-para-el-congreso-gastronomico-2026-peru-sera-el-invitado-internacional/"
+      },
+      {
+        "titulo": "Corporación Gastronómica de Popayán",
+        "url": "https://gastronomico.org.co/"
+      }
+    ]
+  },
+  {
+    "id": "popayan-ciudad-libro-2026",
+    "nombre": "Popayán Ciudad Libro",
+    "enFrase": "Popayán Ciudad Libro",
+    "cuando": "Del jueves 5 al jueves 12 de noviembre de 2026, en el Centro de Convenciones Casa de la Moneda.",
+    "inicio": "2026-11-05",
+    "fin": "2026-11-12",
+    "confirmada": true,
+    "resumen": "La feria del libro de la ciudad, con el lema «Donde se viven las historias»: talleres, conferencias, conversatorios, presentaciones de libros, recitales de poesía y muestras editoriales. La organiza la Universidad del Cauca.",
+    "fuentes": [
+      {
+        "titulo": "Radio 1040 AM: Popayán Ciudad Libro 2026, del 5 al 12 de noviembre",
+        "url": "https://radio1040am.com/2026/10/05/del-5-al-12-de-noviembre-en-el-centro-de-convenciones-casa-de-la-moneda-se-hara-popayan-ciudad-libro-2026-donde-se-viven-las-historias/"
+      },
+      {
+        "titulo": "Ovidio Hoyos: Popayán Ciudad Libro 2026",
+        "url": "https://ovidiohoyos.com/popayan-ciudad-libro-2026-se-celebrara-del-5-al-12-de-noviembre-bajo-el-lema-donde-se-viven-las-historias/"
+      }
+    ]
+  },
+  {
+    "id": "navidad-2026",
+    "nombre": "Navidad en el Centro Histórico",
+    "enFrase": "la Navidad en el Centro Histórico",
+    "cuando": "Diciembre de 2026, fechas por confirmar. En 2025 las figuras de luz ya brillaban desde finales de noviembre.",
+    "inicio": "2026-12-01",
+    "fin": "2026-12-31",
+    "confirmada": false,
+    "lugar": "parque-caldas",
+    "resumen": "Figuras de luz sobre la Calle 5 y un gran pesebre en el Parque Caldas, chirimías, conciertos navideños en las iglesias, museos con horario extendido y novenas en los barrios.",
+    "fuentes": [
+      {
+        "titulo": "El País: Popayán enciende su Navidad (2025)",
+        "url": "https://www.elpais.com.co/colombia/popayan-enciende-su-navidad-luces-y-tradicion-renuevan-su-centro-historico-0256.html"
+      }
+    ]
+  },
+  {
+    "id": "andres-cepeda-big-band-2026",
+    "nombre": "Andrés Cepeda Big Band en concierto",
+    "enFrase": "el concierto de Andrés Cepeda",
+    "cuando": "Viernes 4 de diciembre de 2026, 8:00 p. m., en el Coliseo Cubierto La Estancia, según la cartelera de Bandsintown. Confírmalo en la boletería oficial.",
+    "inicio": "2026-12-04",
+    "confirmada": false,
+    "resumen": "El cantante bogotano trae a Popayán su formato de big band, con el que grabó en vivo el álbum Big Band 2.",
+    "fuentes": [
+      {
+        "titulo": "Bandsintown: conciertos en Popayán",
+        "url": "https://www.bandsintown.com/c/popayan-colombia"
+      },
+      {
+        "titulo": "Semana: Andrés Cepeda estrena Big Band 2",
+        "url": "https://www.semana.com/cultura/musica/articulo/andres-cepeda-estrena-big-band-2-el-album-con-el-que-vuelve-a-llevar-el-bolero-y-la-musica-latina-a-una-nueva-dimension/202632/"
+      }
+    ]
+  },
+  {
+    "id": "fiestas-de-pubenza-2027",
+    "nombre": "Fiestas de Pubenza",
+    "enFrase": "las Fiestas de Pubenza",
+    "cuando": "Primera quincena de enero de 2027. En 2026 fueron del 5 al 12 de enero.",
+    "inicio": "2027-01-05",
+    "fin": "2027-01-12",
+    "confirmada": false,
+    "lugar": "parque-caldas",
+    "resumen": "El carnaval de la ciudad, alrededor del día de Reyes: desfiles, comparsas, chirimías y juegos populares. Desde 2026 es patrimonio cultural de la Nación.",
+    "fuentes": [
+      {
+        "titulo": "El País: Popayán vive las Fiestas de Pubenza (2026)",
+        "url": "https://www.elpais.com.co/colombia/popayan-vive-las-fiestas-de-pubenza-estas-son-las-imagenes-del-gran-desfile-cultural-y-artistico-0610.html"
+      },
+      {
+        "titulo": "Ley 2623 de 2026",
+        "url": "https://sidn.ramajudicial.gov.co/SIDN//NORMATIVA/TEXTOS_COMPLETOS/7_LEYES/LEYES%202026/Ley%202623%20de%202026.pdf"
+      }
+    ]
+  },
+  {
+    "id": "aniversario-de-popayan-2027",
+    "nombre": "Aniversario de Popayán",
+    "enFrase": "el aniversario de Popayán",
+    "cuando": "Miércoles 13 de enero de 2027",
+    "inicio": "2027-01-13",
+    "confirmada": true,
+    "lugar": "parque-caldas",
+    "resumen": "La ciudad cumple 490 años. Se celebra cada 13 de enero, la fecha de su fundación en 1537.",
+    "fuentes": [
+      {
+        "titulo": "El País: Popayán celebra 489 años (2026)",
+        "url": "https://www.elpais.com.co/colombia/este-13-de-enero-la-ciudad-de-popayan-celebra-489-anos-de-historia-cultura-fe-y-vocacion-religiosa-1313.html"
+      }
+    ]
+  },
+  {
+    "id": "semana-santa-2027",
+    "nombre": "Semana Santa",
+    "enFrase": "la Semana Santa",
+    "cuando": "Del 18 al 27 de marzo de 2027, según el calendario litúrgico. La Junta Pro Semana Santa confirma horarios y recorridos cada año.",
+    "inicio": "2027-03-18",
+    "fin": "2027-03-27",
+    "confirmada": false,
+    "ruta": "semana-santa",
+    "resumen": "Las procesiones de Popayán son Patrimonio Cultural Inmaterial de la Humanidad desde 2009. Cada noche sale una de un templo distinto y recorre unos dos kilómetros del centro.",
+    "jornadas": [
+      {
+        "fecha": "2027-03-18",
+        "nombre": "Pregón de la Semana Santa",
+        "lugar": "santo-domingo"
+      },
+      {
+        "fecha": "2027-03-19",
+        "nombre": "Viernes de Dolores: Día de la Alcayata, cuando cargueros y sahumadoras recogen aportes en el centro"
+      },
+      {
+        "fecha": "2027-03-21",
+        "nombre": "Domingo de Ramos: el Señor del Triunfo baja por los quingos hasta la Catedral",
+        "hora": "10:00 a. m.",
+        "lugar": "santuario-de-belen"
+      },
+      {
+        "fecha": "2027-03-22",
+        "nombre": "Lunes Santo: procesión de la Institución de la Eucaristía",
+        "hora": "8:00 p. m.",
+        "lugar": "iglesia-del-carmen"
+      },
+      {
+        "fecha": "2027-03-23",
+        "nombre": "Martes Santo: procesión de Nuestra Señora de los Dolores",
+        "hora": "8:00 p. m.",
+        "lugar": "san-agustin"
+      },
+      {
+        "fecha": "2027-03-24",
+        "nombre": "Miércoles Santo por la tarde: Procesión Chiquita, la de los niños",
+        "lugar": "iglesia-de-san-jose"
+      },
+      {
+        "fecha": "2027-03-24",
+        "nombre": "Miércoles Santo: procesión del Amo Jesús",
+        "hora": "8:00 p. m.",
+        "lugar": "la-ermita"
+      },
+      {
+        "fecha": "2027-03-25",
+        "nombre": "Jueves Santo: procesión del Santo Cristo de la Veracruz",
+        "hora": "8:00 p. m.",
+        "lugar": "san-francisco"
+      },
+      {
+        "fecha": "2027-03-26",
+        "nombre": "Viernes Santo: procesión del Santo Entierro",
+        "hora": "8:00 p. m.",
+        "lugar": "santo-domingo"
+      },
+      {
+        "fecha": "2027-03-27",
+        "nombre": "Sábado Santo: procesión del Resucitado",
+        "hora": "10:00 p. m.",
+        "lugar": "catedral"
+      }
+    ],
+    "fuentes": [
+      {
+        "titulo": "Wikipedia: Semana Santa en Popayán",
+        "url": "https://es.wikipedia.org/wiki/Semana_Santa_en_Popay%C3%A1n"
+      },
+      {
+        "titulo": "Procesiones de Popayán: Martes Santo",
+        "url": "https://www.procesionespopayan.com/martes-santo"
+      },
+      {
+        "titulo": "UNESCO: Las procesiones de Semana Santa de Popayán",
+        "url": "http://www.unesco.org/culture/ich/index.php?pg=00011&RL=00259"
+      }
+    ]
+  },
+  {
+    "id": "festival-de-musica-religiosa-2027",
+    "nombre": "Festival de Música Religiosa",
+    "enFrase": "el Festival de Música Religiosa",
+    "cuando": "Durante la Semana Santa de 2027. Fechas por confirmar.",
+    "inicio": "2027-03-21",
+    "fin": "2027-03-27",
+    "confirmada": false,
+    "lugar": "teatro-municipal",
+    "resumen": "Conciertos de música sacra que acompañan la Semana Santa desde 1964. Su escenario principal es el Teatro Municipal; en 2025 tuvo más de veinte conciertos con artistas de nueve países.",
+    "fuentes": [
+      {
+        "titulo": "El País: programación del Festival de Música Religiosa (2025)",
+        "url": "https://www.elpais.com.co/cultura/en-popayan-se-vive-el-festival-de-musica-religiosa-con-grandes-conciertos-esta-es-la-programacion-1632.html"
+      },
+      {
+        "titulo": "Universidad Nacional: Festival de Música Religiosa de Popayán 1964-2021",
+        "url": "https://repositorio.unal.edu.co/handle/unal/81666"
+      }
+    ]
+  },
+  {
+    "id": "procesiones-chiquitas-2027",
+    "nombre": "Procesiones Chiquitas",
+    "enFrase": "las Procesiones Chiquitas",
+    "cuando": "La semana después de Semana Santa, de martes a sábado: del 30 de marzo al 3 de abril de 2027. Fechas por confirmar.",
+    "inicio": "2027-03-30",
+    "fin": "2027-04-03",
+    "confirmada": false,
+    "lugar": "san-francisco",
+    "resumen": "Los niños repiten las procesiones con pasos en miniatura. Las organiza la Fundación Cultural Pedro Antonio Paz.",
+    "fuentes": [
+      {
+        "titulo": "Wikipedia: Semana Santa en Popayán",
+        "url": "https://es.wikipedia.org/wiki/Semana_Santa_en_Popay%C3%A1n"
+      }
+    ]
+  },
+  {
+    "id": "cine-en-mi-barrio-2027",
+    "nombre": "Festival Itinerante Cine en mi Barrio",
+    "enFrase": "el Festival Cine en mi Barrio",
+    "cuando": "Agosto de 2027, fechas por confirmar. En 2026 su semana central en Popayán fue del 25 al 29 de agosto.",
+    "inicio": "2027-08-24",
+    "fin": "2027-08-28",
+    "confirmada": false,
+    "resumen": "Festival de cortometrajes que lleva el cine a barrios y veredas del Cauca, de Timbiquí y Guapi al Patía y Santander de Quilichao. En Popayán tiene su semana central, con talleres, charlas y proyecciones.",
+    "fuentes": [
+      {
+        "titulo": "FilmFreeway: Festival Itinerante Cine en mi Barrio",
+        "url": "https://filmfreeway.com/cineenmibarrio"
+      }
+    ]
+  },
+  {
+    "id": "congreso-gastronomico-2027",
+    "nombre": "Congreso Gastronómico de Popayán",
+    "enFrase": "el Congreso Gastronómico",
+    "cuando": "Habitualmente a comienzos de septiembre: en 2024 fue del 5 al 8. En 2026 se aplazó a octubre por el terremoto. Fechas de 2027 por confirmar.",
+    "inicio": "2027-09-02",
+    "fin": "2027-09-05",
+    "confirmada": false,
+    "lugar": "parque-caldas",
+    "ruta": "gastronomia",
+    "resumen": "Cuatro días de conferencias, talleres y cocina en el recinto ferial del Parque Caldas. Lo organiza la Corporación Gastronómica de Popayán, Ciudad Creativa de la Gastronomía de la UNESCO.",
+    "fuentes": [
+      {
+        "titulo": "Radio Nacional: Congreso Gastronómico 2024",
+        "url": "https://radionacional.co/cultura/gastronomia/congreso-gastronomico-en-popayan-2024-fechas-invitados-y-agenda"
+      },
+      {
+        "titulo": "Fontur: calendario de ferias y fiestas",
+        "url": "https://calendarioferiasyfiestas.fontur.com.co/en/node/1483"
+      }
+    ]
+  },
+  {
+    "id": "cauca-sabe-a-cafe-2027",
+    "nombre": "Cauca Sabe a Café",
+    "enFrase": "Cauca Sabe a Café",
+    "cuando": "Septiembre de 2027, fechas por confirmar. En 2026 fue del 18 al 20 de septiembre.",
+    "inicio": "2027-09-17",
+    "fin": "2027-09-19",
+    "confirmada": false,
+    "resumen": "La feria del café del Cauca: muestra comercial, agenda académica internacional, el concurso Maestros del Café y la subasta de El Mejor Café del Cauca, en el Comité de Cafeteros del Cauca.",
+    "fuentes": [
+      {
+        "titulo": "El País: Cauca Sabe a Café 2026",
+        "url": "https://www.elpais.com.co/colombia/cauca-sabe-a-cafe-2026-la-feria-que-convierte-a-popayan-en-el-epicentro-de-la-cultura-cafetera-0320.html"
+      }
+    ]
+  }
+]

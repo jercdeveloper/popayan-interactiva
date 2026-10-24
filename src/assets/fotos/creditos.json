@@ -1,0 +1,268 @@
+{
+  "torre-del-reloj": {
+    "titulo": "La torre del reloj y el parque Caldas.JPG",
+    "autor": "MariacamilaT",
+    "licencia": "CC BY-SA 3.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/3.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:La_torre_del_reloj_y_el_parque_Caldas.JPG"
+  },
+  "parque-caldas": {
+    "titulo": "Popayán Parque Caldas.jpg",
+    "autor": "Hernan Vanegas",
+    "licencia": "CC BY 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Popay%C3%A1n_Parque_Caldas.jpg"
+  },
+  "puente-del-humilladero": {
+    "titulo": "Puente del Humilladero, Popayán 01.jpg",
+    "autor": "Bernard Gagnon",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Puente_del_Humilladero,_Popay%C3%A1n_01.jpg"
+  },
+  "san-francisco": {
+    "titulo": "Iglesia de San Francisco, Popayán 03.jpg",
+    "autor": "Bernard Gagnon",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Iglesia_de_San_Francisco,_Popay%C3%A1n_03.jpg"
+  },
+  "la-ermita": {
+    "titulo": "Iglesia Ermita de Jesús Nazareno, Popayán 01.jpg",
+    "autor": "Bernard Gagnon",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Iglesia_Ermita_de_Jes%C3%BAs_Nazareno,_Popay%C3%A1n_01.jpg"
+  },
+  "morro-de-tulcan": {
+    "titulo": "El Morro de Tulcán, Popayán.jpg",
+    "autor": "Bernard Gagnon",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:El_Morro_de_Tulc%C3%A1n,_Popay%C3%A1n.jpg"
+  },
+  "calle-san-francisco": {
+    "titulo": "Calle de San Francisco, Popayán 02.jpg",
+    "autor": "Bernard Gagnon",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Calle_de_San_Francisco,_Popay%C3%A1n_02.jpg"
+  },
+  "calle-5": {
+    "titulo": "Calle 5, Popayán 02.jpg",
+    "autor": "Bernard Gagnon",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Calle_5,_Popay%C3%A1n_02.jpg"
+  },
+  "casa-caldas": {
+    "titulo": "Casa Francisco José de Caldas Popayán.jpg",
+    "autor": "DavidSMSilva",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Casa_Francisco_Jos%C3%A9_de_Caldas_Popay%C3%A1n.jpg"
+  },
+  "casa-de-belalcazar": {
+    "titulo": "Antigua Casa de Sebastián de Belalcázar Popayán.jpg",
+    "autor": "DavidSMSilva",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Antigua_Casa_de_Sebasti%C3%A1n_de_Belalc%C3%A1zar_Popay%C3%A1n.jpg"
+  },
+  "casa-museo-mosquera": {
+    "titulo": "Casa Museo de los Mosquera Popayán.jpg",
+    "autor": "DavidSMSilva",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Casa_Museo_de_los_Mosquera_Popay%C3%A1n.jpg"
+  },
+  "casa-museo-negret": {
+    "titulo": "Fachada de la Casa Negret Popayán.jpg",
+    "autor": "DavidSMSilva",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Fachada_de_la_Casa_Negret_Popay%C3%A1n.jpg"
+  },
+  "casa-rosada": {
+    "titulo": "Casa Rosada de Posgrados Popayán.jpg",
+    "autor": "DavidSMSilva",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Casa_Rosada_de_Posgrados_Popay%C3%A1n.jpg"
+  },
+  "catedral": {
+    "titulo": "Catedral Basílica Metropolitana de Nuestra Señora de la Asunción, Popayán 01.jpg",
+    "autor": "Bernard Gagnon",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Catedral_Bas%C3%ADlica_Metropolitana_de_Nuestra_Se%C3%B1ora_de_la_Asunci%C3%B3n,_Popay%C3%A1n_01.jpg"
+  },
+  "chorrito-de-la-pamba": {
+    "titulo": "Chorrito de la Pamba Popayán.jpg",
+    "autor": "DavidSMSilva",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Chorrito_de_la_Pamba_Popay%C3%A1n.jpg"
+  },
+  "chorrito-de-san-camilo": {
+    "titulo": "Chorrito de San Camilo, Popayán.jpg",
+    "autor": "DavidSMSilva",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Chorrito_de_San_Camilo,_Popay%C3%A1n.jpg"
+  },
+  "dona-chepa": {
+    "titulo": "Aplanchados Doña Chepa, Popayán 01.jpg",
+    "autor": "Bernard Gagnon",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Aplanchados_Do%C3%B1a_Chepa,_Popay%C3%A1n_01.jpg"
+  },
+  "iglesia-de-san-jose": {
+    "titulo": "Iglesia de San José, Popayán 03.jpg",
+    "autor": "Bernard Gagnon",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Iglesia_de_San_Jos%C3%A9,_Popay%C3%A1n_03.jpg"
+  },
+  "iglesia-del-carmen": {
+    "titulo": "Iglesia de Nuestra Señora del Carmen, Popayán.jpg",
+    "autor": "DavidSMSilva",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Iglesia_de_Nuestra_Se%C3%B1ora_del_Carmen,_Popay%C3%A1n.jpg"
+  },
+  "la-encarnacion": {
+    "titulo": "Iglesia de la Encarnación Popayán.jpg",
+    "autor": "DavidSMSilva",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Iglesia_de_la_Encarnaci%C3%B3n_Popay%C3%A1n.jpg"
+  },
+  "los-portales": {
+    "titulo": "Los Portales Popayán.jpg",
+    "autor": "DavidSMSilva",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Los_Portales_Popay%C3%A1n.jpg"
+  },
+  "museo-arquidiocesano": {
+    "titulo": "Nuestra Señora de la Asunción de Popayán - Museo Arquidiocesano de Arte Religioso.jpg",
+    "autor": "DavidSMSilva",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Nuestra_Se%C3%B1ora_de_la_Asunci%C3%B3n_de_Popay%C3%A1n_-_Museo_Arquidiocesano_de_Arte_Religioso.jpg"
+  },
+  "museo-de-historia-natural": {
+    "titulo": "Museo de Historia Natural de Popayán 01.jpg",
+    "autor": "Sahaquiel9102",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Museo_de_Historia_Natural_de_Popay%C3%A1n_01.jpg"
+  },
+  "palacio-arzobispal": {
+    "titulo": "Fachada Occidental del Palacio Arzobispal Popayán.jpg",
+    "autor": "DavidSMSilva",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Fachada_Occidental_del_Palacio_Arzobispal_Popay%C3%A1n.jpg"
+  },
+  "panteon-de-los-proceres": {
+    "titulo": "Panteón de Los Próceres, Popayán 01.jpg",
+    "autor": "Bernard Gagnon",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Pante%C3%B3n_de_Los_Pr%C3%B3ceres,_Popay%C3%A1n_01.jpg"
+  },
+  "paraninfo-caldas": {
+    "titulo": "Paraninfo Francisco José de Caldas Popayán.jpg",
+    "autor": "DavidSMSilva",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Paraninfo_Francisco_Jos%C3%A9_de_Caldas_Popay%C3%A1n.jpg"
+  },
+  "pueblito-patojo": {
+    "titulo": "Pueblito Patojo 20161124.jpg",
+    "autor": "Sahaquiel9102",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Pueblito_Patojo_20161124.jpg"
+  },
+  "puente-de-la-custodia": {
+    "titulo": "Puente de la Custodia, Popayán.jpg",
+    "autor": "inyucho",
+    "licencia": "CC BY 2.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by/2.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Puente_de_la_Custodia,_Popay%C3%A1n.jpg"
+  },
+  "san-agustin": {
+    "titulo": "Iglesia de San Agustín Popayán.jpg",
+    "autor": "DavidSMSilva",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Iglesia_de_San_Agust%C3%ADn_Popay%C3%A1n.jpg"
+  },
+  "santo-domingo": {
+    "titulo": "Iglesia de Santo Domingo, Popayán 01.jpg",
+    "autor": "Bernard Gagnon",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Iglesia_de_Santo_Domingo,_Popay%C3%A1n_01.jpg"
+  },
+  "santuario-de-belen": {
+    "titulo": "Santuario de Belén Popayán.jpg",
+    "autor": "DavidSMSilva",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Santuario_de_Bel%C3%A9n_Popay%C3%A1n.jpg"
+  },
+  "teatro-municipal": {
+    "titulo": "Teatro Municipal Guillermo Valencia, Popayán 01.jpg",
+    "autor": "Bernard Gagnon",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Teatro_Municipal_Guillermo_Valencia,_Popay%C3%A1n_01.jpg"
+  },
+  "museo-guillermo-valencia": {
+    "titulo": "Puerta de la casa museo Guillermo Valencia.JPG",
+    "autor": "Aliman5040",
+    "licencia": "CC BY-SA 3.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/3.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Puerta_de_la_casa_museo_Guillermo_Valencia.JPG"
+  },
+  "hacienda-calibio": {
+    "titulo": "Exterior de la hacienda de calibio.jpg",
+    "autor": "Dilan sigma",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Exterior_de_la_hacienda_de_calibio.jpg"
+  },
+  "casa-museo-guillermo-leon-valencia": {
+    "titulo": "Casa Museo Guillermo León Valencia.jpg",
+    "autor": "DavidSMSilva",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Casa_Museo_Guillermo_Le%C3%B3n_Valencia.jpg"
+  },
+  "junta-pro-semana-santa": {
+    "titulo": "La Junta Permanente Pro Semana Santa, Popayán 02.jpg",
+    "autor": "Bernard Gagnon",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:La_Junta_Permanente_Pro_Semana_Santa,_Popay%C3%A1n_02.jpg"
+  },
+  "casa-de-moneda": {
+    "titulo": "Plano 1 de la Real Casa de Moneda de Popayan 1771 - AGN.jpg",
+    "autor": "Giadrico7",
+    "licencia": "CC0",
+    "urlLicencia": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Plano_1_de_la_Real_Casa_de_Moneda_de_Popayan_1771_-_AGN.jpg"
+  },
+  "casa-museo-ayerbe": {
+    "titulo": "Casa Julio Arboleda Popayán.jpg",
+    "autor": "DavidSMSilva",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Casa_Julio_Arboleda_Popay%C3%A1n.jpg"
+  }
+}

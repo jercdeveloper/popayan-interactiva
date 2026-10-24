@@ -1,0 +1,40 @@
+---
+/**
+ * Ícono de Phosphor incrustado en línea, en peso "regular" o, para lo seleccionado, "fill".
+ * Una sola familia de íconos en todo el sitio (docs/direccion-de-diseno.md §4).
+ */
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+interface Props {
+  nombre: string;
+  etiqueta?: string;
+  class?: string;
+  peso?: 'regular' | 'bold' | 'fill';
+}
+
+const { nombre, etiqueta, class: clase, peso = 'regular' } = Astro.props;
+// Se lee en tiempo de compilación desde el proyecto; el sitio final no carga la librería
+const base = join(process.cwd(), 'node_modules', '@phosphor-icons', 'core', 'assets', peso);
+const svg = readFileSync(join(base, peso === 'regular' ? `${nombre}.svg` : `${nombre}-${peso}.svg`), 'utf8');
+const interior = svg.replace(/^<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 256 256"
+  fill="currentColor"
+  class:list={['icono', clase]}
+  role={etiqueta ? 'img' : undefined}
+  aria-label={etiqueta}
+  aria-hidden={etiqueta ? undefined : 'true'}
+  set:html={interior}
+/>
+
+<style>
+  .icono {
+    width: 1.25em;
+    height: 1.25em;
+    flex: none;
+  }
+</style>

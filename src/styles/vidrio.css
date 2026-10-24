@@ -1,0 +1,330 @@
+/*
+ * Popayán Interactiva — sistema visual (Liquid Glass, desde el 24 de octubre de 2026)
+ * Liquid Glass y diseño Apple: el contenido (fotos, mapa, texto) es sólido y protagonista;
+ * el vidrio es solo la capa funcional que flota encima (barras, controles, hojas).
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* Fondos y texto (claro) */
+  --fondo: #f5f5f7;
+  --fondo-elevado: #ffffff;
+  --texto: #1d1d1f;
+  --texto-2: rgb(60 60 67 / 0.72);
+  --texto-3: rgb(60 60 67 / 0.5);
+  --separador: rgb(60 60 67 / 0.14);
+
+  /* Acento: uno solo, terracota (el color de los tejados de la ciudad) */
+  --acento: #c4532c;
+  --acento-presionado: #a8441f;
+  --sobre-acento: #ffffff;
+
+  /* El vidrio */
+  --vidrio-tinte: rgb(255 255 255 / 0.62);
+  --vidrio-tinte-fuerte: rgb(255 255 255 / 0.8);
+  --vidrio-borde: rgb(255 255 255 / 0.55);
+  --vidrio-brillo: rgb(255 255 255 / 0.9);
+  --vidrio-sombra: 0 1px 1px rgb(0 0 0 / 0.04), 0 10px 30px -10px rgb(0 0 0 / 0.28);
+  --vidrio-desenfoque: blur(22px) saturate(180%);
+
+  /* Forma y ritmo */
+  --radio-s: 12px;
+  --radio-m: 20px;
+  --radio-l: 28px;
+  --radio-capsula: 999px;
+  --margen: clamp(1rem, 0.4rem + 3vw, 2.5rem);
+  --ancho-max: 76rem;
+  --tactil: 44px;
+
+  /* Tipografía del sistema: San Francisco en Apple, Roboto en Android, Segoe en Windows */
+  --fuente: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  --fuente-titulos: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+
+  /* Escala: el tracking cambia con el tamaño (grande, negativo; pequeño, cero) */
+  --t-gigante: clamp(2.6rem, 1.6rem + 4.6vw, 5.4rem);
+  --t-grande: clamp(1.9rem, 1.4rem + 2vw, 2.75rem);
+  --t-titulo: 1.375rem;
+  --t-cuerpo: 1.0625rem;
+  --t-nota: 0.9375rem;
+  --t-mini: 0.8125rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo: #000000;
+    --fondo-elevado: #1c1c1e;
+    --texto: #f5f5f7;
+    --texto-2: rgb(235 235 245 / 0.72);
+    --texto-3: rgb(235 235 245 / 0.48);
+    --separador: rgb(84 84 88 / 0.6);
+    --acento: #ff7a4d;
+    --acento-presionado: #ff9470;
+    --sobre-acento: #1d1d1f;
+    --vidrio-tinte: rgb(36 36 40 / 0.58);
+    --vidrio-tinte-fuerte: rgb(36 36 40 / 0.78);
+    --vidrio-borde: rgb(255 255 255 / 0.16);
+    --vidrio-brillo: rgb(255 255 255 / 0.32);
+    --vidrio-sombra: 0 1px 1px rgb(0 0 0 / 0.3), 0 12px 34px -10px rgb(0 0 0 / 0.7);
+  }
+}
+
+/* ---------- Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100svh;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--fuente);
+  font-size: var(--t-cuerpo);
+  line-height: 1.47;
+  letter-spacing: -0.022em;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+  line-height: 1.07;
+  letter-spacing: -0.028em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--acento) 30%, transparent);
+}
+
+:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--acento) 70%, transparent);
+  outline-offset: 3px;
+}
+
+.solo-lector {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- El vidrio ---------- */
+/*
+ * Capa funcional que flota sobre el contenido. Tiene tres partes: el desenfoque que deja ver lo que
+ * pasa debajo, el borde que recoge la luz (más brillante arriba) y una sombra suave que la separa.
+ * Nunca se apila vidrio sobre vidrio.
+ */
+.vidrio {
+  position: relative;
+  background: var(--vidrio-tinte);
+  -webkit-backdrop-filter: var(--vidrio-desenfoque);
+  backdrop-filter: var(--vidrio-desenfoque);
+  box-shadow:
+    inset 0 1px 0 var(--vidrio-brillo),
+    inset 0 0 0 1px var(--vidrio-borde),
+    var(--vidrio-sombra);
+}
+
+/* El brillo especular: la luz entra por arriba a la izquierda y se pierde hacia abajo */
+.vidrio::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(160deg, rgb(255 255 255 / 0.28), transparent 42%);
+  mix-blend-mode: soft-light;
+}
+
+/* Quien pide menos transparencia recibe superficies sólidas */
+@media (prefers-reduced-transparency: reduce) {
+  .vidrio {
+    background: var(--fondo-elevado);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .vidrio::before {
+    display: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .vidrio {
+    background: var(--fondo-elevado);
+    box-shadow: inset 0 0 0 1.5px var(--texto);
+  }
+}
+
+/* ---------- Botones ---------- */
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 50px;
+  padding: 0 1.4rem;
+  border: 0;
+  border-radius: var(--radio-capsula);
+  font: 600 var(--t-cuerpo) / 1 var(--fuente);
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  cursor: pointer;
+  /* La respuesta va al presionar, no al soltar */
+  transition: transform 120ms ease-out, background-color 120ms ease-out;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.boton:active {
+  transform: scale(0.96);
+}
+
+.boton--lleno {
+  background: var(--acento);
+  color: var(--sobre-acento);
+}
+
+.boton--lleno:active {
+  background: var(--acento-presionado);
+}
+
+.boton--vidrio {
+  color: var(--texto);
+}
+
+/* Botón secundario: tinte, sin vidrio, para usar sobre superficies sólidas */
+.boton--tinte {
+  background: color-mix(in srgb, var(--texto) 8%, transparent);
+  color: var(--texto);
+}
+
+.boton svg {
+  width: 1.15em;
+  height: 1.15em;
+}
+
+/* Las páginas cambian con un fundido nativo; la barra de pestañas pasa de una página a otra */
+@view-transition {
+  navigation: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+  .boton {
+    transition: none;
+  }
+}
+
+/* ---------- Listas agrupadas, como en Ajustes ---------- */
+.grupo {
+  display: grid;
+  gap: 8px;
+}
+
+.grupo__titulo {
+  padding-inline: 16px;
+  font-family: var(--fuente);
+  font-size: var(--t-nota);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--texto-2);
+}
+
+.celdas {
+  padding: 0;
+  list-style: none;
+  border-radius: var(--radio-m);
+  background: var(--fondo-elevado);
+  overflow: hidden;
+}
+
+.celda {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 50px;
+  padding: 11px 16px;
+  color: var(--texto);
+  text-decoration: none;
+}
+
+a.celda:active,
+button.celda:active {
+  background: color-mix(in srgb, var(--texto) 7%, transparent);
+}
+
+button.celda {
+  width: 100%;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.celdas > li + li > .celda {
+  box-shadow: inset 0 0.5px 0 var(--separador);
+}
+
+.celda__icono {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  color: var(--acento);
+}
+
+.celda__texto {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+
+.celda__texto small {
+  font-size: var(--t-mini);
+  color: var(--texto-2);
+}
+
+.celda__flecha {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--texto-3);
+}
+
+.nota {
+  padding-inline: 16px;
+  font-size: var(--t-mini);
+  color: var(--texto-2);
+}
+
+.nota a {
+  color: inherit;
+}

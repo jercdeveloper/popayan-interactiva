@@ -1,0 +1,67 @@
+---
+/** Registra el service worker (solo en producción) y avisa, en vidrio, cuando hay una versión nueva. */
+---
+
+<div class="actualizacion vidrio" role="status" hidden>
+  <p>Hay una versión nueva de la guía.</p>
+  <button type="button" class="boton boton--lleno actualizacion__boton">Actualizar</button>
+</div>
+
+<script>
+  import { Workbox } from 'workbox-window';
+
+  if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+    const wb = new Workbox('/sw.js');
+    const aviso = document.querySelector<HTMLElement>('.actualizacion');
+    const boton = document.querySelector<HTMLButtonElement>('.actualizacion__boton');
+
+    wb.addEventListener('waiting', () => {
+      if (!aviso || !boton) return;
+      aviso.hidden = false;
+      boton.addEventListener(
+        'click',
+        () => {
+          wb.addEventListener('controlling', () => location.reload());
+          wb.messageSkipWaiting();
+        },
+        { once: true },
+      );
+    });
+
+    wb.register();
+  }
+</script>
+
+<style>
+  .actualizacion {
+    position: fixed;
+    z-index: 40;
+    left: 50%;
+    bottom: calc(96px + env(safe-area-inset-bottom));
+    translate: -50% 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: max-content;
+    max-width: calc(100vw - 24px);
+    padding: 6px 6px 6px 18px;
+    border-radius: var(--radio-capsula);
+    font-size: var(--t-nota);
+    font-weight: 600;
+  }
+
+  .actualizacion[hidden] {
+    display: none;
+  }
+
+  .actualizacion .boton {
+    min-height: 40px;
+    padding: 0 16px;
+  }
+
+  @media (min-width: 48rem) {
+    .actualizacion {
+      bottom: 24px;
+    }
+  }
+</style>

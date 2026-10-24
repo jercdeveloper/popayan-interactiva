@@ -1,0 +1,190 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import { getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Encabezado from '../components/vidrio/Encabezado.astro';
+import Icono from '../components/Icono.astro';
+import { CATEGORIAS } from '../lib/lugares';
+import { fotoDe } from '../lib/fotos';
+
+const hitos = (await getCollection('hitos')).sort((a, b) => a.data.anio - b.data.anio);
+const conLugar = await Promise.all(
+  hitos.map(async (hito) => {
+    const lugar = hito.data.lugar ? await getEntry(hito.data.lugar) : undefined;
+    const foto = lugar ? fotoDe(lugar.id) : null;
+    return {
+      hito,
+      lugar,
+      icono: lugar ? CATEGORIAS[lugar.data.categoria].icono : null,
+      miniatura: foto ? (await getImage({ src: foto.src, width: 96, height: 96, fit: 'cover', format: 'webp' })).src : null,
+    };
+  }),
+);
+---
+
+<Base titulo="Historia" descripcion="Los momentos que dieron forma al Centro Histórico de Popayán, cada uno con su fuente.">
+  <Encabezado titulo="Cinco siglos de historia" bajada="Los momentos que dieron forma al centro, cada uno con su fuente." />
+
+  <ol class="linea">
+    {
+      conLugar.map(({ hito, lugar, icono, miniatura }) => (
+        <li class="hito">
+          <span class="hito__anio">{hito.data.anio}</span>
+          <div class="hito__tarjeta">
+            <h2>{hito.data.titulo}</h2>
+            <p>{hito.data.texto}</p>
+            {lugar && (
+              <a class="hito__lugar" href={`/lugares/${lugar.id}`}>
+                {miniatura ? (
+                  <img src={miniatura} alt="" width="40" height="40" loading="lazy" decoding="async" />
+                ) : (
+                  <span class="hito__icono" aria-hidden="true">
+                    <Icono nombre={icono!} />
+                  </span>
+                )}
+                <span>{lugar.data.nombre}</span>
+                <Icono nombre="caret-right" class="hito__flecha" />
+              </a>
+            )}
+            <p class="hito__fuente">
+              Fuente: <a href={hito.data.fuente.url} rel="noopener noreferrer">{hito.data.fuente.titulo}</a>
+            </p>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</Base>
+
+<style>
+  /* Una línea que baja por la izquierda, con un punto terracota en cada año */
+  .linea {
+    position: relative;
+    display: grid;
+    gap: 14px;
+    max-width: 46rem;
+    margin-inline: auto;
+    padding: 0.5rem var(--margen) 0 calc(var(--margen) + 22px);
+    list-style: none;
+  }
+
+  .linea::before {
+    content: '';
+    position: absolute;
+    top: 1.4rem;
+    bottom: 1rem;
+    left: calc(var(--margen) + 5px);
+    width: 2px;
+    border-radius: 1px;
+    background: color-mix(in srgb, var(--acento) 30%, transparent);
+  }
+
+  .hito {
+    position: relative;
+    display: grid;
+    gap: 8px;
+  }
+
+  .hito::before {
+    content: '';
+    position: absolute;
+    top: 0.55rem;
+    left: -22px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--acento);
+    box-shadow: 0 0 0 4px var(--fondo);
+  }
+
+  .hito__anio {
+    font-family: var(--fuente-titulos);
+    font-size: clamp(1.75rem, 1.5rem + 1vw, 2.25rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--acento);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .hito__tarjeta {
+    display: grid;
+    gap: 8px;
+    padding: 16px 18px;
+    border-radius: var(--radio-m);
+    background: var(--fondo-elevado);
+  }
+
+  .hito__tarjeta h2 {
+    font-size: 1.1875rem;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+
+  .hito__tarjeta > p:not(.hito__fuente) {
+    line-height: 1.5;
+  }
+
+  .hito__lugar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
+    padding: 6px 12px 6px 6px;
+    border-radius: 14px;
+    background: var(--fondo);
+    color: var(--texto);
+    font-size: var(--t-nota);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .hito__lugar img,
+  .hito__icono {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    object-fit: cover;
+  }
+
+  .hito__icono {
+    display: grid;
+    place-items: center;
+    background: color-mix(in srgb, var(--acento) 14%, var(--fondo-elevado));
+    color: var(--acento);
+    font-size: 1.25rem;
+  }
+
+  .hito__lugar span:not(.hito__icono) {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .hito__lugar :global(.hito__flecha) {
+    flex: none;
+    color: var(--texto-3);
+  }
+
+  .hito__fuente {
+    font-size: var(--t-mini);
+    color: var(--texto-2);
+  }
+
+  .hito__fuente a {
+    color: inherit;
+  }
+
+  @media (min-width: 48rem) {
+    .hito {
+      grid-template-columns: 6.5rem minmax(0, 1fr);
+      gap: 20px;
+    }
+    .hito__anio {
+      padding-top: 14px;
+    }
+    .hito::before {
+      top: 1.35rem;
+    }
+  }
+</style>

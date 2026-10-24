@@ -1,0 +1,21 @@
+{
+  "name": "Popayán Interactiva",
+  "short_name": "Popayán",
+  "description": "Rutas, historias verificadas y un mapa del Centro Histórico de Popayán que funciona sin señal.",
+  "lang": "es-CO",
+  "dir": "ltr",
+  "id": "/",
+  "start_url": "/?origen=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f2f3f0",
+  "theme_color": "#a8482a",
+  "categories": ["travel", "education", "navigation"],
+  "icons": [
+    { "src": "/iconos/icono-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/iconos/icono-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/iconos/icono-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/iconos/icono-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

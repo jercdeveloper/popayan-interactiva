@@ -1,0 +1,133 @@
+---
+/**
+ * Layout del sitio. El contenido es sólido (fotos, mapa, texto); el vidrio es solo la capa que flota:
+ * la barra de pestañas, la marca y los controles de cada página.
+ */
+import '../styles/vidrio.css';
+import BarraPestanas, { type Pestana } from '../components/vidrio/BarraPestanas.astro';
+import Pie from '../components/Pie.astro';
+import RegistroSW from '../components/RegistroSW.astro';
+import isotipo from '../assets/marca/isotipo.svg?raw';
+
+interface Props {
+  titulo?: string;
+  descripcion?: string;
+  /** Pestaña activa en la barra */
+  seccion?: Pestana;
+  /** Vista previa al compartir el enlace (1200×630); la generan los scripts al compilar */
+  imagen?: string;
+  /** El mapa ocupa toda la pantalla: sin pie y sin desplazamiento de la página */
+  pantallaCompleta?: boolean;
+}
+
+const {
+  titulo,
+  descripcion = 'Rutas, agenda e historias que citan sus fuentes, con un mapa de Popayán que funciona sin señal. Gratis, en tu celular.',
+  seccion,
+  imagen = '/tarjetas/og/inicio.jpg',
+  pantallaCompleta = false,
+} = Astro.props;
+const tituloCompleto = titulo ? `${titulo} · Popayán Interactiva` : 'Popayán Interactiva';
+const canonica = new URL(Astro.url.pathname, Astro.site);
+const vistaPrevia = new URL(imagen, Astro.site);
+---
+
+<!doctype html>
+<html lang="es-CO">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{tituloCompleto}</title>
+    <meta name="description" content={descripcion} />
+    <link rel="canonical" href={canonica} />
+    <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/iconos/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta property="og:title" content={tituloCompleto} />
+    <meta property="og:description" content={descripcion} />
+    <meta property="og:locale" content="es_CO" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonica} />
+    <meta property="og:image" content={vistaPrevia} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body class:list={{ 'pantalla-completa': pantallaCompleta }}>
+    <a class="saltar vidrio" href="#contenido">Saltar al contenido</a>
+
+    <!-- En escritorio la marca flota arriba a la izquierda; en el celular cada página decide -->
+    <a class="marca vidrio" href="/" aria-label="Popayán Interactiva, inicio">
+      <span class="marca__torre" set:html={isotipo} />
+      <span>Popayán Interactiva</span>
+    </a>
+
+    <main id="contenido">
+      <slot />
+    </main>
+    {!pantallaCompleta && <Pie />}
+    <BarraPestanas activa={seccion} />
+    <RegistroSW />
+  </body>
+</html>
+
+<style>
+  .pantalla-completa {
+    overflow: hidden;
+    height: 100svh;
+  }
+
+  .saltar {
+    position: fixed;
+    z-index: 50;
+    left: 12px;
+    top: -60px;
+    padding: 10px 16px;
+    border-radius: var(--radio-capsula);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .saltar:focus {
+    top: calc(12px + env(safe-area-inset-top));
+  }
+
+  .marca {
+    position: fixed;
+    z-index: 30;
+    top: calc(14px + env(safe-area-inset-top));
+    left: 16px;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 16px 6px 8px;
+    border-radius: var(--radio-capsula);
+    color: var(--texto);
+    font-size: var(--t-nota);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    view-transition-name: marca;
+  }
+
+  .marca__torre {
+    display: block;
+    width: 28px;
+    height: 32px;
+  }
+
+  .marca__torre :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+
+  @media (min-width: 64rem) {
+    .marca {
+      display: inline-flex;
+    }
+  }
+</style>

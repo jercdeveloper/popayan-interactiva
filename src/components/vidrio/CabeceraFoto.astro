@@ -1,0 +1,172 @@
+---
+/**
+ * Cabecera fotográfica a sangre, con el título sobre un velo que solo existe para leerlo.
+ * Arriba flotan los controles de la página (slot "controles"), en círculos de vidrio.
+ * Si el lugar no tiene foto libre, la cabecera es una superficie de color con el ícono de su tipo:
+ * nunca una foto de otro lugar ni una imagen inventada.
+ */
+import { Picture } from 'astro:assets';
+import Icono from '../Icono.astro';
+import { lineaCredito, type Foto } from '../../lib/fotos';
+
+interface Props {
+  foto: Foto | null;
+  alt: string;
+  titulo: string;
+  meta?: string;
+  /** Ícono para la cabecera sin foto */
+  icono?: string;
+  /** Cuánto alto ocupa: la portada de una ruta es más alta que la de una ficha */
+  alto?: 'grande' | 'media';
+}
+
+const { foto, alt, titulo, meta, icono = 'map-pin', alto = 'media' } = Astro.props;
+---
+
+<header class:list={['cabecera', `cabecera--${alto}`, { 'cabecera--sin-foto': !foto }]}>
+  {
+    foto ? (
+      <>
+        <Picture
+          src={foto.src}
+          formats={['avif', 'webp']}
+          widths={[640, 1024, 1600]}
+          sizes="100vw"
+          alt={alt}
+          class="cabecera__foto"
+          loading="eager"
+          fetchpriority="high"
+        />
+        <div class="cabecera__velo" aria-hidden="true" />
+      </>
+    ) : (
+      <div class="cabecera__icono" aria-hidden="true">
+        <Icono nombre={icono} />
+      </div>
+    )
+  }
+
+  <div class="cabecera__controles">
+    <slot name="controles" />
+  </div>
+
+  <div class="cabecera__texto">
+    {meta && <p class="cabecera__meta">{meta}</p>}
+    <h1>{titulo}</h1>
+    <slot />
+  </div>
+
+  {
+    foto && (
+      <a class="cabecera__credito" href={foto.credito.fuente} rel="noopener noreferrer">
+        Foto: {lineaCredito(foto.credito)}
+      </a>
+    )
+  }
+</header>
+
+<style>
+  .cabecera {
+    position: relative;
+    display: grid;
+    align-content: end;
+    min-height: min(66svh, 620px);
+    padding: calc(5rem + env(safe-area-inset-top)) var(--margen) 3.4rem;
+    color: #fff;
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  .cabecera--grande {
+    min-height: min(78svh, 760px);
+  }
+
+  .cabecera :global(.cabecera__foto) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .cabecera__velo {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(to top, rgb(0 0 0 / 0.66), rgb(0 0 0 / 0.22) 48%, transparent 70%),
+      linear-gradient(to bottom, rgb(0 0 0 / 0.28), transparent 26%);
+  }
+
+  /* Sin foto: superficie de terracota, con el ícono del tipo de lugar grande y en relieve */
+  .cabecera--sin-foto {
+    min-height: min(52svh, 480px);
+    background: var(--acento);
+  }
+
+  .cabecera__icono {
+    position: absolute;
+    z-index: -1;
+    right: -2rem;
+    top: 2.5rem;
+    color: rgb(255 255 255 / 0.16);
+  }
+
+  .cabecera__icono :global(svg) {
+    width: clamp(14rem, 40vw, 24rem);
+    height: auto;
+  }
+
+  .cabecera__controles {
+    position: absolute;
+    top: calc(12px + env(safe-area-inset-top));
+    left: var(--margen);
+    right: var(--margen);
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .cabecera__texto {
+    display: grid;
+    gap: 8px;
+    width: 100%;
+    max-width: var(--ancho-max);
+    margin-inline: auto;
+  }
+
+  .cabecera__meta {
+    font-size: var(--t-nota);
+    font-weight: 600;
+    color: rgb(255 255 255 / 0.88);
+  }
+
+  .cabecera h1 {
+    max-width: 16ch;
+    font-size: var(--t-gigante);
+    line-height: 1;
+    letter-spacing: -0.035em;
+  }
+
+  .cabecera__credito {
+    position: absolute;
+    right: var(--margen);
+    bottom: 2.2rem;
+    max-width: 60%;
+    font-size: 0.6875rem;
+    color: rgb(255 255 255 / 0.78);
+    text-align: right;
+    text-decoration: none;
+  }
+
+  /* En escritorio, los controles bajan para no chocar con la barra de pestañas de arriba */
+  @media (min-width: 48rem) {
+    .cabecera {
+      padding-top: calc(6.5rem + env(safe-area-inset-top));
+    }
+    .cabecera__controles {
+      top: calc(80px + env(safe-area-inset-top));
+    }
+  }
+</style>

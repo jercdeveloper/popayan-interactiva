@@ -1,0 +1,138 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Encabezado from '../components/vidrio/Encabezado.astro';
+import Icono from '../components/Icono.astro';
+import { CREDITOS } from '../lib/fotos';
+
+// Cada foto se nombra por el lugar que muestra; las que no son de un lugar, por su título en Commons
+const nombres = new Map((await getCollection('lugares')).map((l) => [l.id, l.data.nombre]));
+const fotos = Object.entries(CREDITOS)
+  .map(([id, c]) => ({ id, nombre: nombres.get(id) ?? c.titulo.replace(/^File:|\.\w+$/g, ''), ...c }))
+  .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
+---
+
+<Base titulo="Acerca del proyecto" descripcion="Quién hace Popayán Interactiva, cómo cuida tus datos y de dónde salen sus textos y fotos.">
+  <Encabezado
+    titulo="Hecha en Popayán, para Popayán"
+    bajada="Popayán Interactiva es una guía gratuita del Centro Histórico. Nace para mostrar la otra cara del Cauca: su historia, su gente, su cocina y su memoria."
+  />
+
+  <div class="pagina">
+    <section class="grupo" aria-labelledby="titulo-datos">
+      <h2 class="grupo__titulo" id="titulo-datos">Cómo cuidamos tus datos</h2>
+      <ul class="celdas">
+        <li>
+          <span class="celda">
+            <Icono nombre="navigation-arrow" class="celda__icono" />
+            <span class="celda__texto">Tu ubicación se calcula en tu celular y nunca se envía ni se guarda.</span>
+          </span>
+        </li>
+        <li>
+          <span class="celda">
+            <Icono nombre="user-circle-dashed" class="celda__icono" />
+            <span class="celda__texto">No hay cuentas, ni anuncios, ni cookies de seguimiento.</span>
+          </span>
+        </li>
+        <li>
+          <span class="celda">
+            <Icono nombre="wifi-slash" class="celda__icono" />
+            <span class="celda__texto">Una vez abierta, la guía funciona sin señal.</span>
+          </span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="grupo" aria-labelledby="titulo-fuentes">
+      <h2 class="grupo__titulo" id="titulo-fuentes">De dónde sale la información</h2>
+      <p class="texto">
+        Cada ficha cita sus fuentes. Mientras la guía está en construcción, las fichas están marcadas como «en revisión
+        histórica»: antes del lanzamiento las validará una persona experta en historia de Popayán.
+      </p>
+    </section>
+
+    <section class="grupo" aria-labelledby="titulo-creditos">
+      <h2 class="grupo__titulo" id="titulo-creditos">Créditos</h2>
+      <ul class="celdas">
+        <li>
+          <span class="celda">
+            <Icono nombre="map-trifold" class="celda__icono" />
+            <span class="celda__texto">
+              Mapa
+              <small>
+                Datos de <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> y mapa base de{' '}
+                <a href="https://protomaps.com">Protomaps</a>.
+              </small>
+            </span>
+          </span>
+        </li>
+        <li>
+          <span class="celda">
+            <Icono nombre="shapes" class="celda__icono" />
+            <span class="celda__texto">
+              Íconos
+              <small><a href="https://phosphoricons.com">Phosphor</a>, con licencia MIT.</small>
+            </span>
+          </span>
+        </li>
+        <li>
+          <span class="celda">
+            <Icono nombre="clock" class="celda__icono" />
+            <span class="celda__texto">
+              La Torre del Reloj del logo
+              <small>Dibujo del equipo de Popayán Interactiva.</small>
+            </span>
+          </span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="grupo" id="fotos" aria-labelledby="titulo-fotos">
+      <h2 class="grupo__titulo" id="titulo-fotos">Fotografías</h2>
+      <p class="texto">
+        Todas las fotos vienen de Wikimedia Commons y tienen licencia libre. Las mostramos reducidas y recortadas; cada
+        una conserva su licencia original. Gracias a quienes las tomaron y las compartieron.
+      </p>
+      <ul class="celdas">
+        {
+          fotos.map((f) => (
+            <li>
+              <a class="celda" href={f.fuente} rel="noopener noreferrer">
+                <span class="celda__texto">
+                  {f.nombre}
+                  <small>
+                    {f.autor} · {f.licencia}
+                  </small>
+                </span>
+                <Icono nombre="arrow-up-right" class="celda__flecha" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .pagina {
+    display: grid;
+    gap: 2.25rem;
+    max-width: 42rem;
+    margin-inline: auto;
+    padding: 0.25rem var(--margen) 0;
+  }
+
+  .texto {
+    padding-inline: 16px;
+    line-height: 1.5;
+  }
+
+  .celda__texto small a {
+    color: inherit;
+  }
+
+  #fotos {
+    scroll-margin-top: 5rem;
+  }
+</style>

@@ -1,0 +1,106 @@
+---
+/**
+ * Compartir un lugar o una ruta con su tarjeta, desde un círculo de vidrio.
+ * En el celular abre el menú del sistema con la imagen adjunta; donde no se puede adjuntar, comparte el
+ * enlace; y en escritorio, sin menú del sistema, copia el enlace y lo avisa en una cápsula flotante.
+ */
+import Circulo from './vidrio/Circulo.astro';
+
+interface Props {
+  /** Ruta de la página, por ejemplo "/lugares/la-ermita" */
+  enlace: string;
+  /** Ruta de la tarjeta 1080×1350 */
+  tarjeta: string;
+  titulo: string;
+  texto: string;
+}
+
+const { enlace, tarjeta, titulo, texto } = Astro.props;
+---
+
+<Circulo
+  icono="share-network"
+  etiqueta="Compartir"
+  data-compartir=""
+  data-enlace={enlace}
+  data-tarjeta={tarjeta}
+  data-titulo={titulo}
+  data-texto={texto}
+/>
+<p class="aviso vidrio" role="status" aria-live="polite" data-aviso hidden></p>
+
+<script>
+  for (const boton of document.querySelectorAll<HTMLButtonElement>('[data-compartir]')) {
+    const aviso = document.querySelector<HTMLElement>('[data-aviso]');
+    const { enlace = '/', tarjeta = '', titulo = '', texto = '' } = boton.dataset;
+    const url = new URL(enlace, location.origin).href;
+
+    // La imagen se trae antes del toque: algunos navegadores solo dejan compartir justo después del gesto
+    let archivo: File | null = null;
+    let pedido: Promise<void> | null = null;
+    const traer = () =>
+      (pedido ??= fetch(tarjeta)
+        .then((r) => (r.ok ? r.blob() : Promise.reject()))
+        .then((blob) => {
+          archivo = new File([blob], tarjeta.split('/').pop() ?? 'tarjeta.jpg', { type: 'image/jpeg' });
+        })
+        .catch(() => {}));
+    if ('canShare' in navigator) {
+      for (const evento of ['pointerenter', 'focus', 'touchstart'] as const) {
+        boton.addEventListener(evento, traer, { once: true, passive: true });
+      }
+    }
+
+    const avisar = (mensaje: string) => {
+      if (!aviso) return;
+      aviso.textContent = mensaje;
+      aviso.hidden = false;
+      setTimeout(() => (aviso.hidden = true), 3200);
+    };
+
+    boton.addEventListener('click', async () => {
+      try {
+        if (archivo && navigator.canShare?.({ files: [archivo] })) {
+          await navigator.share({ files: [archivo], title: titulo, text: `${texto} ${url}` });
+          return;
+        }
+        if (navigator.share) {
+          await navigator.share({ title: titulo, text: texto, url });
+          return;
+        }
+        await navigator.clipboard.writeText(url);
+        avisar('Enlace copiado');
+      } catch (error) {
+        // Cerrar el menú del sistema no es un error
+        if ((error as DOMException)?.name === 'AbortError') return;
+        avisar('No se pudo compartir. Copia la dirección de la página.');
+      }
+    });
+  }
+</script>
+
+<style>
+  .aviso {
+    position: fixed;
+    z-index: 40;
+    left: 50%;
+    bottom: calc(100px + env(safe-area-inset-bottom));
+    translate: -50% 0;
+    padding: 12px 20px;
+    border-radius: var(--radio-capsula);
+    color: var(--texto);
+    font-size: var(--t-nota);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .aviso[hidden] {
+    display: none;
+  }
+
+  @media (min-width: 48rem) {
+    .aviso {
+      bottom: 32px;
+    }
+  }
+</style>

@@ -1,0 +1,14 @@
+{
+  "construccion": "20261012",
+  "area": {
+    "oeste": -77,
+    "sur": 2.1,
+    "este": -76.1,
+    "norte": 2.75
+  },
+  "zoom": [
+    6,
+    15
+  ],
+  "atribucion": "© OpenStreetMap contributors · Protomaps"
+}

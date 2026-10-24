@@ -1,0 +1,160 @@
+---
+/**
+ * La barra de pestañas flotante, de vidrio, como en iOS 26: abajo en el celular y arriba, al centro, en
+ * pantallas grandes (como en iPadOS). La pestaña activa lleva el ícono relleno y una cápsula tintada
+ * (no vidrio sobre vidrio). Entre páginas, la barra se mantiene con las transiciones de vista nativas, y al
+ * presionar, la cápsula se desliza con un resorte hacia la pestaña tocada.
+ */
+import Icono from '../Icono.astro';
+
+export type Pestana = 'inicio' | 'rutas' | 'mapa' | 'agenda' | 'informacion';
+
+interface Props {
+  activa?: Pestana;
+}
+
+const { activa } = Astro.props;
+const pestanas = [
+  { id: 'inicio', texto: 'Inicio', href: '/', icono: 'house' },
+  { id: 'rutas', texto: 'Rutas', href: '/rutas', icono: 'footprints' },
+  { id: 'mapa', texto: 'Mapa', href: '/mapa', icono: 'map-trifold' },
+  { id: 'agenda', texto: 'Agenda', href: '/agenda', icono: 'calendar-dots' },
+  { id: 'informacion', texto: 'Útil', href: '/informacion', icono: 'lifebuoy' },
+] as const;
+---
+
+<nav class="pestanas vidrio" aria-label="Principal" data-pestanas>
+  <span class="pestanas__lente" aria-hidden="true" data-lente hidden={!activa}></span>
+  <ul>
+    {
+      pestanas.map((p) => (
+        <li>
+          <a href={p.href} class="pestanas__item" aria-current={p.id === activa ? 'page' : undefined} data-pestana={p.id}>
+            <Icono nombre={p.icono} peso={p.id === activa ? 'fill' : 'regular'} />
+            <span>{p.texto}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<script>
+  import { animate } from 'motion';
+
+  const barra = document.querySelector<HTMLElement>('[data-pestanas]');
+  const lente = barra?.querySelector<HTMLElement>('[data-lente]');
+  const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // La cápsula se ubica bajo la pestaña activa, medida en la página real
+  function ubicar(item: HTMLElement, animado: boolean) {
+    if (!barra || !lente) return;
+    lente.hidden = false;
+    const x = item.getBoundingClientRect().left - barra.getBoundingClientRect().left - 6;
+    const ancho = item.getBoundingClientRect().width;
+    if (!animado || quieto) {
+      lente.style.width = `${ancho}px`;
+      lente.style.transform = `translateX(${x}px)`;
+      return;
+    }
+    // Resorte críticamente amortiguado: llega sin rebote y parte de donde esté en ese instante
+    animate(lente, { x, width: ancho }, { type: 'spring', bounce: 0, duration: 0.35 });
+  }
+
+  const activa = () => barra?.querySelector<HTMLElement>('[aria-current="page"]');
+  const a = activa();
+  if (a) ubicar(a, false);
+  addEventListener('resize', () => {
+    const b = activa();
+    if (b) ubicar(b, false);
+  });
+
+  // La respuesta llega al presionar, no al soltar
+  for (const item of barra?.querySelectorAll<HTMLElement>('[data-pestana]') ?? []) {
+    item.addEventListener('pointerdown', () => ubicar(item, true));
+  }
+</script>
+
+<style>
+  .pestanas {
+    position: fixed;
+    z-index: 30;
+    left: 50%;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    translate: -50% 0;
+    padding: 6px;
+    border-radius: var(--radio-capsula);
+    view-transition-name: pestanas;
+  }
+
+  .pestanas ul {
+    display: flex;
+    gap: 2px;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* La cápsula de la pestaña activa: tinte, no vidrio sobre vidrio */
+  .pestanas__lente {
+    position: absolute;
+    top: 6px;
+    bottom: 6px;
+    left: 6px;
+    border-radius: var(--radio-capsula);
+    background: color-mix(in srgb, var(--texto) 9%, transparent);
+    view-transition-name: lente-pestana;
+  }
+
+  .pestanas__item {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 1px;
+    min-width: 62px;
+    padding: 7px 10px 6px;
+    border-radius: var(--radio-capsula);
+    color: var(--texto);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 120ms ease-out;
+  }
+
+  .pestanas__item:active {
+    transform: scale(0.94);
+  }
+
+  .pestanas__item[aria-current='page'] {
+    color: var(--acento);
+  }
+
+  .pestanas__item :global(svg) {
+    width: 25px;
+    height: 25px;
+  }
+
+  /* En pantallas grandes la barra sube, al centro, y los íconos van al lado del nombre */
+  @media (min-width: 48rem) {
+    .pestanas {
+      top: calc(14px + env(safe-area-inset-top));
+      bottom: auto;
+    }
+
+    .pestanas__item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+      padding: 9px 16px;
+      font-size: var(--t-nota);
+      letter-spacing: -0.01em;
+    }
+
+    .pestanas__item :global(svg) {
+      width: 20px;
+      height: 20px;
+    }
+  }
+</style>

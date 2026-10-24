@@ -1,0 +1,449 @@
+---
+import { getCollection, render } from 'astro:content';
+import { getImage, Picture } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Icono from '../../components/Icono.astro';
+import Compartir from '../../components/Compartir.astro';
+import CabeceraFoto from '../../components/vidrio/CabeceraFoto.astro';
+import Circulo from '../../components/vidrio/Circulo.astro';
+import MapaRuta from '../../components/vidrio/MapaRuta.astro';
+import {
+  resumirRuta,
+  rutasOrdenadas,
+  distanciaMetros,
+  formatearDuracion,
+  formatearDistancia,
+} from '../../lib/rutas';
+import { CATEGORIAS, aMapa } from '../../lib/lugares';
+import { fotoDe, lineaCredito } from '../../lib/fotos';
+
+export async function getStaticPaths() {
+  const rutas = await getCollection('rutas');
+  return rutas.map((ruta) => ({ params: { id: ruta.id }, props: { ruta } }));
+}
+
+const { ruta } = Astro.props;
+const { paradas, metros, minutos } = await resumirRuta(ruta);
+const { Content } = await render(ruta);
+const foto = fotoDe(ruta.data.foto);
+const otras = (await rutasOrdenadas())
+  .filter((r) => r.ruta.id !== ruta.id)
+  .map((r) => ({ ...r, foto: fotoDe(r.ruta.data.foto) }));
+const enCarro = ruta.data.modo === 'carro';
+
+const lista = await Promise.all(
+  paradas.map(async (p, i) => {
+    const f = fotoDe(p.id);
+    const recta = i === 0 ? 0 : distanciaMetros(paradas[i - 1].data.coordenadas, p.data.coordenadas);
+    return {
+      parada: p,
+      icono: CATEGORIAS[p.data.categoria].icono,
+      miniatura: f ? (await getImage({ src: f.src, width: 128, height: 128, fit: 'cover', format: 'webp' })).src : null,
+      tramo:
+        i === 0
+          ? null
+          : enCarro
+            ? recta * 1.5 < 250
+              ? 'Al lado, a pocos pasos'
+              : `Unos ${formatearDistancia(Math.max(500, Math.round((recta * 1.5) / 500) * 500))} en carro`
+            : `Camina unos ${Math.max(10, Math.round((recta * 1.3) / 10) * 10)} m`,
+    };
+  }),
+);
+---
+
+<Base titulo={ruta.data.nombre} seccion="rutas" descripcion={ruta.data.lema} imagen={`/tarjetas/og/rutas/${ruta.id}.jpg`}>
+  <CabeceraFoto
+    foto={foto}
+    alt=""
+    titulo={ruta.data.nombre}
+    meta={enCarro ? 'Ruta en carro' : 'Ruta a pie'}
+    icono={enCarro ? 'car-simple' : 'footprints'}
+    alto="grande"
+  >
+    <Fragment slot="controles">
+      <Circulo icono="caret-left" etiqueta="Todas las rutas" href="/rutas" />
+      <Compartir
+        enlace={`/rutas/${ruta.id}`}
+        tarjeta={`/tarjetas/rutas/${ruta.id}.jpg`}
+        titulo={ruta.data.nombre}
+        texto={ruta.data.lema}
+      />
+    </Fragment>
+    <p class="lema">{ruta.data.lema}</p>
+  </CabeceraFoto>
+
+  <article class="hoja">
+    <dl class="cifras">
+      <div>
+        <dt>Paradas</dt>
+        <dd>{paradas.length}</dd>
+      </div>
+      <div>
+        <dt>Recorrido</dt>
+        <dd>{formatearDistancia(metros)}</dd>
+      </div>
+      <div>
+        <dt>Tiempo</dt>
+        <dd>{formatearDuracion(minutos)}</dd>
+      </div>
+    </dl>
+
+    <div class="intro"><Content /></div>
+
+    <section class="seccion-mapa" aria-labelledby="titulo-mapa">
+      <h2 class="grupo__titulo" id="titulo-mapa">El recorrido</h2>
+      <MapaRuta paradas={paradas.map(aMapa)} etiqueta={`Mapa de la ${ruta.data.nombre}`} />
+      <p class="nota">
+        {
+          enCarro
+            ? 'Tiempo aproximado en carro por vías rurales, con unos veinte minutos en cada parada. El trazado une las paradas en línea recta: sigue la carretera.'
+            : 'Tiempo aproximado, a paso de paseo y con unos minutos en cada parada. El trazado une las paradas en línea recta: sigue las calles.'
+        }
+      </p>
+    </section>
+
+    <ol class="paradas" aria-label="Paradas">
+      {
+        lista.map(({ parada, icono, miniatura, tramo }, i) => (
+          <li class="parada" id={`parada-${i + 1}`}>
+            {tramo && (
+              <p class="parada__tramo">
+                <Icono nombre={enCarro ? 'car-simple' : 'footprints'} />
+                {tramo}
+              </p>
+            )}
+            <a class="parada__tarjeta" href={`/lugares/${parada.id}`}>
+              <span class="parada__numero" aria-hidden="true">
+                {i + 1}
+              </span>
+              {miniatura ? (
+                <img class="parada__foto" src={miniatura} alt="" width="64" height="64" loading="lazy" decoding="async" />
+              ) : (
+                <span class="parada__foto parada__foto--icono" aria-hidden="true">
+                  <Icono nombre={icono} />
+                </span>
+              )}
+              <span class="parada__texto">
+                <span class="parada__nombre">
+                  <span class="solo-lector">Parada {i + 1}: </span>
+                  {parada.data.nombre}
+                </span>
+                <span class="parada__epoca">{parada.data.epoca}</span>
+                <span class="parada__resumen">{parada.data.resumen}</span>
+              </span>
+              <Icono nombre="caret-right" class="parada__flecha" />
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+
+    <nav class="otras" aria-labelledby="titulo-otras">
+      <h2 class="grupo__titulo" id="titulo-otras">Otras rutas</h2>
+      <ul class="otras__carrusel">
+        {
+          otras.map(({ ruta: otra, paradas: p, minutos: m, foto: f }) => (
+            <li>
+              <a class="otra" href={`/rutas/${otra.id}`}>
+                {f && (
+                  <Picture
+                    src={f.src}
+                    formats={['avif', 'webp']}
+                    widths={[400, 640]}
+                    sizes="15rem"
+                    alt=""
+                    class="otra__foto"
+                  />
+                )}
+                <span class="otra__texto vidrio">
+                  <span class="otra__nombre">{otra.data.nombre}</span>
+                  <span class="otra__datos">
+                    {p.length} paradas · {formatearDuracion(m)}
+                  </span>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    {
+      foto && (
+        <p class="nota credito">
+          Foto de portada: <a href={foto.credito.fuente} rel="noopener noreferrer">{lineaCredito(foto.credito)}</a>, vía
+          Wikimedia Commons.
+        </p>
+      )
+    }
+  </article>
+</Base>
+
+<style>
+  .lema {
+    max-width: 34rem;
+    margin-top: 0.5rem;
+    font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+    line-height: 1.35;
+    color: rgb(255 255 255 / 0.9);
+  }
+
+  .hoja {
+    position: relative;
+    display: grid;
+    gap: 2.25rem;
+    margin-top: -1.75rem;
+    padding: 1.5rem var(--margen) 0;
+    border-radius: var(--radio-l) var(--radio-l) 0 0;
+    background: var(--fondo);
+  }
+
+  .hoja > * {
+    width: 100%;
+    max-width: 46rem;
+    margin-inline: auto;
+  }
+
+  /* ---------- Cifras: tres datos, del tamaño de un número de reloj ---------- */
+  .cifras {
+    display: grid;
+    /* El tiempo es la cifra más larga ("2 h 45 min"): le toca la columna más ancha */
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr) minmax(0, 1.3fr);
+    gap: 10px;
+    margin: 0;
+  }
+
+  .cifras div {
+    display: grid;
+    gap: 2px;
+    padding: 14px;
+    border-radius: var(--radio-m);
+    background: var(--fondo-elevado);
+  }
+
+  .cifras dt {
+    font-size: var(--t-mini);
+    font-weight: 500;
+    color: var(--texto-2);
+  }
+
+  .cifras dd {
+    margin: 0;
+    font-family: var(--fuente-titulos);
+    font-size: clamp(1.125rem, 0.95rem + 0.9vw, 1.625rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .intro {
+    display: grid;
+    gap: 1rem;
+    font-size: 1.1875rem;
+    line-height: 1.55;
+    letter-spacing: -0.014em;
+  }
+
+  .seccion-mapa {
+    display: grid;
+    gap: 10px;
+  }
+
+  /* ---------- Paradas: una línea de puntos que baja de una a otra ---------- */
+  .paradas {
+    display: grid;
+    padding: 0;
+    list-style: none;
+  }
+
+  .parada {
+    scroll-margin-block: 6rem;
+  }
+
+  .parada__tramo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    /* La línea cae justo bajo el centro del número (12 px de margen + 14 px de radio) */
+    margin-left: 25px;
+    padding: 14px 0 14px 1.4rem;
+    border-left: 2px dotted color-mix(in srgb, var(--acento) 55%, transparent);
+    font-size: var(--t-mini);
+    font-weight: 500;
+    color: var(--texto-2);
+  }
+
+  .parada__tarjeta {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
+    gap: 14px;
+    align-items: center;
+    padding: 14px 14px 14px 12px;
+    border-radius: var(--radio-m);
+    background: var(--fondo-elevado);
+    color: var(--texto);
+    text-decoration: none;
+    transition:
+      transform 160ms ease-out,
+      background-color 160ms ease-out;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .parada__tarjeta:active {
+    transform: scale(0.985);
+  }
+
+  @media (hover: hover) {
+    .parada__tarjeta:hover {
+      background: color-mix(in srgb, var(--fondo-elevado) 92%, var(--texto));
+    }
+  }
+
+  .parada__numero {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--acento);
+    color: var(--sobre-acento);
+    font-size: var(--t-mini);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .parada__foto {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    object-fit: cover;
+  }
+
+  .parada__foto--icono {
+    display: grid;
+    place-items: center;
+    background: color-mix(in srgb, var(--acento) 14%, var(--fondo-elevado));
+    color: var(--acento);
+    font-size: 1.75rem;
+  }
+
+  .parada__texto {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .parada__nombre {
+    font-weight: 650;
+    font-size: 1.0625rem;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+  }
+
+  .parada__epoca {
+    font-size: var(--t-mini);
+    color: var(--texto-2);
+  }
+
+  .parada__resumen {
+    display: -webkit-box;
+    margin-top: 2px;
+    font-size: var(--t-nota);
+    line-height: 1.35;
+    color: var(--texto-2);
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .parada__tarjeta :global(.parada__flecha) {
+    color: var(--texto-3);
+  }
+
+  /* ---------- Otras rutas ---------- */
+  .otras {
+    display: grid;
+    gap: 10px;
+    max-width: none;
+  }
+
+  .otras .grupo__titulo {
+    width: 100%;
+    max-width: 46rem;
+    margin-inline: auto;
+  }
+
+  .otras__carrusel {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 15rem;
+    gap: 12px;
+    margin-inline: calc(-1 * var(--margen));
+    padding: 2px max(var(--margen), calc((100vw - 46rem) / 2)) 16px;
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: max(var(--margen), calc((100vw - 46rem) / 2));
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .otras__carrusel::-webkit-scrollbar {
+    display: none;
+  }
+
+  .otras__carrusel li {
+    scroll-snap-align: start;
+  }
+
+  .otra {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radio-m);
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--acento);
+    color: var(--texto);
+    text-decoration: none;
+  }
+
+  .otra :global(.otra__foto) {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .otra__texto {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    display: grid;
+    gap: 2px;
+    padding: 10px 12px;
+    border-radius: 14px;
+  }
+
+  .otra__nombre {
+    font-weight: 700;
+    font-size: var(--t-nota);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  .otra__datos {
+    font-size: var(--t-mini);
+    color: var(--texto-2);
+  }
+
+  .credito {
+    margin-top: -1rem;
+  }
+</style>

@@ -1,0 +1,706 @@
+---
+/**
+ * Portada: la foto de la ciudad manda; el vidrio solo flota encima (la hora, los botones, la barra).
+ */
+import { getCollection } from 'astro:content';
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Icono from '../components/Icono.astro';
+import isotipo from '../assets/marca/isotipo.svg?raw';
+import { rutasOrdenadas, formatearDuracion } from '../lib/rutas';
+import { diaDelMes, nombreDelMes } from '../lib/fechas';
+import { fotoDe, lineaCredito } from '../lib/fotos';
+
+const portada = fotoDe('parque-caldas')!;
+const ermita = fotoDe('la-ermita')!;
+const rutas = (await rutasOrdenadas()).map((r) => ({ ...r, foto: fotoDe(r.ruta.data.foto) }));
+const eventos = (await getCollection('eventos')).sort((a, b) => a.data.inicio.localeCompare(b.data.inicio));
+const hitos = (await getCollection('hitos')).sort((a, b) => a.data.anio - b.data.anio);
+const lugares = await getCollection('lugares');
+const datos = lugares.filter((l) => l.data.dato).map((l) => ({ id: l.id, nombre: l.data.nombre, dato: l.data.dato! }));
+---
+
+<Base seccion="inicio">
+  <header class="portada">
+    <Picture
+      src={portada.src}
+      formats={['avif', 'webp']}
+      widths={[640, 1024, 1600]}
+      sizes="100vw"
+      alt="El Parque Caldas con la Torre del Reloj y la cúpula de la Catedral, bajo un cielo azul"
+      class="portada__foto"
+      loading="eager"
+      fetchpriority="high"
+    />
+    <div class="portada__velo" aria-hidden="true"></div>
+
+    <a class="marca-movil vidrio" href="/" aria-label="Popayán Interactiva, inicio">
+      <span class="marca-movil__torre" set:html={isotipo} />
+      <span>Popayán Interactiva</span>
+    </a>
+
+    <div class="portada__texto">
+      <h1>Popayán, contada lugar por lugar</h1>
+      <p>El Centro Histórico y sus alrededores en rutas, con historias que citan sus fuentes y un mapa que funciona sin señal.</p>
+      <div class="portada__acciones">
+        <a class="boton boton--lleno" href="#rutas">Empezar una ruta</a>
+        <a class="boton boton--vidrio vidrio" href="/mapa">
+          <Icono nombre="map-trifold" />
+          Abrir el mapa
+        </a>
+      </div>
+    </div>
+
+    <!-- La hora de Popayán, en la esfera de una sola manecilla del logo -->
+    <div class="hora vidrio">
+      <svg class="hora__esfera" viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="2" opacity="0.35"></circle>
+        {
+          Array.from({ length: 12 }, (_, i) => (
+            <line
+              x1="24"
+              y1="5"
+              x2="24"
+              y2={i % 3 === 0 ? 9 : 7.5}
+              stroke="currentColor"
+              stroke-width={i % 3 === 0 ? 2 : 1.4}
+              stroke-linecap="round"
+              transform={`rotate(${i * 30} 24 24)`}
+            />
+          ))
+        }
+        <g data-manecilla transform="rotate(0 24 24)">
+          <line x1="24" y1="24" x2="24" y2="11" stroke="var(--acento)" stroke-width="3" stroke-linecap="round"></line>
+        </g>
+        <circle cx="24" cy="24" r="2.6" fill="var(--acento)"></circle>
+      </svg>
+      <p aria-live="polite">
+        <span data-hora>La hora de Popayán</span><small>La torre marca la hora con una sola manecilla</small>
+      </p>
+    </div>
+
+    <a class="portada__credito" href={portada.credito.fuente} rel="noopener noreferrer">
+      Foto: {lineaCredito(portada.credito)}
+    </a>
+  </header>
+
+  <section class="seccion" id="rutas" aria-labelledby="titulo-rutas">
+    <div class="seccion__cabeza">
+      <h2 id="titulo-rutas">Rutas</h2>
+      <p>Ocho recorridos con historia. Siete a pie por el centro y uno en carro por las haciendas.</p>
+    </div>
+    <ol class="carrusel" aria-label="Rutas">
+      {
+        rutas.map(({ ruta, paradas, minutos, foto }) => (
+          <li class="carrusel__item">
+            <a class="ruta" href={`/rutas/${ruta.id}`}>
+              {foto && (
+                <Picture
+                  src={foto.src}
+                  formats={['avif', 'webp']}
+                  widths={[480, 800]}
+                  sizes="(min-width: 48rem) 360px, 78vw"
+                  alt=""
+                  class="ruta__foto"
+                />
+              )}
+              <span class="ruta__texto vidrio">
+                <span class="ruta__nombre">{ruta.data.nombre}</span>
+                <span class="ruta__datos">
+                  {paradas.length} paradas · {formatearDuracion(minutos)} · {ruta.data.modo === 'carro' ? 'en carro' : 'a pie'}
+                </span>
+              </span>
+              {foto && <span class="solo-lector">Foto: {lineaCredito(foto.credito)}</span>}
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="seccion" id="hoy" aria-labelledby="titulo-hoy">
+    <div class="seccion__cabeza">
+      <h2 id="titulo-hoy">Hoy en Popayán</h2>
+    </div>
+    <div class="widgets">
+      <article class="widget">
+        <h3>Agenda</h3>
+        <ol class="widget__agenda">
+          {
+            eventos.map((e, i) => (
+              <li data-evento data-inicio={e.data.inicio} data-fin={e.data.fin ?? e.data.inicio} hidden={i >= 4}>
+                <span class="widget__fecha">
+                  <span>{diaDelMes(e.data.inicio)}</span>
+                  <small>{nombreDelMes(e.data.inicio).slice(0, 3)}.</small>
+                </span>
+                <span class="widget__nombre">
+                  <span class="widget__ahora" hidden>
+                    Ahora
+                  </span>
+                  {e.data.nombre}
+                </span>
+              </li>
+            ))
+          }
+        </ol>
+        <a class="widget__mas" href="/agenda">Toda la agenda</a>
+      </article>
+
+      <article class="widget" data-datos={JSON.stringify(datos)}>
+        <h3>¿Sabías que…?</h3>
+        <p class="widget__dato">{datos[0].dato}</p>
+        <a class="widget__mas" href={`/lugares/${datos[0].id}`} data-dato-enlace>{datos[0].nombre}</a>
+      </article>
+
+      <a class="widget widget--foto" href="/lugares/la-ermita">
+        <Picture
+          src={ermita.src}
+          formats={['avif', 'webp']}
+          widths={[480, 800]}
+          sizes="(min-width: 48rem) 380px, 92vw"
+          alt=""
+          class="widget__foto"
+        />
+        <span class="widget__pie vidrio">
+          <span>La Ermita de Jesús Nazareno</span>
+          <small>Considerada la iglesia más antigua de la ciudad</small>
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <section class="seccion" aria-labelledby="titulo-tiempo">
+    <div class="seccion__cabeza seccion__cabeza--enlace">
+      <h2 id="titulo-tiempo">Cinco siglos de historia</h2>
+      <a href="/historia">Ver la línea de tiempo</a>
+    </div>
+    <ol class="tiempo" aria-label="Momentos de la historia de Popayán">
+      {
+        hitos.map((h) => (
+          <li class="tiempo__hito">
+            <span class="tiempo__anio">{h.data.anio}</span>
+            <span class="tiempo__titulo">{h.data.titulo}</span>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+</Base>
+
+<script>
+  import { animate } from 'motion';
+
+  // ---------- La hora de Popayán ----------
+  const NUMEROS = ['doce', 'una', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez', 'once'];
+  const partes = new Intl.DateTimeFormat('es-CO', {
+    timeZone: 'America/Bogota',
+    hour: 'numeric',
+    minute: 'numeric',
+    hourCycle: 'h23',
+  }).formatToParts(new Date());
+  const hora = Number(partes.find((p) => p.type === 'hour')?.value ?? 0);
+  const minuto = Number(partes.find((p) => p.type === 'minute')?.value ?? 0);
+  const h12 = hora % 12;
+  const art = (n: number) => (n === 1 ? 'la' : 'las');
+  const texto =
+    minuto < 10
+      ? `En Popayán son ${art(h12)} ${NUMEROS[h12]}`
+      : minuto < 40
+        ? `En Popayán ya pasaron ${art(h12)} ${NUMEROS[h12]}`
+        : `En Popayán son casi ${art((h12 + 1) % 12)} ${NUMEROS[(h12 + 1) % 12]}`;
+  const hTexto = document.querySelector('[data-hora]');
+  if (hTexto) hTexto.textContent = texto;
+
+  // La manecilla llega a la hora con un resorte, desde las doce
+  const manecilla = document.querySelector<SVGGElement>('[data-manecilla]');
+  const angulo = (h12 + minuto / 60) * 30;
+  if (manecilla) {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      manecilla.setAttribute('transform', `rotate(${angulo} 24 24)`);
+    } else {
+      animate(0, angulo, {
+        type: 'spring',
+        bounce: 0.25,
+        duration: 1.1,
+        delay: 0.3,
+        onUpdate: (v) => manecilla.setAttribute('transform', `rotate(${v} 24 24)`),
+      });
+    }
+  }
+
+  // ---------- Agenda: lo que pasa ahora y lo que viene ----------
+  const hoy = new Date();
+  const hoyUTC = Date.UTC(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+  const aFecha = (iso: string) => Date.parse(`${iso}T00:00:00Z`);
+  let mostrados = 0;
+  for (const li of document.querySelectorAll<HTMLElement>('[data-evento]')) {
+    const ini = aFecha(li.dataset.inicio!);
+    const fin = aFecha(li.dataset.fin!);
+    const vigente = fin >= hoyUTC && mostrados < 4;
+    li.hidden = !vigente;
+    if (vigente) {
+      mostrados++;
+      if (ini <= hoyUTC) li.querySelector<HTMLElement>('.widget__ahora')!.hidden = false;
+    }
+  }
+
+  // ---------- Un dato distinto en cada visita ----------
+  const caja = document.querySelector<HTMLElement>('[data-datos]');
+  if (caja) {
+    const lista: { id: string; nombre: string; dato: string }[] = JSON.parse(caja.dataset.datos ?? '[]');
+    const elegido = lista[Math.floor(Math.random() * lista.length)];
+    if (elegido) {
+      caja.querySelector('.widget__dato')!.textContent = elegido.dato;
+      const enlace = caja.querySelector<HTMLAnchorElement>('[data-dato-enlace]')!;
+      enlace.textContent = elegido.nombre;
+      enlace.href = `/lugares/${elegido.id}`;
+    }
+  }
+</script>
+
+<style>
+  /* ---------- Portada: la foto manda, el texto se apoya en un velo ---------- */
+  .portada {
+    position: relative;
+    display: grid;
+    align-content: end;
+    min-height: min(94svh, 880px);
+    padding: calc(5.5rem + env(safe-area-inset-top)) var(--margen) 7.5rem;
+    color: #fff;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .portada :global(.portada__foto) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* En el celular, la torre (el logo) queda en el cuadro */
+    object-position: 84% 40%;
+  }
+
+  .portada__velo {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(to top, rgb(0 0 0 / 0.72) 0%, rgb(0 0 0 / 0.38) 45%, transparent 75%),
+      linear-gradient(to right, rgb(0 0 0 / 0.35), transparent 55%),
+      linear-gradient(to bottom, rgb(0 0 0 / 0.22), transparent 22%);
+  }
+
+  .marca-movil {
+    position: absolute;
+    top: calc(12px + env(safe-area-inset-top));
+    left: var(--margen);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 16px 6px 8px;
+    border-radius: var(--radio-capsula);
+    color: var(--texto);
+    font-size: var(--t-nota);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+
+  .marca-movil__torre {
+    display: block;
+    width: 28px;
+    height: 32px;
+  }
+
+  .marca-movil__torre :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .portada__texto {
+    display: grid;
+    gap: 1rem;
+    width: 100%;
+    max-width: var(--ancho-max);
+    margin-inline: auto;
+  }
+
+  .portada h1 {
+    max-width: 12ch;
+    font-size: var(--t-gigante);
+    line-height: 1;
+    letter-spacing: -0.035em;
+  }
+
+  .portada__texto p {
+    max-width: 30rem;
+    font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.3125rem);
+    line-height: 1.4;
+    color: rgb(255 255 255 / 0.9);
+  }
+
+  .portada__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 0.5rem;
+  }
+
+  .hora {
+    position: absolute;
+    right: var(--margen);
+    bottom: 7.5rem;
+    display: none;
+    align-items: center;
+    gap: 12px;
+    max-width: 19rem;
+    padding: 12px 18px 12px 12px;
+    border-radius: var(--radio-m);
+    color: var(--texto);
+  }
+
+  .hora__esfera {
+    width: 52px;
+    height: 52px;
+    flex: none;
+  }
+
+  .hora p {
+    display: grid;
+    font-size: var(--t-nota);
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  .hora small {
+    font-size: var(--t-mini);
+    font-weight: 400;
+    color: var(--texto-2);
+  }
+
+  .portada__credito {
+    position: absolute;
+    right: var(--margen);
+    bottom: calc(5.4rem + env(safe-area-inset-bottom));
+    font-size: 0.6875rem;
+    color: rgb(255 255 255 / 0.78);
+    text-decoration: none;
+  }
+
+  @media (min-width: 48rem) {
+    .portada :global(.portada__foto) {
+      object-position: 60% 40%;
+    }
+    .marca-movil {
+      display: none;
+    }
+    .hora {
+      display: flex;
+    }
+    .portada__credito {
+      bottom: 2rem;
+    }
+    .portada {
+      padding-bottom: 5rem;
+    }
+    .hora {
+      bottom: 5rem;
+    }
+  }
+
+  /* ---------- Secciones ---------- */
+  .seccion {
+    padding-top: 3.5rem;
+  }
+
+  .seccion__cabeza {
+    display: grid;
+    gap: 0.4rem;
+    max-width: var(--ancho-max);
+    margin-inline: auto;
+    padding-inline: var(--margen);
+  }
+
+  .seccion__cabeza h2 {
+    font-size: var(--t-grande);
+  }
+
+  .seccion__cabeza p {
+    max-width: 34rem;
+    color: var(--texto-2);
+  }
+
+  .seccion__cabeza--enlace {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+  }
+
+  .seccion__cabeza--enlace a {
+    font-weight: 600;
+    color: var(--acento);
+    text-decoration: none;
+  }
+
+  /* ---------- Carruseles: desplazamiento nativo, con inercia y anclaje ---------- */
+  .carrusel,
+  .tiempo {
+    display: grid;
+    grid-auto-flow: column;
+    gap: 14px;
+    margin-top: 1.25rem;
+    padding: 4px max(var(--margen), calc((100vw - var(--ancho-max)) / 2 + var(--margen))) 24px;
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: max(var(--margen), calc((100vw - var(--ancho-max)) / 2 + var(--margen)));
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .carrusel::-webkit-scrollbar,
+  .tiempo::-webkit-scrollbar {
+    display: none;
+  }
+
+  .carrusel {
+    grid-auto-columns: min(78vw, 360px);
+  }
+
+  .carrusel__item,
+  .tiempo__hito {
+    scroll-snap-align: start;
+  }
+
+  .ruta {
+    position: relative;
+    display: block;
+    aspect-ratio: 3 / 4;
+    border-radius: var(--radio-l);
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--acento);
+    color: var(--texto);
+    text-decoration: none;
+    box-shadow: 0 18px 40px -22px rgb(0 0 0 / 0.45);
+    transition: transform 160ms ease-out;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .ruta:active {
+    transform: scale(0.98);
+  }
+
+  .ruta :global(.ruta__foto) {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @media (hover: hover) {
+    .ruta:hover :global(.ruta__foto) {
+      transform: scale(1.04);
+    }
+  }
+
+  .ruta__texto {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    display: grid;
+    gap: 2px;
+    padding: 14px 16px;
+    border-radius: var(--radio-m);
+  }
+
+  .ruta__nombre {
+    font-family: var(--fuente-titulos);
+    font-size: var(--t-titulo);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .ruta__datos {
+    font-size: var(--t-mini);
+    color: var(--texto-2);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- Widgets de "Hoy": superficies sólidas, como en el iPhone ---------- */
+  .widgets {
+    display: grid;
+    gap: 14px;
+    max-width: var(--ancho-max);
+    margin: 1.25rem auto 0;
+    padding-inline: var(--margen);
+  }
+
+  .widget {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 0.75rem;
+    min-height: 15rem;
+    padding: 20px;
+    border-radius: var(--radio-l);
+    background: var(--fondo-elevado);
+    color: var(--texto);
+    text-decoration: none;
+    overflow: hidden;
+  }
+
+  .widget h3 {
+    font-family: var(--fuente);
+    font-size: var(--t-nota);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--acento);
+  }
+
+  .widget__agenda {
+    display: grid;
+    gap: 12px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .widget__agenda li {
+    display: grid;
+    grid-template-columns: 3.75rem 1fr;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .widget__agenda li[hidden] {
+    display: none;
+  }
+
+  .widget__fecha {
+    display: grid;
+    font-family: var(--fuente-titulos);
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .widget__fecha small {
+    font-size: var(--t-mini);
+    font-weight: 500;
+    letter-spacing: 0;
+    color: var(--texto-2);
+  }
+
+  .widget__nombre {
+    font-size: var(--t-nota);
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  .widget__ahora {
+    display: inline-block;
+    margin-right: 6px;
+    padding: 1px 7px;
+    border-radius: var(--radio-capsula);
+    background: var(--acento);
+    color: var(--sobre-acento);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    vertical-align: 2px;
+  }
+
+  .widget__ahora[hidden] {
+    display: none;
+  }
+
+  .widget__dato {
+    font-family: var(--fuente-titulos);
+    font-size: 1.375rem;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+
+  .widget__mas {
+    align-self: end;
+    font-size: var(--t-nota);
+    font-weight: 600;
+    color: var(--acento);
+    text-decoration: none;
+  }
+
+  .widget--foto {
+    padding: 0;
+    min-height: 17rem;
+  }
+
+  .widget--foto :global(.widget__foto) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .widget__pie {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    display: grid;
+    padding: 12px 16px;
+    border-radius: var(--radio-m);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+
+  .widget__pie small {
+    font-size: var(--t-mini);
+    font-weight: 400;
+    color: var(--texto-2);
+  }
+
+  @media (min-width: 48rem) {
+    .widgets {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  /* ---------- Línea de tiempo en miniatura ---------- */
+  .tiempo {
+    grid-auto-columns: min(46vw, 13rem);
+  }
+
+  .tiempo__hito {
+    display: grid;
+    align-content: start;
+    gap: 6px;
+    min-height: 8.5rem;
+    padding: 18px;
+    border-radius: var(--radio-m);
+    background: var(--fondo-elevado);
+  }
+
+  .tiempo__anio {
+    font-family: var(--fuente-titulos);
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    color: var(--acento);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .tiempo__titulo {
+    font-size: var(--t-nota);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+</style>

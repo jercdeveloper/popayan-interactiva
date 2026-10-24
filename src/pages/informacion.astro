@@ -1,0 +1,372 @@
+---
+import Base from '../layouts/Base.astro';
+import Encabezado from '../components/vidrio/Encabezado.astro';
+import Icono from '../components/Icono.astro';
+
+/** Lluvia media por mes en milímetros (IDEAM, tabla de parámetros climáticos de Popayán en Wikipedia) */
+const LLUVIA = [
+  ['ene', 'enero', 201.5],
+  ['feb', 'febrero', 181.3],
+  ['mar', 'marzo', 220.6],
+  ['abr', 'abril', 202.7],
+  ['may', 'mayo', 166.2],
+  ['jun', 'junio', 81.8],
+  ['jul', 'julio', 52.4],
+  ['ago', 'agosto', 61.9],
+  ['sep', 'septiembre', 124.7],
+  ['oct', 'octubre', 247.6],
+  ['nov', 'noviembre', 329.9],
+  ['dic', 'diciembre', 250.9],
+] as const;
+const maximo = Math.max(...LLUVIA.map(([, , mm]) => mm));
+const minimo = Math.min(...LLUVIA.map(([, , mm]) => mm));
+const enMm = (mm: number) => `${Math.round(mm)} mm`;
+
+const fuente = {
+  policia: {
+    titulo: 'Policía Nacional: líneas de emergencia 123 y 155',
+    url: 'https://www.policia.gov.co/noticia/policia-nacional-sensibiliza-comunidad-sobre-uso-las-lineas-emergencia-123-155',
+  },
+  hospital: {
+    titulo: 'Hospital Universitario San José: portafolio de servicios',
+    url: 'https://hospitalsanjose.gov.co/wp-content/uploads/2025/02/PORTAFOLIO-DE-SERVICIOS-2.pdf',
+  },
+  aerocivil: {
+    titulo: 'Aerocivil: Aeropuerto Guillermo León Valencia',
+    url: 'https://www.aerocivil.gov.co/aeropuertos/Pages/guillermo-leon-valencia.aspx',
+  },
+  terminal: {
+    titulo: 'Bookaway: Terminal de Transportes de Popayán',
+    url: 'https://www.bookaway.com/routes/colombia/popayan/terminal-de-transportes-de-popayan',
+  },
+  clima: { titulo: 'Wikipedia: Popayán (parámetros climáticos del IDEAM)', url: 'https://es.wikipedia.org/wiki/Popay%C3%A1n' },
+  centro: { titulo: 'Wikipedia: Centro histórico de Popayán', url: 'https://es.wikipedia.org/wiki/Centro_hist%C3%B3rico_de_Popay%C3%A1n' },
+};
+---
+
+<Base
+  titulo="Información útil"
+  seccion="informacion"
+  descripcion="Emergencias, cómo llegar, el clima mes a mes y la oficina de turismo de Popayán."
+>
+  <Encabezado
+    titulo="Información útil"
+    bajada="Lo que conviene tener a mano en Popayán. Una vez abierta, esta página funciona sin señal."
+  />
+
+  <div class="pagina">
+    <!-- Lo urgente va primero y se marca con un toque -->
+    <section class="grupo" aria-labelledby="titulo-ayuda">
+      <h2 class="grupo__titulo" id="titulo-ayuda">Si necesitas ayuda</h2>
+      <a class="emergencia" href="tel:123" aria-label="Llamar al 123, línea única de emergencias">
+        <span class="emergencia__numero">123</span>
+        <span class="emergencia__texto">
+          Línea única de emergencias: policía, salud y bomberos desde un solo número. Gratuita, las 24 horas.
+        </span>
+        <span class="emergencia__llamar" aria-hidden="true">
+          <Icono nombre="phone" peso="fill" />
+        </span>
+      </a>
+      <ul class="celdas">
+        <li>
+          <span class="celda">
+            <Icono nombre="first-aid" class="celda__icono" />
+            <span class="celda__texto">
+              Hospital Universitario San José
+              <small>Carrera 6 # 10N-142, barrio Bolívar. El hospital público más grande del Cauca, con urgencias de adultos y de pediatría.</small>
+            </span>
+          </span>
+        </li>
+      </ul>
+      <p class="nota">
+        Fuentes: <a href={fuente.policia.url} rel="noopener noreferrer">{fuente.policia.titulo}</a> ·{' '}
+        <a href={fuente.hospital.url} rel="noopener noreferrer">{fuente.hospital.titulo}</a>
+      </p>
+    </section>
+
+    <section class="grupo" aria-labelledby="titulo-llegar">
+      <h2 class="grupo__titulo" id="titulo-llegar">Cómo llegar</h2>
+      <ul class="celdas">
+        <li>
+          <span class="celda">
+            <Icono nombre="airplane-tilt" class="celda__icono" />
+            <span class="celda__texto">
+              En avión
+              <small>El Aeropuerto Guillermo León Valencia queda al norte, junto a la terminal de buses y muy cerca del centro. A la salida hay taxis las 24 horas.</small>
+            </span>
+          </span>
+        </li>
+        <li>
+          <span class="celda">
+            <Icono nombre="bus" class="celda__icono" />
+            <span class="celda__texto">
+              En bus
+              <small>La Terminal de Transportes está en la Transversal 9 # 4N, al lado del aeropuerto. De ahí salen buses hacia otras ciudades del país.</small>
+            </span>
+          </span>
+        </li>
+      </ul>
+      <p class="nota">
+        Fuentes: <a href={fuente.aerocivil.url} rel="noopener noreferrer">{fuente.aerocivil.titulo}</a> ·{' '}
+        <a href={fuente.terminal.url} rel="noopener noreferrer">{fuente.terminal.titulo}</a>
+      </p>
+    </section>
+
+    <section class="grupo" aria-labelledby="titulo-clima">
+      <h2 class="grupo__titulo" id="titulo-clima">El clima</h2>
+      <figure class="clima">
+        <p class="clima__resumen">
+          Popayán está a 1.737 metros de altura. La temperatura casi no cambia en el año: madrugadas de 12 a 14 °C y
+          tardes de 24 a 25 °C. Lo que cambia es la lluvia: lleva paraguas de octubre a mayo.
+        </p>
+        <figcaption class="clima__titulo">Lluvia media por mes, en milímetros</figcaption>
+        <ol class="lluvia" aria-hidden="true">
+          {
+            LLUVIA.map(([corto, largo, mm]) => (
+              <li class:list={['lluvia__mes', { 'lluvia__mes--marcado': mm === maximo || mm === minimo }]}>
+                <span class="lluvia__valor">{Math.round(mm)}</span>
+                <svg class="lluvia__barra" viewBox="0 0 10 100" preserveAspectRatio="none">
+                  <rect x="0" y={100 - (mm / maximo) * 100} width="10" height={(mm / maximo) * 100} />
+                </svg>
+                <span class="lluvia__nombre" title={largo}>
+                  {corto}
+                </span>
+              </li>
+            ))
+          }
+        </ol>
+        <!-- Las tablas no se encogen a 1 px: la oculta un contenedor -->
+        <div class="solo-lector">
+          <table>
+            <caption>Lluvia media por mes en Popayán, en milímetros</caption>
+            <thead>
+              <tr><th scope="col">Mes</th><th scope="col">Milímetros</th></tr>
+            </thead>
+            <tbody>
+              {
+                LLUVIA.map(([, largo, mm]) => (
+                  <tr>
+                    <th scope="row">{largo}</th>
+                    <td>{enMm(mm)}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+      </figure>
+      <p class="nota">
+        Fuente: <a href={fuente.clima.url} rel="noopener noreferrer">{fuente.clima.titulo}</a>
+      </p>
+    </section>
+
+    <section class="grupo" aria-labelledby="titulo-ciudad">
+      <h2 class="grupo__titulo" id="titulo-ciudad">En la ciudad</h2>
+      <ul class="celdas">
+        <li>
+          <span class="celda">
+            <Icono nombre="info" class="celda__icono" />
+            <span class="celda__texto">
+              Oficina de turismo
+              <small>En la Casa Cuna del Santo Ecce Homo, una casona de finales del siglo XVII en la esquina de la Carrera 5 con Calle 5, a una cuadra del Parque Caldas.</small>
+            </span>
+          </span>
+        </li>
+        <li>
+          <span class="celda">
+            <Icono nombre="clock" class="celda__icono" />
+            <span class="celda__texto">
+              Horarios
+              <small>Templos y museos cambian sus horarios en temporada y en Semana Santa. Confírmalos antes de ir: en cada ficha está la fuente para consultarlos.</small>
+            </span>
+          </span>
+        </li>
+        <li>
+          <a class="celda" href="/mapa">
+            <Icono nombre="wifi-slash" class="celda__icono" />
+            <span class="celda__texto">
+              Sin señal
+              <small>La guía funciona sin conexión una vez abierta. En el mapa, «Guardar el mapa» deja todas las calles listas para usarlas sin datos.</small>
+            </span>
+            <Icono nombre="caret-right" class="celda__flecha" />
+          </a>
+        </li>
+      </ul>
+      <p class="nota">
+        Fuente: <a href={fuente.centro.url} rel="noopener noreferrer">{fuente.centro.titulo}</a>
+      </p>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .pagina {
+    display: grid;
+    gap: 2.25rem;
+    max-width: 42rem;
+    margin-inline: auto;
+    padding: 0.25rem var(--margen) 0;
+  }
+
+  .celdas .celda {
+    align-items: flex-start;
+    padding-block: 14px;
+  }
+
+  .celdas .celda__texto {
+    gap: 3px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .celdas .celda__texto small {
+    font-size: var(--t-nota);
+    font-weight: 400;
+    line-height: 1.4;
+    letter-spacing: 0;
+  }
+
+  .celdas :global(.celda__icono) {
+    margin-top: 1px;
+  }
+
+  .celdas :global(.celda__flecha) {
+    align-self: center;
+  }
+
+  /* ---------- El 123: se marca con el pulgar ---------- */
+  .emergencia {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      'numero llamar'
+      'texto texto';
+    gap: 6px 16px;
+    align-items: center;
+    padding: 18px 20px 20px;
+    border-radius: var(--radio-l);
+    background: var(--acento);
+    color: var(--sobre-acento);
+    text-decoration: none;
+    transition: transform 160ms ease-out;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .emergencia:active {
+    transform: scale(0.985);
+    background: var(--acento-presionado);
+  }
+
+  .emergencia__numero {
+    grid-area: numero;
+    font-family: var(--fuente-titulos);
+    font-size: clamp(3.5rem, 2.8rem + 3.5vw, 5rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .emergencia__texto {
+    grid-area: texto;
+    max-width: 32rem;
+    font-size: var(--t-nota);
+    line-height: 1.4;
+    opacity: 0.92;
+  }
+
+  .emergencia__llamar {
+    grid-area: llamar;
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.22);
+    font-size: 1.625rem;
+  }
+
+  /* ---------- Clima: una sola serie, sin leyenda; el mes más y el menos lluvioso, en terracota ---------- */
+  .clima {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+    padding: 18px 18px 40px;
+    border-radius: var(--radio-m);
+    background: var(--fondo-elevado);
+  }
+
+  .clima__resumen {
+    line-height: 1.5;
+  }
+
+  .clima__titulo {
+    font-size: var(--t-nota);
+    font-weight: 600;
+    color: var(--texto-2);
+  }
+
+  .lluvia {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 4px;
+    align-items: end;
+    height: 10rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .lluvia__mes {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    height: 100%;
+    min-height: 0;
+  }
+
+  /* La barra llena la altura que le deja la cifra; el SVG no impone su proporción */
+  .lluvia__barra {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    border-radius: 5px 5px 2px 2px;
+  }
+
+  .lluvia__barra rect {
+    fill: color-mix(in srgb, var(--texto) 22%, var(--fondo-elevado));
+    transition: fill 160ms ease-out;
+  }
+
+  .lluvia__mes:hover .lluvia__barra rect,
+  .lluvia__mes--marcado .lluvia__barra rect {
+    fill: var(--acento);
+  }
+
+  /* La cifra solo en el mes más lluvioso, el más seco y el que señala el puntero */
+  .lluvia__valor {
+    align-self: end;
+    padding-bottom: 4px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    white-space: nowrap;
+    visibility: hidden;
+  }
+
+  .lluvia__mes--marcado .lluvia__valor,
+  .lluvia__mes:hover .lluvia__valor {
+    visibility: visible;
+  }
+
+  .lluvia__nombre {
+    position: absolute;
+    top: 100%;
+    inset-inline: 0;
+    padding-top: 6px;
+    font-size: 0.6875rem;
+    text-align: center;
+    color: var(--texto-2);
+  }
+</style>

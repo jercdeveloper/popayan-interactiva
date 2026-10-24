@@ -1,0 +1,54 @@
+---
+/** El pie de página: lo que no es navegación diaria, en voz baja. */
+const anio = new Date().getFullYear();
+---
+
+<footer class="pie">
+  <nav aria-label="Más">
+    <a href="/historia">Historia</a>
+    <a href="/acerca">Acerca del proyecto</a>
+    <a href="/acerca#fotos">Créditos de las fotos</a>
+  </nav>
+  <p>
+    Proyecto independiente hecho en Popayán. Cada ficha cita sus fuentes y está en revisión histórica antes del
+    lanzamiento. Mapa con datos de <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>; fotos de
+    Wikimedia Commons con licencia libre.
+  </p>
+  <p>© {anio} Popayán Interactiva</p>
+</footer>
+
+<style>
+  .pie {
+    display: grid;
+    gap: 10px;
+    max-width: var(--ancho-max);
+    margin: 4rem auto 0;
+    padding: 2rem var(--margen) calc(7.5rem + env(safe-area-inset-bottom));
+    font-size: var(--t-mini);
+    color: var(--texto-2);
+    box-shadow: inset 0 0.5px 0 var(--separador);
+  }
+
+  .pie nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+    font-size: var(--t-nota);
+    font-weight: 600;
+  }
+
+  .pie nav a {
+    color: var(--texto);
+    text-decoration: none;
+  }
+
+  .pie p {
+    max-width: 40rem;
+  }
+
+  @media (min-width: 48rem) {
+    .pie {
+      padding-bottom: 3rem;
+    }
+  }
+</style>

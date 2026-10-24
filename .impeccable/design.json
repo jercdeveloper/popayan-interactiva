@@ -1,0 +1,760 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-14T16:06:49.364Z",
+  "title": "Design System: Popayán Interactiva",
+  "extensions": {
+    "colorMeta": {
+      "cal": {
+        "role": "neutral",
+        "displayName": "Cal mineral",
+        "purpose": "Fondo de página (--fondo) en Ciudad Blanca.",
+        "canonical": "#f2f3f0",
+        "oklch": "oklch(96.3% 0.004 121.6)",
+        "tonalRamp": [
+          "oklch(15% 0.004 121.6)",
+          "oklch(26% 0.004 121.6)",
+          "oklch(37% 0.004 121.6)",
+          "oklch(48% 0.004 121.6)",
+          "oklch(60% 0.004 121.6)",
+          "oklch(72% 0.004 121.6)",
+          "oklch(84% 0.004 121.6)",
+          "oklch(95% 0.002 121.6)"
+        ]
+      },
+      "cal-clara": {
+        "role": "neutral",
+        "displayName": "Cal clara",
+        "purpose": "Superficie (--superficie): muros, hojas, barra inferior; texto sobre teja.",
+        "canonical": "#fafaf8",
+        "oklch": "oklch(98.5% 0.003 106.4)",
+        "tonalRamp": [
+          "oklch(15% 0.003 106.4)",
+          "oklch(26% 0.003 106.4)",
+          "oklch(37% 0.003 106.4)",
+          "oklch(48% 0.003 106.4)",
+          "oklch(60% 0.003 106.4)",
+          "oklch(72% 0.003 106.4)",
+          "oklch(84% 0.003 106.4)",
+          "oklch(95% 0.001 106.4)"
+        ]
+      },
+      "superficie-hundida": {
+        "role": "neutral",
+        "displayName": "Andén",
+        "purpose": "Andén de la cuadra y fondo del mapa al cargar.",
+        "canonical": "#e8e9e4",
+        "oklch": "oklch(93.2% 0.007 115.7)",
+        "tonalRamp": [
+          "oklch(15% 0.007 115.7)",
+          "oklch(26% 0.007 115.7)",
+          "oklch(37% 0.007 115.7)",
+          "oklch(48% 0.007 115.7)",
+          "oklch(60% 0.007 115.7)",
+          "oklch(72% 0.007 115.7)",
+          "oklch(84% 0.007 115.7)",
+          "oklch(95% 0.003 115.7)"
+        ]
+      },
+      "borde": {
+        "role": "neutral",
+        "displayName": "Borde",
+        "purpose": "Líneas de 1 px dentro de una sección.",
+        "canonical": "#dcddd8",
+        "oklch": "oklch(89.5% 0.007 115.7)",
+        "tonalRamp": [
+          "oklch(15% 0.007 115.7)",
+          "oklch(26% 0.007 115.7)",
+          "oklch(37% 0.007 115.7)",
+          "oklch(48% 0.007 115.7)",
+          "oklch(60% 0.007 115.7)",
+          "oklch(72% 0.007 115.7)",
+          "oklch(84% 0.007 115.7)",
+          "oklch(95% 0.003 115.7)"
+        ]
+      },
+      "borde-fuerte": {
+        "role": "neutral",
+        "displayName": "Borde fuerte",
+        "purpose": "Contorno del botón secundario y de los filtros.",
+        "canonical": "#c4c5bf",
+        "oklch": "oklch(82.1% 0.008 114.3)",
+        "tonalRamp": [
+          "oklch(15% 0.008 114.3)",
+          "oklch(26% 0.008 114.3)",
+          "oklch(37% 0.008 114.3)",
+          "oklch(48% 0.008 114.3)",
+          "oklch(60% 0.008 114.3)",
+          "oklch(72% 0.008 114.3)",
+          "oklch(84% 0.008 114.3)",
+          "oklch(95% 0.003 114.3)"
+        ]
+      },
+      "piedra": {
+        "role": "neutral",
+        "displayName": "Piedra",
+        "purpose": "Texto principal, trazo de la torre y de las casas, reglas de 2 px.",
+        "canonical": "#3a332d",
+        "oklch": "oklch(32.6% 0.014 62.9)",
+        "tonalRamp": [
+          "oklch(15% 0.014 62.9)",
+          "oklch(26% 0.014 62.9)",
+          "oklch(37% 0.014 62.9)",
+          "oklch(48% 0.014 62.9)",
+          "oklch(60% 0.014 62.9)",
+          "oklch(72% 0.014 62.9)",
+          "oklch(84% 0.014 62.9)",
+          "oklch(95% 0.006 62.9)"
+        ]
+      },
+      "piedra-suave": {
+        "role": "neutral",
+        "displayName": "Piedra suave",
+        "purpose": "Texto secundario.",
+        "canonical": "#6b6258",
+        "oklch": "oklch(50.2% 0.019 70.3)",
+        "tonalRamp": [
+          "oklch(15% 0.019 70.3)",
+          "oklch(26% 0.019 70.3)",
+          "oklch(37% 0.019 70.3)",
+          "oklch(48% 0.019 70.3)",
+          "oklch(60% 0.019 70.3)",
+          "oklch(72% 0.019 70.3)",
+          "oklch(84% 0.019 70.3)",
+          "oklch(95% 0.008 70.3)"
+        ]
+      },
+      "teja": {
+        "role": "primary",
+        "displayName": "Teja de alero",
+        "purpose": "Acento de Ciudad Blanca: acción principal y portones; material de tejados y banda del tiempo.",
+        "canonical": "#a8482a",
+        "oklch": "oklch(52.2% 0.134 37.7)",
+        "tonalRamp": [
+          "oklch(15% 0.134 37.7)",
+          "oklch(26% 0.134 37.7)",
+          "oklch(37% 0.134 37.7)",
+          "oklch(48% 0.134 37.7)",
+          "oklch(60% 0.134 37.7)",
+          "oklch(72% 0.134 37.7)",
+          "oklch(84% 0.134 37.7)",
+          "oklch(95% 0.054 37.7)"
+        ]
+      },
+      "teja-oscura": {
+        "role": "primary",
+        "displayName": "Teja quemada",
+        "purpose": "Hover de la acción principal.",
+        "canonical": "#7a3119",
+        "oklch": "oklch(41.2% 0.108 38.2)",
+        "tonalRamp": [
+          "oklch(15% 0.108 38.2)",
+          "oklch(26% 0.108 38.2)",
+          "oklch(37% 0.108 38.2)",
+          "oklch(48% 0.108 38.2)",
+          "oklch(60% 0.108 38.2)",
+          "oklch(72% 0.108 38.2)",
+          "oklch(84% 0.108 38.2)",
+          "oklch(95% 0.043 38.2)"
+        ]
+      },
+      "texto-sobre-teja-suave": {
+        "role": "primary",
+        "displayName": "Cal sobre teja, velada",
+        "purpose": "Texto secundario sobre teja. Hex literal en dos componentes, aún sin token.",
+        "canonical": "#f6e6dd",
+        "oklch": "oklch(93.5% 0.021 51.5)",
+        "tonalRamp": [
+          "oklch(15% 0.021 51.5)",
+          "oklch(26% 0.021 51.5)",
+          "oklch(37% 0.021 51.5)",
+          "oklch(48% 0.021 51.5)",
+          "oklch(60% 0.021 51.5)",
+          "oklch(72% 0.021 51.5)",
+          "oklch(84% 0.021 51.5)",
+          "oklch(95% 0.009 51.5)"
+        ]
+      },
+      "morro": {
+        "role": "tertiary",
+        "displayName": "Verde Morro",
+        "purpose": "--exito: estás aquí, listo, cerca.",
+        "canonical": "#52703f",
+        "oklch": "oklch(50.9% 0.081 134.2)",
+        "tonalRamp": [
+          "oklch(15% 0.081 134.2)",
+          "oklch(26% 0.081 134.2)",
+          "oklch(37% 0.081 134.2)",
+          "oklch(48% 0.081 134.2)",
+          "oklch(60% 0.081 134.2)",
+          "oklch(72% 0.081 134.2)",
+          "oklch(84% 0.081 134.2)",
+          "oklch(95% 0.032 134.2)"
+        ]
+      },
+      "morro-tinte": {
+        "role": "tertiary",
+        "displayName": "Tinte Morro",
+        "purpose": "--exito-tinte.",
+        "canonical": "#e4ebdd",
+        "oklch": "oklch(93.1% 0.02 128.7)",
+        "tonalRamp": [
+          "oklch(15% 0.02 128.7)",
+          "oklch(26% 0.02 128.7)",
+          "oklch(37% 0.02 128.7)",
+          "oklch(48% 0.02 128.7)",
+          "oklch(60% 0.02 128.7)",
+          "oklch(72% 0.02 128.7)",
+          "oklch(84% 0.02 128.7)",
+          "oklch(95% 0.008 128.7)"
+        ]
+      },
+      "morro-texto": {
+        "role": "tertiary",
+        "displayName": "Texto Morro",
+        "purpose": "--exito-texto.",
+        "canonical": "#3a5230",
+        "oklch": "oklch(40.9% 0.062 136.9)",
+        "tonalRamp": [
+          "oklch(15% 0.062 136.9)",
+          "oklch(26% 0.062 136.9)",
+          "oklch(37% 0.062 136.9)",
+          "oklch(48% 0.062 136.9)",
+          "oklch(60% 0.062 136.9)",
+          "oklch(72% 0.062 136.9)",
+          "oklch(84% 0.062 136.9)",
+          "oklch(95% 0.025 136.9)"
+        ]
+      },
+      "noche": {
+        "role": "neutral",
+        "displayName": "Noche",
+        "purpose": "Fondo de Noche de procesión.",
+        "canonical": "#1c1624",
+        "oklch": "oklch(21.4% 0.028 303.7)",
+        "tonalRamp": [
+          "oklch(15% 0.028 303.7)",
+          "oklch(26% 0.028 303.7)",
+          "oklch(37% 0.028 303.7)",
+          "oklch(48% 0.028 303.7)",
+          "oklch(60% 0.028 303.7)",
+          "oklch(72% 0.028 303.7)",
+          "oklch(84% 0.028 303.7)",
+          "oklch(95% 0.011 303.7)"
+        ]
+      },
+      "noche-superficie": {
+        "role": "neutral",
+        "displayName": "Superficie de noche",
+        "purpose": "Superficie de Noche de procesión.",
+        "canonical": "#2a2134",
+        "oklch": "oklch(26.7% 0.037 305.7)",
+        "tonalRamp": [
+          "oklch(15% 0.037 305.7)",
+          "oklch(26% 0.037 305.7)",
+          "oklch(37% 0.037 305.7)",
+          "oklch(48% 0.037 305.7)",
+          "oklch(60% 0.037 305.7)",
+          "oklch(72% 0.037 305.7)",
+          "oklch(84% 0.037 305.7)",
+          "oklch(95% 0.015 305.7)"
+        ]
+      },
+      "noche-hundida": {
+        "role": "neutral",
+        "displayName": "Noche hundida",
+        "purpose": "Andén de noche.",
+        "canonical": "#231b2c",
+        "oklch": "oklch(24% 0.034 305.5)",
+        "tonalRamp": [
+          "oklch(15% 0.034 305.5)",
+          "oklch(26% 0.034 305.5)",
+          "oklch(37% 0.034 305.5)",
+          "oklch(48% 0.034 305.5)",
+          "oklch(60% 0.034 305.5)",
+          "oklch(72% 0.034 305.5)",
+          "oklch(84% 0.034 305.5)",
+          "oklch(95% 0.013 305.5)"
+        ]
+      },
+      "noche-borde": {
+        "role": "neutral",
+        "displayName": "Borde de noche",
+        "purpose": "Borde de noche.",
+        "canonical": "#3b3046",
+        "oklch": "oklch(33.1% 0.041 307.1)",
+        "tonalRamp": [
+          "oklch(15% 0.041 307.1)",
+          "oklch(26% 0.041 307.1)",
+          "oklch(37% 0.041 307.1)",
+          "oklch(48% 0.041 307.1)",
+          "oklch(60% 0.041 307.1)",
+          "oklch(72% 0.041 307.1)",
+          "oklch(84% 0.041 307.1)",
+          "oklch(95% 0.016 307.1)"
+        ]
+      },
+      "noche-borde-fuerte": {
+        "role": "neutral",
+        "displayName": "Borde fuerte de noche",
+        "purpose": "Borde fuerte de noche.",
+        "canonical": "#54465f",
+        "oklch": "oklch(41.8% 0.044 309.9)",
+        "tonalRamp": [
+          "oklch(15% 0.044 309.9)",
+          "oklch(26% 0.044 309.9)",
+          "oklch(37% 0.044 309.9)",
+          "oklch(48% 0.044 309.9)",
+          "oklch(60% 0.044 309.9)",
+          "oklch(72% 0.044 309.9)",
+          "oklch(84% 0.044 309.9)",
+          "oklch(95% 0.018 309.9)"
+        ]
+      },
+      "cal-noche": {
+        "role": "neutral",
+        "displayName": "Cal nocturna",
+        "purpose": "Texto principal y trazo de la torre de noche.",
+        "canonical": "#f4f1ea",
+        "oklch": "oklch(95.9% 0.01 87.5)",
+        "tonalRamp": [
+          "oklch(15% 0.01 87.5)",
+          "oklch(26% 0.01 87.5)",
+          "oklch(37% 0.01 87.5)",
+          "oklch(48% 0.01 87.5)",
+          "oklch(60% 0.01 87.5)",
+          "oklch(72% 0.01 87.5)",
+          "oklch(84% 0.01 87.5)",
+          "oklch(95% 0.004 87.5)"
+        ]
+      },
+      "niebla": {
+        "role": "neutral",
+        "displayName": "Niebla",
+        "purpose": "Texto secundario de noche.",
+        "canonical": "#bdb2c6",
+        "oklch": "oklch(77.9% 0.03 310.1)",
+        "tonalRamp": [
+          "oklch(15% 0.03 310.1)",
+          "oklch(26% 0.03 310.1)",
+          "oklch(37% 0.03 310.1)",
+          "oklch(48% 0.03 310.1)",
+          "oklch(60% 0.03 310.1)",
+          "oklch(72% 0.03 310.1)",
+          "oklch(84% 0.03 310.1)",
+          "oklch(95% 0.012 310.1)"
+        ]
+      },
+      "oro": {
+        "role": "secondary",
+        "displayName": "Oro de los pasos",
+        "purpose": "Acento de Noche de procesión.",
+        "canonical": "#d8a845",
+        "oklch": "oklch(75.8% 0.128 82.5)",
+        "tonalRamp": [
+          "oklch(15% 0.128 82.5)",
+          "oklch(26% 0.128 82.5)",
+          "oklch(37% 0.128 82.5)",
+          "oklch(48% 0.128 82.5)",
+          "oklch(60% 0.128 82.5)",
+          "oklch(72% 0.128 82.5)",
+          "oklch(84% 0.128 82.5)",
+          "oklch(95% 0.051 82.5)"
+        ]
+      },
+      "oro-hover": {
+        "role": "secondary",
+        "displayName": "Oro encendido",
+        "purpose": "Hover del acento de noche.",
+        "canonical": "#e6bd63",
+        "oklch": "oklch(81.7% 0.118 85.1)",
+        "tonalRamp": [
+          "oklch(15% 0.118 85.1)",
+          "oklch(26% 0.118 85.1)",
+          "oklch(37% 0.118 85.1)",
+          "oklch(48% 0.118 85.1)",
+          "oklch(60% 0.118 85.1)",
+          "oklch(72% 0.118 85.1)",
+          "oklch(84% 0.118 85.1)",
+          "oklch(95% 0.047 85.1)"
+        ]
+      },
+      "sobre-oro": {
+        "role": "secondary",
+        "displayName": "Tinta sobre oro",
+        "purpose": "Texto sobre el botón de oro.",
+        "canonical": "#2a1a00",
+        "oklch": "oklch(23.3% 0.049 77.5)",
+        "tonalRamp": [
+          "oklch(15% 0.049 77.5)",
+          "oklch(26% 0.049 77.5)",
+          "oklch(37% 0.049 77.5)",
+          "oklch(48% 0.049 77.5)",
+          "oklch(60% 0.049 77.5)",
+          "oklch(72% 0.049 77.5)",
+          "oklch(84% 0.049 77.5)",
+          "oklch(95% 0.019 77.5)"
+        ]
+      },
+      "morro-noche": {
+        "role": "tertiary",
+        "displayName": "Morro de noche",
+        "purpose": "--exito de noche.",
+        "canonical": "#8fb07a",
+        "oklch": "oklch(71.9% 0.084 133.7)",
+        "tonalRamp": [
+          "oklch(15% 0.084 133.7)",
+          "oklch(26% 0.084 133.7)",
+          "oklch(37% 0.084 133.7)",
+          "oklch(48% 0.084 133.7)",
+          "oklch(60% 0.084 133.7)",
+          "oklch(72% 0.084 133.7)",
+          "oklch(84% 0.084 133.7)",
+          "oklch(95% 0.033 133.7)"
+        ]
+      },
+      "morro-noche-tinte": {
+        "role": "tertiary",
+        "displayName": "Tinte Morro de noche",
+        "purpose": "--exito-tinte de noche.",
+        "canonical": "#26301f",
+        "oklch": "oklch(29.4% 0.033 132.9)",
+        "tonalRamp": [
+          "oklch(15% 0.033 132.9)",
+          "oklch(26% 0.033 132.9)",
+          "oklch(37% 0.033 132.9)",
+          "oklch(48% 0.033 132.9)",
+          "oklch(60% 0.033 132.9)",
+          "oklch(72% 0.033 132.9)",
+          "oklch(84% 0.033 132.9)",
+          "oklch(95% 0.013 132.9)"
+        ]
+      },
+      "morro-noche-texto": {
+        "role": "tertiary",
+        "displayName": "Texto Morro de noche",
+        "purpose": "--exito-texto de noche.",
+        "canonical": "#c3d8b5",
+        "oklch": "oklch(85.7% 0.052 132.8)",
+        "tonalRamp": [
+          "oklch(15% 0.052 132.8)",
+          "oklch(26% 0.052 132.8)",
+          "oklch(37% 0.052 132.8)",
+          "oklch(48% 0.052 132.8)",
+          "oklch(60% 0.052 132.8)",
+          "oklch(72% 0.052 132.8)",
+          "oklch(84% 0.052 132.8)",
+          "oklch(95% 0.021 132.8)"
+        ]
+      }
+    },
+    "themes": [
+      {
+        "name": "Ciudad Blanca",
+        "selector": ":root",
+        "acento": "teja",
+        "notes": "Tema claro por defecto."
+      },
+      {
+        "name": "Noche de procesión",
+        "selector": "@media (prefers-color-scheme: dark) :root:not([data-tema='claro']), y :root[data-tema='oscuro']",
+        "acento": "oro",
+        "notes": "Cambia solo los tokens semánticos; la teja como material (portones, tejados, banda del tiempo, cita de la ficha) no cambia."
+      }
+    ],
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Solo el título de la portada, dos líneas como máximo."
+      },
+      "headline": {
+        "displayName": "Título de página",
+        "purpose": "--titulo-l: h1 de ruta, ficha, rutas e historia."
+      },
+      "title-l": {
+        "displayName": "Título de sección",
+        "purpose": "--titulo-m: h2 de sección en la portada; años de la historia en escritorio."
+      },
+      "title": {
+        "displayName": "Título",
+        "purpose": "--titulo-s: h3, nombres de ruta y parada, años, cifras; en itálica, la voz de La Nariz y el lema."
+      },
+      "lead": {
+        "displayName": "Bajada",
+        "purpose": "--texto-l: bajadas y lemas."
+      },
+      "body": {
+        "displayName": "Texto",
+        "purpose": "--texto-m: párrafos; 1.7 de interlineado en el cuerpo de la ficha."
+      },
+      "label": {
+        "displayName": "Dato",
+        "purpose": "--texto-s: datos, épocas, firmas, fuentes."
+      },
+      "label-xs": {
+        "displayName": "Etiqueta mínima",
+        "purpose": "--texto-xs: navegación inferior y notas."
+      },
+      "button": {
+        "displayName": "Botón",
+        "purpose": "Botones y filtros."
+      }
+    },
+    "shadows": [
+      {
+        "name": "sombra-suave",
+        "value": "0 1px 2px rgb(58 51 45 / 0.06), 0 8px 24px -12px rgb(58 51 45 / 0.18)",
+        "purpose": "Solo lo que flota: controles y hoja del mapa, aviso de actualización."
+      },
+      {
+        "name": "sombra-suave-noche",
+        "value": "0 1px 2px rgb(0 0 0 / 0.3), 0 12px 32px -16px rgb(0 0 0 / 0.6)",
+        "purpose": "La misma sombra en Noche de procesión."
+      },
+      {
+        "name": "halo-aqui",
+        "value": "0 0 0 6px color-mix(in srgb, var(--exito) 25%, transparent)",
+        "purpose": "Halo del punto \"estás aquí\"."
+      }
+    ],
+    "motion": [
+      {
+        "name": "dur-micro",
+        "value": "160ms",
+        "purpose": "Presionar, hover, flecha manecilla, subrayados."
+      },
+      {
+        "name": "dur-ui",
+        "value": "280ms",
+        "purpose": "Hoja del mapa, portón de la fachada en hover."
+      },
+      {
+        "name": "dur-relato",
+        "value": "720ms",
+        "purpose": "Definido para revelaciones y transiciones de página; aún sin uso en el código."
+      },
+      {
+        "name": "ease-entrada",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Todo lo que entra; también el trazo y el registro de las fachadas."
+      },
+      {
+        "name": "ease-salida",
+        "value": "cubic-bezier(0.7, 0, 0.84, 0)",
+        "purpose": "Definido para salidas, más cortas que la entrada; aún sin uso en el código."
+      },
+      {
+        "name": "torre-barrido",
+        "value": "1400ms, cúbica de ida y vuelta, 360°",
+        "purpose": "TorreViva: máscara cónica y manecilla en un solo bucle rAF."
+      },
+      {
+        "name": "torre-llegada",
+        "value": "900ms, 1 - 2^(-10t)",
+        "purpose": "TorreViva: la manecilla se posa en la hora de America/Bogota; red de seguridad a 2900ms."
+      },
+      {
+        "name": "fachada-trazo",
+        "value": "900ms var(--ease-entrada)",
+        "purpose": "Primera pasada: la línea se dibuja con stroke-dashoffset."
+      },
+      {
+        "name": "fachada-registro",
+        "value": "520ms var(--ease-entrada), retraso +620ms, desde translate 7px -5px",
+        "purpose": "Segunda pasada: los planos de color registran."
+      },
+      {
+        "name": "fachada-escalonado",
+        "value": "140ms por casa",
+        "purpose": "Cada casa se imprime después de la anterior."
+      },
+      {
+        "name": "movimiento-reducido",
+        "value": "prefers-reduced-motion: reduce",
+        "purpose": "Torre completa y en la hora, casas ya impresas; animaciones y transiciones globales a 0.01ms."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "estrecho",
+        "value": "30rem",
+        "notes": "max-width: ajuste de los botones de la portada."
+      },
+      {
+        "name": "escritorio",
+        "value": "48rem",
+        "notes": "min-width 48rem / max-width 47.99rem: único corte de composición."
+      },
+      {
+        "name": "sin-hover",
+        "value": "(hover: none)",
+        "notes": "Oculta los pasos de la línea de tiempo."
+      }
+    ],
+    "layout": {
+      "anchoMax": "76rem",
+      "anchoLectura": "38rem",
+      "tactilMin": "44px",
+      "anden": "1.5rem",
+      "trazoCasa": "3px por defecto; clamp(2px, 1.1px + 0.26vw, 4.6px) en la portada; fino = 55 %"
+    }
+  },
+  "components": [
+    {
+      "name": "Botón principal",
+      "kind": "button",
+      "refersTo": "boton-principal",
+      "description": "La acción principal de la pantalla, con la manecilla como flecha. Teja de día, oro de noche.",
+      "html": "<a class=\"ds-boton-principal\" href=\"#\">Empezar una ruta <svg class=\"ds-flecha\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"4.5\" cy=\"12\" r=\"2.3\" fill=\"currentColor\"/><path d=\"M4.5 12 H15\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\"/><path d=\"M14.5 12 L18 8.8 L22 12 L18 15.2 Z\" fill=\"currentColor\"/></svg></a>",
+      "css": ".ds-boton-principal { display: inline-flex; align-items: center; justify-content: center; gap: var(--e-2); min-height: var(--tactil-min); padding: 0.7rem 1.35rem; border-radius: var(--radio-pildora); border: 1.5px solid transparent; font-family: var(--fuente-texto); font-weight: 600; font-size: var(--texto-m); line-height: 1.2; text-decoration: none; white-space: nowrap; cursor: pointer; transition: background-color var(--dur-micro) var(--ease-entrada), border-color var(--dur-micro) var(--ease-entrada), transform var(--dur-micro) var(--ease-entrada); background: var(--acento); color: var(--sobre-acento); } .ds-boton-principal:hover { background: var(--acento-hover); } .ds-boton-principal:active { transform: translateY(1px) scale(0.985); } .ds-boton-principal:focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; } .ds-flecha { width: 1.3em; height: 1.3em; flex: none; transition: translate var(--dur-micro) var(--ease-entrada); } .ds-boton-principal:hover .ds-flecha, .ds-boton-principal:focus-visible .ds-flecha { translate: 3px 0; }"
+    },
+    {
+      "name": "Botón secundario",
+      "kind": "button",
+      "refersTo": "boton-secundario",
+      "description": "Acción secundaria: contorno de borde fuerte, sin relleno.",
+      "html": "<a class=\"ds-boton-secundario\" href=\"#\"><svg class=\"ds-icono\" viewBox=\"0 0 256 256\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M228.92,49.69a8,8,0,0,0-6.86-1.45L160.93,63.52,99.58,32.84a8,8,0,0,0-5.520-.6l-64,16A8,8,0,0,0,24,56V200a8,8,0,0,0,9.94,7.76l61.13-15.28,61.35,30.68A8.15,8.15,0,0,0,160,224a8,8,0,0,0,1.94-.24l64-16A8,8,0,0,0,232,200V56A8,8,0,0,0,228.92,49.69ZM104,52.94l48,24V203.06l-48-24ZM40,62.25l48-12v127.5l-48,12Zm176,131.5-48,12V78.25l48-12Z\"/></svg> Mapa</a>",
+      "css": ".ds-boton-secundario { display: inline-flex; align-items: center; justify-content: center; gap: var(--e-2); min-height: var(--tactil-min); padding: 0.7rem 1.35rem; border-radius: var(--radio-pildora); border: 1.5px solid transparent; font-family: var(--fuente-texto); font-weight: 600; font-size: var(--texto-m); line-height: 1.2; text-decoration: none; white-space: nowrap; cursor: pointer; transition: background-color var(--dur-micro) var(--ease-entrada), border-color var(--dur-micro) var(--ease-entrada), transform var(--dur-micro) var(--ease-entrada); background: transparent; border-color: var(--borde-fuerte); color: var(--texto); } .ds-boton-secundario:hover { border-color: var(--texto); } .ds-boton-secundario:active { transform: translateY(1px) scale(0.985); } .ds-boton-secundario:focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; } .ds-icono { width: 1.15em; height: 1.15em; flex: none; }"
+    },
+    {
+      "name": "Filtro del mapa",
+      "kind": "chip",
+      "refersTo": "filtro-mapa",
+      "description": "Píldora que flota sobre el mapa; activa se invierte a piedra.",
+      "html": "<div class=\"ds-filtros\"><button class=\"ds-filtro\" aria-pressed=\"true\">Todos</button><button class=\"ds-filtro\" aria-pressed=\"false\">Templos</button><button class=\"ds-filtro\" aria-pressed=\"false\">Puentes</button></div>",
+      "css": ".ds-filtros { display: flex; gap: var(--e-2); } .ds-filtro { min-height: 40px; padding: 0 var(--e-4); border-radius: var(--radio-pildora); border: 1px solid var(--borde-fuerte); background: var(--superficie); color: var(--texto); font-family: var(--fuente-texto); font-weight: 500; font-size: var(--texto-s); cursor: pointer; box-shadow: var(--sombra-suave); } .ds-filtro:hover { border-color: var(--texto); } .ds-filtro[aria-pressed='true'] { background: var(--texto); color: var(--fondo); border-color: var(--texto); } .ds-filtro:focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; }"
+    },
+    {
+      "name": "Hoja del mapa",
+      "kind": "card",
+      "refersTo": "hoja-mapa",
+      "description": "Tarjeta flotante con la parada o el lugar elegido en el mapa.",
+      "html": "<div class=\"ds-hoja\"><p class=\"ds-hoja__orden\">Parada 2 de 6</p><h3 class=\"ds-hoja__nombre\">Puente del Humilladero</h3><p class=\"ds-hoja__epoca\">Siglo XIX</p><a class=\"ds-hoja__enlace\" href=\"#\">Leer la historia</a></div>",
+      "css": ".ds-hoja { display: grid; gap: var(--e-2); max-width: 26rem; padding: var(--e-5) var(--e-5) var(--e-4); background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio-tarjeta); box-shadow: var(--sombra-suave); color: var(--texto); font-family: var(--fuente-texto); } .ds-hoja__orden { margin: 0; font-size: var(--texto-xs); font-weight: 600; color: var(--acento); } .ds-hoja__nombre { margin: 0; font-family: var(--fuente-titulos); font-weight: 500; font-size: var(--titulo-s); line-height: 1.08; } .ds-hoja__epoca { margin: 0; font-size: var(--texto-s); color: var(--texto-suave); } .ds-hoja__enlace { justify-self: start; font-weight: 600; color: inherit; text-decoration-color: color-mix(in srgb, var(--acento) 55%, transparent); text-underline-offset: 0.22em; } .ds-hoja__enlace:hover { text-decoration-color: var(--acento); } .ds-hoja__enlace:focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; border-radius: 4px; }"
+    },
+    {
+      "name": "Navegación inferior",
+      "kind": "nav",
+      "refersTo": "navegacion-inferior",
+      "description": "Navegación principal en el celular, al alcance del pulgar.",
+      "html": "<nav class=\"ds-nav\"><a href=\"#\" aria-current=\"page\"><svg class=\"ds-icono\" viewBox=\"0 0 256 256\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M219.31,108.68l-80-80a16,16,0,0,0-22.62,0l-80,80A15.87,15.87,0,0,0,32,120v96a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V160h32v56a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V120A15.87,15.87,0,0,0,219.31,108.68ZM208,208H160V152a8,8,0,0,0-8-8H104a8,8,0,0,0-8,8v56H48V120l80-80,80,80Z\"/></svg><span>Inicio</span></a><a href=\"#\"><svg class=\"ds-icono\" viewBox=\"0 0 256 256\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M228.92,49.69a8,8,0,0,0-6.86-1.45L160.93,63.52,99.58,32.84a8,8,0,0,0-5.520-.6l-64,16A8,8,0,0,0,24,56V200a8,8,0,0,0,9.94,7.76l61.13-15.28,61.35,30.68A8.15,8.15,0,0,0,160,224a8,8,0,0,0,1.94-.24l64-16A8,8,0,0,0,232,200V56A8,8,0,0,0,228.92,49.69ZM104,52.94l48,24V203.06l-48-24ZM40,62.25l48-12v127.5l-48,12Zm176,131.5-48,12V78.25l48-12Z\"/></svg><span>Mapa</span></a></nav>",
+      "css": ".ds-nav { display: grid; grid-template-columns: repeat(2, 1fr); background: color-mix(in srgb, var(--superficie) 94%, transparent); border-top: 1px solid var(--borde); font-family: var(--fuente-texto); } .ds-nav a { display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 3.75rem; padding-block: var(--e-2); font-size: var(--texto-xs); font-weight: 500; text-decoration: none; color: var(--texto-suave); } .ds-nav a:hover { color: var(--texto); } .ds-nav a[aria-current='page'] { color: var(--acento); } .ds-nav a:focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; border-radius: 4px; } .ds-nav .ds-icono { width: 1.5rem; height: 1.5rem; }"
+    },
+    {
+      "name": "Cita de La Nariz",
+      "kind": "custom",
+      "description": "La voz de la torre: esfera de una manecilla, dato en Bodoni itálica y firma con lugar y fuente.",
+      "html": "<figure class=\"ds-nariz\"><svg class=\"ds-nariz__esfera\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><circle cx=\"32\" cy=\"32\" r=\"29\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\"/><line x1=\"32\" y1=\"32\" x2=\"42.5\" y2=\"21.5\" stroke=\"currentColor\" stroke-width=\"4\" stroke-linecap=\"round\"/><circle cx=\"32\" cy=\"32\" r=\"3.4\" fill=\"currentColor\"/></svg><blockquote class=\"ds-nariz__dato\"><p>Lo que parece una colina es una pirámide.</p></blockquote><figcaption class=\"ds-nariz__firma\">La Nariz, desde la Torre del Reloj · <a href=\"#\">Morro de Tulcán</a> · Fuente: <a href=\"#\">Wikipedia: Morro del Tulcán</a></figcaption></figure>",
+      "css": ".ds-nariz { display: grid; grid-template-columns: auto 1fr; column-gap: var(--e-4); row-gap: var(--e-3); align-items: start; max-width: 44rem; margin: 0; color: var(--texto); } .ds-nariz__esfera { width: 3rem; height: 3rem; color: var(--acento); grid-row: span 2; } .ds-nariz__dato { margin: 0; } .ds-nariz__dato p { margin: 0; font-family: var(--fuente-titulos); font-size: var(--titulo-s); line-height: 1.25; font-style: italic; } .ds-nariz__firma { font-family: var(--fuente-texto); font-size: var(--texto-s); color: var(--texto-suave); } .ds-nariz__firma a { color: inherit; text-decoration-color: color-mix(in srgb, var(--acento) 55%, transparent); text-underline-offset: 0.22em; } .ds-nariz__firma a:hover { text-decoration-color: var(--acento); } .ds-nariz__firma a:focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; border-radius: 4px; }"
+    },
+    {
+      "name": "Banda del tiempo",
+      "kind": "custom",
+      "refersTo": "banda-tiempo",
+      "description": "Banda de teja con los hitos en carril horizontal y pasos con la manecilla.",
+      "html": "<section class=\"ds-tiempo\"><div class=\"ds-tiempo__cabeza\"><h2>Cinco siglos en una calle</h2><button class=\"ds-tiempo__paso\" aria-label=\"Hitos siguientes\"><svg class=\"ds-flecha\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"4.5\" cy=\"12\" r=\"2.3\" fill=\"currentColor\"/><path d=\"M4.5 12 H15\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\"/><path d=\"M14.5 12 L18 8.8 L22 12 L18 15.2 Z\" fill=\"currentColor\"/></svg></button></div><ol class=\"ds-tiempo__pista\"><li><span class=\"ds-tiempo__anio\">1737</span><span class=\"ds-tiempo__titulo\">Llega el reloj de una manecilla</span></li><li><span class=\"ds-tiempo__anio\">1827</span><span class=\"ds-tiempo__titulo\">Se funda la Universidad del Cauca</span></li></ol></section>",
+      "css": ".ds-tiempo { padding: var(--e-7) var(--e-5); background: var(--teja); color: var(--cal-clara); font-family: var(--fuente-texto); } .ds-tiempo__cabeza { display: flex; align-items: end; justify-content: space-between; gap: var(--e-4); } .ds-tiempo h2 { margin: 0; font-family: var(--fuente-titulos); font-weight: 500; font-size: var(--titulo-m); line-height: 1.08; max-width: 14ch; } .ds-tiempo__paso { display: grid; place-items: center; width: var(--tactil-min); height: var(--tactil-min); padding: 0; border: 2px solid var(--cal-clara); border-radius: 50%; background: none; color: var(--cal-clara); cursor: pointer; transition: background-color var(--dur-micro) var(--ease-entrada), color var(--dur-micro) var(--ease-entrada); } .ds-tiempo__paso:hover { background: var(--cal-clara); color: var(--teja); } .ds-tiempo__paso:focus-visible { outline: 2px solid var(--cal-clara); outline-offset: 3px; } .ds-tiempo__paso:disabled { opacity: 0.25; } .ds-flecha { width: 1.3em; height: 1.3em; } .ds-tiempo__pista { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(11rem, 1fr); margin: var(--e-6) 0 0; padding: 0; list-style: none; overflow-x: auto; } .ds-tiempo__pista li { display: grid; gap: var(--e-2); padding: var(--e-4) var(--e-4) var(--e-3) 0; border-top: 2px solid color-mix(in srgb, var(--cal-clara) 55%, transparent); } .ds-tiempo__anio { font-family: var(--fuente-titulos); font-size: var(--titulo-s); } .ds-tiempo__titulo { font-size: var(--texto-s); max-width: 16ch; color: #f6e6dd; }"
+    },
+    {
+      "name": "Rótulo de museo",
+      "kind": "custom",
+      "description": "Índice de lugares agrupado, con regla de piedra de 2 px y nombre de grupo en Bodoni.",
+      "html": "<div class=\"ds-indice\"><h3>Puentes</h3><ul><li><a href=\"#\">Puente de la Custodia</a><span>1713</span></li><li><a href=\"#\">Puente del Humilladero</a><span>Siglo XIX</span></li></ul></div>",
+      "css": ".ds-indice { display: grid; grid-template-columns: 12rem 1fr; align-items: baseline; gap: var(--e-4); padding-block: var(--e-5); border-top: 2px solid var(--texto); color: var(--texto); font-family: var(--fuente-texto); } .ds-indice h3 { margin: 0; font-family: var(--fuente-titulos); font-weight: 500; font-size: var(--titulo-s); line-height: 1.08; } .ds-indice ul { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: var(--e-5) var(--e-6); margin: 0; padding: 0; list-style: none; } .ds-indice li { display: grid; gap: 2px; } .ds-indice a { font-weight: 600; color: inherit; text-decoration: none; } .ds-indice a:hover { text-decoration: underline; text-decoration-color: var(--acento); text-underline-offset: 0.2em; } .ds-indice a:focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; border-radius: 4px; } .ds-indice span { font-size: var(--texto-s); color: var(--texto-suave); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "La cuadra encalada",
+    "overview": "Popayán Interactiva es una calle del centro dibujada a pluma: muros de cal mineral, un único trazo de piedra que es el mismo del dibujo de la Torre del Reloj, y planos de teja impresos encima con un leve desfase de registro, como un grabado de dos pasadas. Todo lo que se ilustra (la torre, las casas, las esferas, la flecha) sale de ese trazo; nada se rellena con degradados, brillos ni fotografía de archivo. La única pieza que se mueve con protagonismo es la manecilla: el reloj real de 1737 tiene una sola, y en la interfaz esa manecilla barre, apunta y marca la hora de Popayán.\n\nLa composición es editorial y asimétrica en el modo relato (portada, fichas, historia): títulos en Bodoni Moda de peso 500, mucho aire, reglas horizontales de piedra de 2 px como separadores de sección y listas tratadas como rótulos de museo. En el modo calle (mapa, ruta activa) la composición se vuelve predecible: píldoras de 44 px, hojas de 16 px, sombra suave solo en lo que flota sobre el mapa y alto contraste. Hay dos temas: Ciudad Blanca (claro, cal y teja) y Noche de procesión (oscuro, morado de noche y oro), que se aplican por `prefers-color-scheme` o por `data-tema` en `<html>`.\n\nRechazos confirmados en el código y en la dirección: nada de degradados morados o azules, glow, glassmorphism decorativo, tres tarjetas iguales, rótulos en mayúsculas sobre los títulos, numeraciones decorativas, emojis en lugar de íconos, `#000` o `#FFF` puros, cursores personalizados ni spinners genéricos.",
+    "keyCharacteristics": [
+      "Un solo trazo de piedra para toda ilustración, con grosor en píxeles de pantalla (`vector-effect: non-scaling-stroke`).",
+      "Teja como plano de color impreso (tejados, portones, banda del tiempo, cita de La Nariz en la ficha), no como acento suelto.",
+      "Una sola manecilla como gesto de movimiento y como flecha.",
+      "Bodoni Moda para títulos, cifras y citas; Atkinson Hyperlegible Next para todo lo demás.",
+      "Esquinas con una sola regla: píldora, 16 px o 10 px.",
+      "Plano por defecto: la profundidad viene de tonos de cal y de reglas, no de sombras."
+    ],
+    "rules": [
+      {
+        "name": "The Semantic Token Rule",
+        "body": "Los componentes usan los tokens semánticos (`--fondo`, `--superficie`, `--texto`, `--acento`, `--exito`, `--trazo-torre`…), nunca la paleta base. La excepción registrada es la teja como material: portones, tejados, la banda del tiempo y la cita de La Nariz en la ficha usan `--teja` directo y por eso siguen siendo teja en Noche de procesión.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Warm Field Rule",
+        "body": "En Ciudad Blanca la teja es el único color cálido: va en los portones y en la acción principal, y en ningún otro botón. En Noche de procesión la acción principal pasa a oro; la teja queda solo como material impreso (portones, tejados, banda).",
+        "section": "colors"
+      },
+      {
+        "name": "The Green Means Here Rule",
+        "body": "El verde Morro solo dice \"estás aquí\", \"listo\" o \"cerca\". Nunca decora.",
+        "section": "colors"
+      },
+      {
+        "name": "The Bodoni Above 24 Rule",
+        "body": "La Bodoni se usa en tamaño de título; todo texto pequeño, de interfaz o de datos va en Atkinson. Los títulos de listas de datos dentro de una ficha (rutas que pasan, fuentes) van en Atkinson 600.",
+        "section": "typography"
+      },
+      {
+        "name": "The No Eyebrow Rule",
+        "body": "Ningún título lleva rótulo en mayúsculas encima ni numeración decorativa. El código publicado no tiene ni un `text-transform: uppercase`.",
+        "section": "typography"
+      },
+      {
+        "name": "The Italic Is A Voice Rule",
+        "body": "La Bodoni itálica es la voz: La Nariz y el lema \"Donde el tiempo no pasa\". No se usa para énfasis genérico.",
+        "section": "typography"
+      },
+      {
+        "name": "The Street Line Rule",
+        "body": "Una regla horizontal de piedra de 2 px es la línea de la calle o el inicio de una sección (índice, rutas, otras rutas). Las líneas de 1 px en `--borde` solo separan elementos dentro de una sección.",
+        "section": "layout"
+      },
+      {
+        "name": "The Float Only Rule",
+        "body": "Una sombra significa \"esto flota sobre el mapa o sobre la página\". Las tarjetas y secciones en el flujo no llevan sombra.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Registration Rule",
+        "body": "El tejado, el zócalo y el portón de cada fachada quedan corridos `translate: 1.5px -1px` respecto de la línea, de forma permanente. Ese desfase es la marca del grabado, no un error que corregir.",
+        "section": "elevation"
+      },
+      {
+        "name": "The House Stroke Rule",
+        "body": "Las ilustraciones usan `--trazo-casa` (por defecto 3px; en la portada `clamp(2px, 1.1px + 0.26vw, 4.6px)`, igualado al grosor de pluma de la torre) para la línea principal y el 55 % de ese valor para los detalles finos (barrotes, marcos, zócalo). El trazo no escala con el SVG (`vector-effect: non-scaling-stroke`), lleva remates redondos y su color es `--trazo-torre`.",
+        "section": "shapes"
+      },
+      {
+        "name": "The Single Hand Rule",
+        "body": "La esfera siempre tiene una sola manecilla. Nunca se agrega un minutero, ni en el logo ni en las esferas pequeñas.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "**Do** dibujar toda ilustración con el trazo de la torre: `--trazo-torre`, `--trazo-casa` y su 55 % para lo fino, remates redondos y `vector-effect: non-scaling-stroke`.",
+      "**Do** usar teja para los portones y para la acción principal de Ciudad Blanca, y para nada más que compita con ellos.",
+      "**Do** usar la manecilla única como gesto de movimiento y como flecha (`FlechaManecilla`), y la esfera de una manecilla como marca de voz y de hora.",
+      "**Do** citar la fuente de cada dato en la misma pieza que lo muestra (La Nariz, hitos, fichas).",
+      "**Do** escribir toda la interfaz en español, con datos concretos, nombres propios y fechas.",
+      "**Do** animar con `--dur-micro` (160ms), `--dur-ui` (280ms) y `--ease-entrada`; el movimiento protagonista de una pantalla es uno solo.",
+      "**Do** llevar cada animación de entrada a su estado final, sin pasos, cuando `prefers-reduced-motion: reduce` está activo o la página carga en segundo plano: la torre ya completa y en la hora, las casas ya impresas.",
+      "**Do** mantener objetivos táctiles de 44 px (`--tactil-min`) como mínimo y texto base de 17 px.",
+      "**Do** separar secciones con reglas de piedra de 2 px y espacio de la escala `--e-*`, no con tarjetas.",
+      "**Do** poner estilos dinámicos desde JavaScript con `element.style` o `setProperty`, y todo lo demás en hojas de estilo."
+    ],
+    "donts": [
+      "**Don't** escribir atributos `style=\"\"` en el HTML: la CSP lo bloquea.",
+      "**Don't** usar imágenes generadas con IA de lugares, personas o tradiciones reales de Popayán.",
+      "**Don't** pedir teselas a los servidores de OpenStreetMap: el mapa usa teselas propias.",
+      "**Don't** enviar ni guardar la ubicación fuera del dispositivo; el \"cerca de ti\" se calcula en el teléfono.",
+      "**Don't** agregar un minutero ni una segunda manecilla en ninguna esfera.",
+      "**Don't** usar la paleta base (`--cal`, `--piedra`, `--oro`…) en componentes nuevos; usa los tokens semánticos. La teja como material es la única excepción.",
+      "**Don't** poner sombra a lo que no flota ni usar sombras negras puras, `#000` o `#FFF`.",
+      "**Don't** usar degradados morados o azules, glow, glassmorphism decorativo, tres tarjetas iguales en fila ni cuadrículas de tarjetas blancas con solo texto.",
+      "**Don't** poner rótulos en mayúsculas sobre los títulos, numeraciones decorativas, rayas largas ni emojis en lugar de íconos.",
+      "**Don't** mezclar familias de íconos: solo Phosphor regular.",
+      "**Don't** usar spinners genéricos: la espera se muestra con la manecilla.",
+      "**Don't** abrir un segundo bucle de `requestAnimationFrame`: el de la torre viva es el único y termina en la hora real."
+    ]
+  }
+}

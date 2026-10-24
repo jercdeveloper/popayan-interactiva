@@ -1,0 +1,177 @@
+---
+/**
+ * El mapa de una ruta: las paradas numeradas y el trazado aproximado entre ellas.
+ * Va dentro de una página que se desplaza, así que pide dos dedos (o Ctrl y la rueda) para moverse
+ * y no le roba el desplazamiento a la página. Tocar una parada lleva a ella en la lista.
+ */
+import type { LugarMapa } from '../../lib/lugares';
+
+interface Props {
+  paradas: LugarMapa[];
+  etiqueta: string;
+}
+
+const { paradas, etiqueta } = Astro.props;
+---
+
+<div class="mapa-ruta" data-mapa-ruta={JSON.stringify(paradas)}>
+  <div class="mapa-ruta__lienzo" role="region" aria-label={etiqueta}></div>
+</div>
+
+<script>
+  import * as maplibregl from 'maplibre-gl';
+  import urlWorker from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
+  import 'maplibre-gl/dist/maplibre-gl.css';
+  import { estiloMapa, PALETA_VIDRIO } from '../../lib/estilo-mapa';
+  import fuente from '../../lib/mapa-fuente.json';
+  import type { LugarMapa } from '../../lib/lugares';
+
+  if (import.meta.env.PROD) maplibregl.setWorkerUrl(urlWorker);
+
+  const oscuro = matchMedia('(prefers-color-scheme: dark)');
+  const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const color = (variable: string) => getComputedStyle(document.documentElement).getPropertyValue(variable).trim();
+
+  for (const contenedor of document.querySelectorAll<HTMLElement>('[data-mapa-ruta]')) {
+    const paradas: LugarMapa[] = JSON.parse(contenedor.dataset.mapaRuta ?? '[]');
+    const puntos = paradas.map((p) => [p.coordenadas[1], p.coordenadas[0]] as [number, number]);
+    const encuadre = new maplibregl.LngLatBounds();
+    for (const p of puntos) encuadre.extend(p);
+
+    const mapa = new maplibregl.Map({
+      container: contenedor.querySelector<HTMLElement>('.mapa-ruta__lienzo')!,
+      style: estiloMapa(oscuro.matches ? 'oscuro' : 'claro', location.origin, PALETA_VIDRIO),
+      bounds: encuadre,
+      fitBoundsOptions: { padding: 48, maxZoom: 17 },
+      maxBounds: [
+        [fuente.area.oeste, fuente.area.sur],
+        [fuente.area.este, fuente.area.norte],
+      ],
+      minZoom: 10,
+      maxZoom: 19,
+      attributionControl: { compact: true },
+      cooperativeGestures: true,
+      locale: {
+        'CooperativeGesturesHandler.WindowsHelpText': 'Usa Ctrl y la rueda para acercar el mapa',
+        'CooperativeGesturesHandler.MacHelpText': 'Usa ⌘ y la rueda para acercar el mapa',
+        'CooperativeGesturesHandler.MobileHelpText': 'Usa dos dedos para mover el mapa',
+      },
+      dragRotate: false,
+      pitchWithRotate: false,
+    });
+    mapa.touchZoomRotate.disableRotation();
+
+    function capas() {
+      mapa.addSource('trazado', {
+        type: 'geojson',
+        data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: puntos } },
+      });
+      mapa.addLayer({
+        id: 'trazado',
+        type: 'line',
+        source: 'trazado',
+        layout: { 'line-cap': 'round', 'line-join': 'round' },
+        paint: { 'line-color': color('--acento'), 'line-width': 3.5, 'line-dasharray': [1.4, 1.6] },
+      });
+      mapa.addSource('paradas', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: paradas.map((p, i) => ({
+            type: 'Feature',
+            id: i,
+            properties: { orden: String(i + 1), nombre: p.nombre },
+            geometry: { type: 'Point', coordinates: puntos[i] },
+          })),
+        },
+      });
+      mapa.addLayer({
+        id: 'paradas-punto',
+        type: 'circle',
+        source: 'paradas',
+        paint: {
+          'circle-radius': 13,
+          'circle-color': color('--acento'),
+          'circle-stroke-width': 3,
+          'circle-stroke-color': '#ffffff',
+        },
+      });
+      mapa.addLayer({
+        id: 'paradas-numero',
+        type: 'symbol',
+        source: 'paradas',
+        layout: {
+          'text-field': ['get', 'orden'],
+          'text-font': ['Noto Sans Medium'],
+          'text-size': 13,
+          'text-allow-overlap': true,
+          'text-ignore-placement': true,
+        },
+        paint: { 'text-color': '#ffffff' },
+      });
+      mapa.addLayer({
+        id: 'paradas-nombre',
+        type: 'symbol',
+        source: 'paradas',
+        minzoom: 16,
+        layout: {
+          'text-field': ['get', 'nombre'],
+          'text-font': ['Noto Sans Medium'],
+          'text-size': 12,
+          'text-offset': [0, 1.5],
+          'text-anchor': 'top',
+          'text-max-width': 9,
+          'text-optional': true,
+        },
+        paint: { 'text-color': color('--texto'), 'text-halo-color': color('--fondo-elevado'), 'text-halo-width': 1.6 },
+      });
+    }
+    mapa.on('load', capas);
+    oscuro.addEventListener('change', () => {
+      mapa.setStyle(estiloMapa(oscuro.matches ? 'oscuro' : 'claro', location.origin, PALETA_VIDRIO));
+      mapa.once('style.load', capas);
+    });
+
+    // Tocar una parada lleva a su lugar en la lista
+    mapa.on('click', 'paradas-punto', (e) => {
+      const indice = e.features?.[0]?.id;
+      if (typeof indice !== 'number') return;
+      const destino = document.getElementById(`parada-${indice + 1}`);
+      destino?.scrollIntoView({ behavior: quieto ? 'auto' : 'smooth', block: 'center' });
+      destino?.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
+    });
+    mapa.on('mouseenter', 'paradas-punto', () => (mapa.getCanvas().style.cursor = 'pointer'));
+    mapa.on('mouseleave', 'paradas-punto', () => (mapa.getCanvas().style.cursor = ''));
+  }
+</script>
+
+<style>
+  .mapa-ruta {
+    position: relative;
+    height: clamp(18rem, 52vh, 30rem);
+    border-radius: var(--radio-l);
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--fondo-elevado);
+  }
+
+  .mapa-ruta__lienzo {
+    position: absolute;
+    inset: 0;
+  }
+
+  .mapa-ruta :global(.maplibregl-ctrl-attrib) {
+    background: color-mix(in srgb, var(--fondo-elevado) 85%, transparent);
+    color: var(--texto-2);
+  }
+
+  .mapa-ruta :global(.maplibregl-ctrl-attrib a) {
+    color: var(--texto-2);
+  }
+
+  .mapa-ruta :global(.maplibregl-cooperative-gesture-screen) {
+    font-family: var(--fuente);
+    font-size: var(--t-nota);
+    font-weight: 600;
+  }
+</style>

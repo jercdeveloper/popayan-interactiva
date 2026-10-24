@@ -1,0 +1,53 @@
+---
+/**
+ * Botón circular de vidrio para los controles que flotan sobre una foto o un mapa (volver, compartir…).
+ * Es un enlace si recibe `href`; si no, un botón.
+ */
+import Icono from '../Icono.astro';
+
+interface Props {
+  icono: string;
+  etiqueta: string;
+  href?: string;
+  [atributo: `data-${string}`]: string | undefined;
+}
+
+const { icono, etiqueta, href, ...datos } = Astro.props;
+const Etiqueta = href ? 'a' : 'button';
+---
+
+<Etiqueta
+  class="circulo vidrio"
+  href={href}
+  type={href ? undefined : 'button'}
+  aria-label={etiqueta}
+  title={etiqueta}
+  {...datos}
+>
+  <Icono nombre={icono} peso="bold" />
+</Etiqueta>
+
+<style>
+  .circulo {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: var(--tactil);
+    height: var(--tactil);
+    border: 0;
+    border-radius: 50%;
+    color: var(--texto);
+    cursor: pointer;
+    transition: transform 120ms ease-out;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .circulo:active {
+    transform: scale(0.92);
+  }
+
+  .circulo :global(svg) {
+    width: 20px;
+    height: 20px;
+  }
+</style>

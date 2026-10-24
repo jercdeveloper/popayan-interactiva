@@ -1,0 +1,56 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base titulo="Página no encontrada">
+  <section class="perdido">
+    <svg class="perdido__esfera" viewBox="0 0 64 64" aria-hidden="true">
+      <circle cx="32" cy="32" r="28" fill="none" stroke="currentColor" stroke-width="3" opacity="0.3"></circle>
+      <line x1="32" y1="32" x2="21.5" y2="42.5" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"></line>
+      <circle cx="32" cy="32" r="3.6" fill="currentColor"></circle>
+    </svg>
+    <h1>Esta calle no aparece en el mapa</h1>
+    <p>La Torre del Reloj lleva más de trescientos años mirando el centro y tampoco la conoce.</p>
+    <div class="perdido__acciones">
+      <a class="boton boton--lleno" href="/">Volver al inicio</a>
+      <a class="boton boton--tinte" href="/mapa">Abrir el mapa</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .perdido {
+    display: grid;
+    justify-items: center;
+    gap: 1rem;
+    max-width: 30rem;
+    min-height: 70svh;
+    margin-inline: auto;
+    padding: 6rem var(--margen) 2rem;
+    align-content: center;
+    text-align: center;
+  }
+
+  .perdido__esfera {
+    width: 4.5rem;
+    height: 4.5rem;
+    color: var(--acento);
+  }
+
+  .perdido h1 {
+    font-size: var(--t-grande);
+    line-height: 1.08;
+  }
+
+  .perdido p {
+    color: var(--texto-2);
+  }
+
+  .perdido__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 0.5rem;
+  }
+</style>

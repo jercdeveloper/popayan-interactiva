@@ -1,0 +1,43 @@
+---
+/** Título grande de una página sin foto, como los títulos grandes de iOS. */
+interface Props {
+  titulo: string;
+  bajada?: string;
+}
+
+const { titulo, bajada } = Astro.props;
+---
+
+<header class="encabezado">
+  <h1>{titulo}</h1>
+  {bajada && <p>{bajada}</p>}
+  <slot />
+</header>
+
+<style>
+  .encabezado {
+    display: grid;
+    gap: 0.6rem;
+    max-width: var(--ancho-max);
+    margin-inline: auto;
+    padding: calc(3.25rem + env(safe-area-inset-top)) var(--margen) 1.25rem;
+  }
+
+  .encabezado h1 {
+    font-size: var(--t-gigante);
+    line-height: 1;
+    letter-spacing: -0.035em;
+  }
+
+  .encabezado p {
+    max-width: 36rem;
+    font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+    color: var(--texto-2);
+  }
+
+  @media (min-width: 48rem) {
+    .encabezado {
+      padding-top: calc(7.5rem + env(safe-area-inset-top));
+    }
+  }
+</style>

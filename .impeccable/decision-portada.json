@@ -1,0 +1,83 @@
+{
+  "title": "Composición de la portada",
+  "question": "La identidad ya está decidida. Elige cómo se organiza la primera pantalla: la torre viva protagoniza y la acción principal es empezar una ruta.",
+  "options": [
+    {
+      "id": "fachadas",
+      "label": "Calle de fachadas",
+      "kicker": "THE ROLL",
+      "lineage": "una cuadra encalada del Centro Histórico",
+      "thesis": "La portada es una cuadra del centro: la torre se alza entre fachadas blancas y cada portón abre una ruta.",
+      "palette": ["#F2F3F0", "#A8482A", "#3A332D", "#52703F"],
+      "materials": ["tu trazo lineal", "cal y teja"],
+      "viewport": "Arriba, la torre viva a gran escala con el título; abajo, una franja de fachadas en el mismo trazo donde cada portón es una ruta que se desliza con el dedo.",
+      "risk": "Exige dibujar fachadas con el mismo trazo de la torre; si quedan pobres, parece decorado.",
+      "raised": [
+        {
+          "from": "xilografía por registro",
+          "raise": "Las fachadas se imprimen primero en línea y luego registran sus planos de cal y teja, como pasadas de grabado."
+        }
+      ],
+      "wireframe": {
+        "cols": 12,
+        "rows": 10,
+        "regions": [
+          { "label": "nombre y menú", "x": 0, "y": 0, "w": 12, "h": 1 },
+          { "label": "título + empezar ruta", "x": 0, "y": 2, "w": 6, "h": 3 },
+          { "label": "torre viva", "x": 6, "y": 1, "w": 6, "h": 5, "accent": true },
+          { "label": "fachadas = rutas (deslizar)", "x": 0, "y": 6, "w": 12, "h": 3, "accent": true },
+          { "label": "La Nariz: ¿sabías que…?", "x": 0, "y": 9, "w": 12, "h": 1 }
+        ]
+      }
+    },
+    {
+      "id": "corte",
+      "label": "La torre en corte",
+      "lineage": "el corte arquitectónico de un campanario",
+      "thesis": "Bajar la página es bajar la torre: el campanario con las rutas en sus arcos, el fuste con los lugares y la base con la información útil.",
+      "palette": ["#F2F3F0", "#3A332D", "#A8482A", "#C69A2D"],
+      "materials": ["tu trazo lineal", "plano de arquitecto"],
+      "viewport": "El campanario llena la pantalla: cada arco del dibujo es una ruta que se toca, y la manecilla señala la ruta sugerida para esta hora.",
+      "risk": "Un scroll largo atado al dibujo puede volverse pesado en celulares modestos si no se cuida.",
+      "wireframe": {
+        "cols": 12,
+        "rows": 10,
+        "regions": [
+          { "label": "nombre", "x": 0, "y": 0, "w": 12, "h": 1 },
+          { "label": "título", "x": 0, "y": 1, "w": 4, "h": 2 },
+          { "label": "campanario: arcos = rutas", "x": 4, "y": 1, "w": 8, "h": 4, "accent": true },
+          { "label": "empezar ruta sugerida", "x": 0, "y": 3, "w": 4, "h": 2 },
+          { "label": "fuste: lugares", "x": 4, "y": 5, "w": 8, "h": 3 },
+          { "label": "base: información útil", "x": 0, "y": 8, "w": 12, "h": 2 }
+        ]
+      }
+    },
+    {
+      "id": "placas",
+      "label": "Muro de placas",
+      "lineage": "placas conmemorativas sobre un muro encalado",
+      "thesis": "La portada es un muro de cal: la torre viva a un lado y cada ruta es una placa con su nombre, su duración y su primer lugar.",
+      "palette": ["#F2F3F0", "#7A3119", "#3A332D", "#C69A2D"],
+      "materials": ["muro encalado", "placa grabada"],
+      "viewport": "Muro de cal a pantalla completa, la torre viva a la izquierda y cuatro placas apiladas a la derecha; tocar una placa empieza la ruta.",
+      "risk": "Las placas pueden leerse solemnes; necesita la voz de La Nariz para no parecer museo.",
+      "wireframe": {
+        "cols": 12,
+        "rows": 10,
+        "regions": [
+          { "label": "nombre", "x": 0, "y": 0, "w": 12, "h": 1 },
+          { "label": "torre viva", "x": 0, "y": 1, "w": 5, "h": 8, "accent": true },
+          { "label": "título", "x": 5, "y": 1, "w": 7, "h": 2 },
+          { "label": "placa: ruta 1", "x": 5, "y": 3, "w": 7, "h": 1, "accent": true },
+          { "label": "placa: ruta 2", "x": 5, "y": 4, "w": 7, "h": 1 },
+          { "label": "placa: ruta 3", "x": 5, "y": 5, "w": 7, "h": 1 },
+          { "label": "placa: ruta 4", "x": 5, "y": 6, "w": 7, "h": 1 },
+          { "label": "La Nariz", "x": 5, "y": 7, "w": 7, "h": 2 }
+        ]
+      }
+    }
+  ],
+  "reroll": true,
+  "steer": true,
+  "buildPath": { "value": "code" }
+}

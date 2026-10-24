@@ -1,0 +1,39 @@
+{
+  "name": "popayan-interactiva",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && node scripts/generar-tarjetas.mjs && node scripts/generar-sw.mjs",
+    "preview": "astro preview",
+    "check": "astro check",
+    "marca": "node scripts/generar-marca.mjs",
+    "mapa": "node scripts/extraer-mapa.mjs",
+    "paquete": "npm run build && tar -a -cf popayan-interactiva.zip -C dist .",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@fontsource-variable/atkinson-hyperlegible-next": "^5.3.0",
+    "@fontsource-variable/bodoni-moda": "^5.3.0",
+    "@phosphor-icons/core": "^2.1.1",
+    "@protomaps/basemaps": "^5.7.2",
+    "astro": "^7.3.8",
+    "maplibre-gl": "^6.14.0",
+    "motion": "^14.2.0",
+    "pmtiles": "^4.5.0",
+    "workbox-window": "^7.4.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/node": "^26.6.5",
+    "fontkit": "^2.0.4",
+    "potrace": "^2.1.8",
+    "sharp": "^0.35.5",
+    "typescript": "^6.0.3",
+    "wawoff2": "^2.0.1",
+    "workbox-build": "^7.4.1"
+  }
+}
