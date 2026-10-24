@@ -1,9 +1,7 @@
 ---
 nombre: "Ruta de Semana Santa"
-corto: "Semana Santa"
 lema: "Las iglesias de donde sale cada procesión, en el orden de la semana."
 orden: 3
-casa: templo
 foto: calle-5
 paradas:
   - santuario-de-belen

@@ -1,9 +1,7 @@
 ---
 nombre: "Ruta del gobierno"
-corto: "Gobierno"
 lema: "Dónde se ha mandado en Popayán: el municipio, el departamento, la justicia, la Iglesia y la moneda."
 orden: 4
-casa: palacio
 foto: parque-caldas
 paradas:
   - palacio-municipal

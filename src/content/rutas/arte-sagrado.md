@@ -1,9 +1,7 @@
 ---
 nombre: "Arte sagrado"
-corto: "Arte sagrado"
 lema: "Retablos, custodias y frescos que el terremoto de 1983 dejó al descubierto."
 orden: 7
-casa: capilla
 foto: museo-arquidiocesano
 paradas:
   - santuario-de-belen

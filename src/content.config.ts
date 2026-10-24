@@ -57,11 +57,8 @@ const rutas = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/rutas' }),
   schema: z.object({
     nombre: z.string(),
-    corto: z.string(),
     lema: z.string().max(120),
     orden: z.number().int(),
-    /** La arquitectura con la que la ruta aparece en la calle de la portada */
-    casa: z.enum(['alta', 'casona', 'baja', 'capilla', 'templo', 'palacio', 'tienda', 'hacienda']),
     /** Foto de portada (id de un archivo en src/assets/fotos) */
     foto: z.string().optional(),
     /** Las haciendas quedan fuera de la ciudad: esa ruta se hace en carro */

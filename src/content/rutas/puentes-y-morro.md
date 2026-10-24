@@ -1,9 +1,7 @@
 ---
 nombre: "Puentes y el Morro"
-corto: "Puentes"
 lema: "Del agua de La Pamba al río Molino, pasando por la pirámide que durante siglos pareció una colina."
 orden: 6
-casa: baja
 foto: puente-del-humilladero
 paradas:
   - chorrito-de-la-pamba

@@ -1,9 +1,7 @@
 ---
 nombre: "Ruta de los templos"
-corto: "Templos"
 lema: "Diez templos, de la capilla de Belén en su colina a San Francisco, la colonial más grande."
 orden: 1
-casa: alta
 foto: santo-domingo
 paradas:
   - santuario-de-belen

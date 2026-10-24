@@ -1,9 +1,7 @@
 ---
 nombre: "Ruta de las haciendas"
-corto: "Haciendas"
 lema: "Las casas de campo de las familias payanesas, donde también pasó la Independencia."
 orden: 8
-casa: hacienda
 foto: hacienda-calibio
 modo: carro
 paradas:

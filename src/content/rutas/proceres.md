@@ -1,9 +1,7 @@
 ---
 nombre: "Ruta de los próceres"
-corto: "Próceres"
 lema: "Las casas y la memoria de quienes nacieron aquí y marcaron la historia del país."
 orden: 2
-casa: casona
 foto: torre-del-reloj
 paradas:
   - parque-caldas
