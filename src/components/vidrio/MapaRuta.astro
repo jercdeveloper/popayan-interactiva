@@ -19,20 +19,30 @@ const { paradas, etiqueta } = Astro.props;
 </div>
 
 <script>
-  import * as maplibregl from 'maplibre-gl';
   import urlWorker from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
-  import 'maplibre-gl/dist/maplibre-gl.css';
-  import { estiloMapa, PALETA_VIDRIO } from '../../lib/estilo-mapa';
   import fuente from '../../lib/mapa-fuente.json';
   import type { LugarMapa } from '../../lib/lugares';
-
-  if (import.meta.env.PROD) maplibregl.setWorkerUrl(urlWorker);
 
   const oscuro = matchMedia('(prefers-color-scheme: dark)');
   const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const color = (variable: string) => getComputedStyle(document.documentElement).getPropertyValue(variable).trim();
 
-  for (const contenedor of document.querySelectorAll<HTMLElement>('[data-mapa-ruta]')) {
+  // MapLibre pesa cerca de 1 MB: no se descarga con la página, así la ficha de la ruta se lee de
+  // inmediato. Empieza a bajar con el primer desplazamiento y el mapa se monta al acercarse a la pantalla.
+  let pedido: Promise<[typeof import('maplibre-gl'), typeof import('../../lib/estilo-mapa'), unknown]> | null = null;
+  const cargar = () =>
+    (pedido ??= Promise.all([
+      import('maplibre-gl'),
+      import('../../lib/estilo-mapa'),
+      import('maplibre-gl/dist/maplibre-gl.css'),
+    ]));
+  addEventListener('scroll', cargar, { once: true, passive: true });
+
+  async function montar(contenedor: HTMLElement) {
+    const [maplibregl, { estiloMapa, PALETA_VIDRIO }] = await cargar();
+    // En producción se usa el worker empaquetado; en desarrollo MapLibre lo encuentra por sí mismo
+    if (import.meta.env.PROD) maplibregl.setWorkerUrl(urlWorker);
+
     const paradas: LugarMapa[] = JSON.parse(contenedor.dataset.mapaRuta ?? '[]');
     const puntos = paradas.map((p) => [p.coordenadas[1], p.coordenadas[0]] as [number, number]);
     const encuadre = new maplibregl.LngLatBounds();
@@ -143,6 +153,18 @@ const { paradas, etiqueta } = Astro.props;
     mapa.on('mouseenter', 'paradas-punto', () => (mapa.getCanvas().style.cursor = 'pointer'));
     mapa.on('mouseleave', 'paradas-punto', () => (mapa.getCanvas().style.cursor = ''));
   }
+
+  const vigia = new IntersectionObserver(
+    (entradas) => {
+      for (const entrada of entradas) {
+        if (!entrada.isIntersecting) continue;
+        vigia.unobserve(entrada.target);
+        montar(entrada.target as HTMLElement);
+      }
+    },
+    { rootMargin: '100px 0px' },
+  );
+  for (const contenedor of document.querySelectorAll<HTMLElement>('[data-mapa-ruta]')) vigia.observe(contenedor);
 </script>
 
 <style>

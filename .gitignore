@@ -26,3 +26,7 @@ pnpm-debug.log*
 
 # caché local del detector de diseño
 .impeccable/hook.cache.json
+
+# resultados de las pruebas en el navegador
+test-results/
+playwright-report/

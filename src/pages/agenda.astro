@@ -5,7 +5,12 @@ import Encabezado from '../components/vidrio/Encabezado.astro';
 import Icono from '../components/Icono.astro';
 import { diaDeLaSemana, diaDelMes, mesYAnio, nombreDelMes } from '../lib/fechas';
 
-const eventos = (await getCollection('eventos')).sort((a, b) => a.data.inicio.localeCompare(b.data.inicio));
+// Lo que ya terminó el día de la compilación no se publica; lo que termine después lo retira
+// public/js/agenda-hoy.js en el navegador. Así la lista casi nunca cambia después de pintarse.
+const hoyEnPopayan = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Bogota' }).format(new Date());
+const eventos = (await getCollection('eventos'))
+  .filter((e) => (e.data.fin ?? e.data.inicio) >= hoyEnPopayan)
+  .sort((a, b) => a.data.inicio.localeCompare(b.data.inicio));
 
 // Lugares y rutas que nombra cada evento, resueltos una sola vez
 const conEnlaces = await Promise.all(
@@ -44,7 +49,7 @@ const mesCorto = (iso: string) => nombreDelMes(iso).slice(0, 3);
   />
 
   <div class="pagina">
-    <p class="proximo" data-proximo hidden></p>
+    <p class="proximo" data-proximo></p>
 
     {
       [...meses].map(([clave, items]) => (
@@ -147,40 +152,11 @@ const mesCorto = (iso: string) => nombreDelMes(iso).slice(0, 3);
       ))
     }
   </div>
+
+  <!-- Sin defer a propósito: ajusta la lista al día de hoy antes de que se pinte -->
+  <script is:inline src="/js/agenda-hoy.js"></script>
 </Base>
 
-<script>
-  // Lo próximo, contado desde el día de hoy del visitante; lo que ya pasó se retira de la lista
-  const DIA = 86_400_000;
-  const hoy = new Date();
-  const hoyUTC = Date.UTC(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
-  const aFecha = (iso: string) => Date.parse(`${iso}T00:00:00Z`);
-
-  const eventos = [...document.querySelectorAll<HTMLElement>('[data-evento]')];
-  for (const el of eventos) {
-    if (aFecha(el.dataset.fin!) < hoyUTC) el.hidden = true;
-  }
-  for (const mes of document.querySelectorAll<HTMLElement>('[data-mes]')) {
-    mes.hidden = !mes.querySelector('[data-evento]:not([hidden])');
-  }
-
-  const siguiente = eventos.find((el) => !el.hidden);
-  const proximo = document.querySelector<HTMLElement>('[data-proximo]');
-  if (siguiente && proximo) {
-    const frase = siguiente.dataset.frase!;
-    const dias = Math.round((aFecha(siguiente.dataset.inicio!) - hoyUTC) / DIA);
-    const aprox = siguiente.dataset.confirmada === 'true' ? '' : 'unos ';
-    const cifra = document.createElement('strong');
-    if (dias <= 0) {
-      cifra.textContent = 'Hoy';
-      proximo.append(cifra, `: ${frase}.`);
-    } else {
-      cifra.textContent = `${aprox}${dias} ${dias === 1 ? 'día' : 'días'}`;
-      proximo.append('Faltan ', cifra, ` para ${frase}.`);
-    }
-    proximo.hidden = false;
-  }
-</script>
 
 <style>
   .pagina {
@@ -201,6 +177,12 @@ const mesCorto = (iso: string) => nombreDelMes(iso).slice(0, 3);
     font-weight: 700;
     line-height: 1.12;
     letter-spacing: -0.028em;
+    /* El espacio de dos líneas queda reservado desde el inicio: la frase llega sin empujar la lista */
+    min-height: calc(2 * 1.12em + 46px);
+  }
+
+  .proximo:empty {
+    visibility: hidden;
   }
 
   .proximo[hidden] {

@@ -16,6 +16,11 @@ La visión, la identidad y la dirección de diseño viven en la carpeta del proy
 | `npm run check` | Revisa tipos y contenido |
 | `npm run marca` | Regenera logotipo, favicon e íconos a partir de la torre vectorizada |
 | `npm run mapa` | Vuelve a extraer las teselas del mapa de Popayán (cambia la fecha en el script) |
+| `npm test` | Pruebas unitarias y de contenido (Vitest): cálculos, fechas, referencias entre colecciones, créditos de fotos y reglas de estilo |
+| `npm run test:e2e` | Pruebas en el navegador (Playwright con el Edge instalado) sobre `dist/`: cada página sin errores ni violaciones de la CSP, mapa, búsqueda, compartir y modo sin conexión, en celular y escritorio |
+| `npm run test:todo` | Compila y corre las dos |
+
+Antes de publicar, corre `npm run test:todo`. Las pruebas en el navegador necesitan una compilación reciente: sirven `dist/` con `astro preview` en el puerto 4322.
 
 ## Estructura
 

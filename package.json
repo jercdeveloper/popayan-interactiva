@@ -13,7 +13,10 @@
     "marca": "node scripts/generar-marca.mjs",
     "mapa": "node scripts/extraer-mapa.mjs",
     "paquete": "npm run build && tar -a -cf popayan-interactiva.zip -C dist .",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:todo": "npm run build && vitest run && playwright test"
   },
   "dependencies": {
     "@fontsource-variable/atkinson-hyperlegible-next": "^5.3.0",
@@ -28,11 +31,13 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@playwright/test": "^1.64.1",
     "@types/node": "^26.6.5",
     "fontkit": "^2.0.4",
     "potrace": "^2.1.8",
     "sharp": "^0.35.5",
     "typescript": "^6.0.3",
+    "vitest": "^5.0.5",
     "wawoff2": "^2.0.1",
     "workbox-build": "^7.4.1"
   }
