@@ -1,6 +1,7 @@
 ---
 /**
  * El mapa de una ruta: las paradas numeradas y el trazado aproximado entre ellas.
+ * Con `trazado`, la línea sigue las calles (las procesiones) y lleva flechas con el sentido del recorrido.
  * Va dentro de una página que se desplaza, así que pide dos dedos (o Ctrl y la rueda) para moverse
  * y no le roba el desplazamiento a la página. Tocar una parada lleva a ella en la lista.
  */
@@ -9,12 +10,21 @@ import type { LugarMapa } from '../../lib/lugares';
 interface Props {
   paradas: LugarMapa[];
   etiqueta: string;
+  /** La línea por las calles, como [latitud, longitud]; sin ella se unen las paradas en línea recta */
+  trazado?: [number, number][];
+  /** Paradas numeradas y enlazadas a la lista (las rutas) o solo con su nombre (las procesiones) */
+  numerada?: boolean;
 }
 
-const { paradas, etiqueta } = Astro.props;
+const { paradas, etiqueta, trazado, numerada = true } = Astro.props;
 ---
 
-<div class="mapa-ruta" data-mapa-ruta={JSON.stringify(paradas)}>
+<div
+  class="mapa-ruta"
+  data-mapa-ruta={JSON.stringify(paradas)}
+  data-trazado={trazado ? JSON.stringify(trazado) : undefined}
+  data-numerada={String(numerada)}
+>
   <div class="mapa-ruta__lienzo" role="region" aria-label={etiqueta}></div>
 </div>
 
@@ -24,6 +34,8 @@ const { paradas, etiqueta } = Astro.props;
   import type { LugarMapa } from '../../lib/lugares';
 
   const oscuro = matchMedia('(prefers-color-scheme: dark)');
+  // Las páginas de Semana Santa van de noche aunque el teléfono esté en tema claro
+  const tema = () => (document.documentElement.hasAttribute('data-noche') || oscuro.matches ? 'oscuro' : 'claro');
   const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const color = (variable: string) => getComputedStyle(document.documentElement).getPropertyValue(variable).trim();
 
@@ -45,12 +57,15 @@ const { paradas, etiqueta } = Astro.props;
 
     const paradas: LugarMapa[] = JSON.parse(contenedor.dataset.mapaRuta ?? '[]');
     const puntos = paradas.map((p) => [p.coordenadas[1], p.coordenadas[0]] as [number, number]);
+    const trazado: [number, number][] | null = contenedor.dataset.trazado ? JSON.parse(contenedor.dataset.trazado) : null;
+    const linea = trazado ? trazado.map(([lat, lon]) => [lon, lat] as [number, number]) : puntos;
+    const numerada = contenedor.dataset.numerada !== 'false';
     const encuadre = new maplibregl.LngLatBounds();
-    for (const p of puntos) encuadre.extend(p);
+    for (const p of [...puntos, ...linea]) encuadre.extend(p);
 
     const mapa = new maplibregl.Map({
       container: contenedor.querySelector<HTMLElement>('.mapa-ruta__lienzo')!,
-      style: estiloMapa(oscuro.matches ? 'oscuro' : 'claro', location.origin, PALETA_VIDRIO),
+      style: estiloMapa(tema(), location.origin, PALETA_VIDRIO),
       bounds: encuadre,
       fitBoundsOptions: { padding: 48, maxZoom: 17 },
       maxBounds: [
@@ -74,15 +89,49 @@ const { paradas, etiqueta } = Astro.props;
     function capas() {
       mapa.addSource('trazado', {
         type: 'geojson',
-        data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: puntos } },
+        data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: linea } },
       });
       mapa.addLayer({
         id: 'trazado',
         type: 'line',
         source: 'trazado',
         layout: { 'line-cap': 'round', 'line-join': 'round' },
-        paint: { 'line-color': color('--acento'), 'line-width': 3.5, 'line-dasharray': [1.4, 1.6] },
+        // Por las calles, la línea es continua; en línea recta entre paradas, punteada (es aproximada)
+        paint: trazado
+          ? { 'line-color': color('--acento'), 'line-width': 7 }
+          : { 'line-color': color('--acento'), 'line-width': 3.5, 'line-dasharray': [1.4, 1.6] },
       });
+      if (trazado) {
+        // Un chevrón blanco dibujado aquí mismo, que apunta hacia donde avanza la procesión
+        if (!mapa.hasImage('flecha')) {
+          const lienzo = document.createElement('canvas');
+          lienzo.width = lienzo.height = 32;
+          const ctx = lienzo.getContext('2d')!;
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 5;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.beginPath();
+          ctx.moveTo(11, 8);
+          ctx.lineTo(20, 16);
+          ctx.lineTo(11, 24);
+          ctx.stroke();
+          mapa.addImage('flecha', ctx.getImageData(0, 0, 32, 32), { pixelRatio: 2 });
+        }
+        mapa.addLayer({
+          id: 'trazado-sentido',
+          type: 'symbol',
+          source: 'trazado',
+          layout: {
+            'symbol-placement': 'line',
+            'symbol-spacing': 56,
+            'icon-image': 'flecha',
+            'icon-rotation-alignment': 'map',
+            'icon-allow-overlap': true,
+            'icon-ignore-placement': true,
+          },
+        });
+      }
       mapa.addSource('paradas', {
         type: 'geojson',
         data: {
@@ -100,13 +149,13 @@ const { paradas, etiqueta } = Astro.props;
         type: 'circle',
         source: 'paradas',
         paint: {
-          'circle-radius': 13,
+          'circle-radius': numerada ? 13 : 9,
           'circle-color': color('--acento'),
           'circle-stroke-width': 3,
           'circle-stroke-color': '#ffffff',
         },
       });
-      mapa.addLayer({
+      if (numerada) mapa.addLayer({
         id: 'paradas-numero',
         type: 'symbol',
         source: 'paradas',
@@ -123,7 +172,7 @@ const { paradas, etiqueta } = Astro.props;
         id: 'paradas-nombre',
         type: 'symbol',
         source: 'paradas',
-        minzoom: 16,
+        minzoom: numerada ? 16 : 0,
         layout: {
           'text-field': ['get', 'nombre'],
           'text-font': ['Noto Sans Medium'],
@@ -138,12 +187,13 @@ const { paradas, etiqueta } = Astro.props;
     }
     mapa.on('load', capas);
     oscuro.addEventListener('change', () => {
-      mapa.setStyle(estiloMapa(oscuro.matches ? 'oscuro' : 'claro', location.origin, PALETA_VIDRIO));
+      mapa.setStyle(estiloMapa(tema(), location.origin, PALETA_VIDRIO));
       mapa.once('style.load', capas);
     });
 
     // Tocar una parada lleva a su lugar en la lista
     mapa.on('click', 'paradas-punto', (e) => {
+      if (!numerada) return;
       const indice = e.features?.[0]?.id;
       if (typeof indice !== 'number') return;
       const destino = document.getElementById(`parada-${indice + 1}`);

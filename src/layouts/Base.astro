@@ -18,6 +18,8 @@ interface Props {
   imagen?: string;
   /** El mapa ocupa toda la pantalla: sin pie y sin desplazamiento de la página */
   pantallaCompleta?: boolean;
+  /** Tema de noche de procesión (Semana Santa), sea cual sea el tema del sistema */
+  noche?: boolean;
 }
 
 const {
@@ -26,6 +28,7 @@ const {
   seccion,
   imagen = '/tarjetas/og/inicio.jpg',
   pantallaCompleta = false,
+  noche = false,
 } = Astro.props;
 const tituloCompleto = titulo ? `${titulo} · Popayán Interactiva` : 'Popayán Interactiva';
 const canonica = new URL(Astro.url.pathname, Astro.site);
@@ -33,15 +36,23 @@ const vistaPrevia = new URL(imagen, Astro.site);
 ---
 
 <!doctype html>
-<html lang="es-CO">
+<html lang="es-CO" data-noche={noche ? "" : undefined}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{tituloCompleto}</title>
     <meta name="description" content={descripcion} />
     <link rel="canonical" href={canonica} />
-    <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+    {
+      noche ? (
+        <meta name="theme-color" content="#120e18" />
+      ) : (
+        <>
+          <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)" />
+          <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+        </>
+      )
+    }
     <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/iconos/apple-touch-icon.png" />

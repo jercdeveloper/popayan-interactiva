@@ -85,3 +85,42 @@ test('sin conexión, las páginas siguen abriendo', async ({ page, context }) =>
     await expect(page.getByRole('heading', { level: 1 }), ruta).toContainText(titulo);
   }
 });
+
+test.describe('Semana Santa', () => {
+  test('cuenta los días o marca la procesión de hoy', async ({ page }) => {
+    await page.goto('/semana-santa');
+    await expect(page.locator('[data-estado]')).toHaveText(/^(Faltan .+ para el Domingo de Ramos, el .+\.|Hoy: .+\.)$/);
+    await expect(page.locator('.noches > li')).toHaveCount(8);
+  });
+
+  test('en la semana misma marca la noche de hoy', async ({ page }) => {
+    // El Viernes Santo de 2027 es el 26 de marzo
+    await page.clock.setFixedTime(new Date('2027-03-26T15:00:00-05:00'));
+    await page.goto('/semana-santa');
+    await expect(page.locator('[data-estado]')).toHaveText('Hoy: Procesión del Santo Entierro.');
+    await expect(page.locator('.noche--hoy')).toHaveCount(1);
+    await expect(page.locator('.noche--hoy')).toContainText('Viernes Santo');
+  });
+
+  test('recalcula las fechas si el sitio se compiló para otro año', async ({ page }) => {
+    // En 2029 la Pascua es el 1 de abril: el Viernes Santo cae el 30 de marzo
+    await page.clock.setFixedTime(new Date('2028-12-01T12:00:00-05:00'));
+    await page.goto('/semana-santa');
+    await expect(page.getByRole('heading', { name: 'Las procesiones de 2029' })).toBeVisible();
+    await expect(page.locator('a[href="/semana-santa/viernes-santo"] [data-fecha]')).toHaveText('30 de marzo');
+  });
+
+  test('cada noche dibuja su recorrido y lista sus pasos', async ({ page }) => {
+    await page.goto('/semana-santa/viernes-santo');
+    await expect(page.locator('.paso')).toHaveCount(14);
+    await expect(page.locator('.paso').first()).toContainText('La Muerte');
+    await page.locator('[data-mapa-ruta]').scrollIntoViewIfNeeded();
+    await expect(page.locator('.maplibregl-canvas')).toBeVisible({ timeout: 15_000 });
+  });
+
+  test('la portada lleva a Semana Santa', async ({ page }) => {
+    await page.goto('/');
+    await page.locator('.widget--noche').click();
+    await expect(page).toHaveURL(/\/semana-santa$/);
+  });
+});

@@ -1,0 +1,233 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icono from '../../components/Icono.astro';
+import Circulo from '../../components/vidrio/Circulo.astro';
+
+/** Quiénes hacen la procesión. Definiciones del glosario de Wikipedia, basado en los libros de la Junta. */
+const PERSONAS = [
+  {
+    nombre: 'Cargueros',
+    texto: 'Cargan los pasos sobre los hombros. Llevan capirote, un gorro de tela azul con una punta que cae hacia atrás y deja la cara descubierta.',
+  },
+  {
+    nombre: 'Sahumadoras',
+    texto: 'Van quemando esencias aromáticas, el sahumerio, en pebeteros de los que cuelga un paño blanco con encajes.',
+  },
+  {
+    nombre: 'Regidores',
+    texto: 'Vestidos de frac y con una cruz larga y delgada, símbolo de su autoridad, mantienen el orden de la procesión.',
+  },
+  {
+    nombre: 'Alumbrantes',
+    texto: 'Fieles y devotos que acompañan el desfile desde los andenes con una vela o un hachón encendido.',
+  },
+  {
+    nombre: 'Moqueros',
+    texto: 'Niños vestidos de carguero que llevan una vara con una cuchilla para raspar la cera de las velas que adornan los pasos.',
+  },
+  {
+    nombre: 'Síndicos',
+    texto: 'Los nombran los párrocos de los templos de donde salen las procesiones. Responden por los objetos de valor del paso y eligen a sus cargueros.',
+  },
+];
+
+const PALABRAS = [
+  { nombre: 'Paso', texto: 'Cada grupo de imágenes que representa un momento de la Pasión, sobre sus andas.' },
+  { nombre: 'Andas', texto: 'La plataforma de madera, con sus barrotes, sobre la que van las imágenes.' },
+  { nombre: 'Barrotes', texto: 'Los maderos que sobresalen unos 60 o 70 centímetros del paso, para que el carguero ponga el hombro.' },
+  { nombre: 'Alcayata', texto: 'Horquilla de hierro forjado sobre un palo, casi siempre de chonta, que sostiene el paso en los descansos.' },
+  { nombre: 'Cargüío', texto: 'El arte de saber cargar un paso. Se aprende con los años.' },
+  { nombre: 'Coteja', texto: 'La medida proporcionada de los cargueros de un paso para que no se descompense: los de las esquinas, más altos que los del centro.' },
+  { nombre: 'Levantón', texto: 'Los cargueros levantan el paso a la vez, lo más limpio posible, para empezar a andar. Por el sonido y el peso, sorprende a quien lo ve.' },
+  { nombre: 'Jurgo', texto: 'El tramo que andan los cargueros entre un descanso y otro. Empieza con el levantón y termina con un golpe de la alcayata.' },
+  { nombre: 'Pichón', texto: 'La oportunidad de los aficionados, sobre todo los jóvenes, de sacar los pasos del templo hasta una cuadra, y de entrarlos al volver.' },
+  { nombre: 'Matraca', texto: 'Instrumento de tabla con argollas que suena lúgubre al agitarse, en señal de duelo.' },
+];
+---
+
+<Base
+  titulo="Guía de la Semana Santa"
+  seccion="agenda"
+  noche
+  descripcion="Quiénes son los cargueros, las sahumadoras y los regidores, qué es un paso o una alcayata, y cómo ver las procesiones de Popayán con respeto."
+>
+  <header class="cabeza">
+    <div class="cabeza__controles">
+      <Circulo icono="caret-left" etiqueta="Todas las procesiones" href="/semana-santa" />
+    </div>
+    <h1>Cómo se hace una procesión</h1>
+    <p>
+      Las procesiones de Popayán salen desde el siglo XVI. Cada paso lo cargan ocho hombres al hombro, en un recorrido de
+      unos dos kilómetros por el centro que dura cerca de cuatro horas.
+    </p>
+  </header>
+
+  <div class="pagina">
+    <section class="grupo" aria-labelledby="titulo-personas">
+      <h2 class="grupo__titulo" id="titulo-personas">Quién es quién</h2>
+      <dl class="definiciones">
+        {
+          PERSONAS.map((p) => (
+            <div>
+              <dt>{p.nombre}</dt>
+              <dd>{p.texto}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class="grupo" aria-labelledby="titulo-palabras">
+      <h2 class="grupo__titulo" id="titulo-palabras">Palabras de la Semana Santa</h2>
+      <dl class="definiciones">
+        {
+          PALABRAS.map((p) => (
+            <div>
+              <dt>{p.nombre}</dt>
+              <dd>{p.texto}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class="grupo" aria-labelledby="titulo-respeto">
+      <h2 class="grupo__titulo" id="titulo-respeto">Para verla con respeto</h2>
+      <ul class="celdas">
+        <li>
+          <span class="celda">
+            <Icono nombre="clock" class="celda__icono" />
+            <span class="celda__texto">
+              Llega temprano
+              <small>Para tener un buen puesto en el andén, llega antes de la hora de salida.</small>
+            </span>
+          </span>
+        </li>
+        <li>
+          <span class="celda">
+            <Icono nombre="hand-heart" class="celda__icono" />
+            <span class="celda__texto">
+              Es un acto religioso
+              <small>No cruces entre los pasos ni entre las filas, y guarda silencio cuando pasan.</small>
+            </span>
+          </span>
+        </li>
+        <li>
+          <span class="celda">
+            <Icono nombre="camera" class="celda__icono" />
+            <span class="celda__texto">
+              Fotos sin flash
+              <small>El flash molesta a cargueros y sahumadoras, y la luz de las velas es la que hace la foto.</small>
+            </span>
+          </span>
+        </li>
+        <li>
+          <a class="celda" href="/semana-santa/miercoles-santo-ninos">
+            <Icono nombre="users-three" class="celda__icono" />
+            <span class="celda__texto">
+              Las Procesiones Chiquitas
+              <small>Las de los niños, con pasos a escala, el Miércoles Santo por la tarde y la semana siguiente.</small>
+            </span>
+            <Icono nombre="caret-right" class="celda__flecha" />
+          </a>
+        </li>
+      </ul>
+      <p class="nota">Recomendaciones de Popayán Interactiva, no reglas de la Junta.</p>
+    </section>
+
+    <p class="nota">
+      Fuentes: <a href="https://es.wikipedia.org/wiki/Semana_Santa_en_Popay%C3%A1n" rel="noopener noreferrer">Wikipedia: Semana Santa en Popayán</a>
+      (glosario basado en «Procesiones de Popayán. Arte y Tradición», de la Junta Permanente Pro Semana Santa) ·{' '}
+      <a href="https://ich.unesco.org/es/RL/las-procesiones-de-semana-santa-de-popayan-00259" rel="noopener noreferrer">UNESCO</a> ·{' '}
+      <a href="https://www.eltiempo.com/colombia/otras-ciudades/cargueros-vocacion-que-esta-de-vuelta-en-las-procesiones-665230" rel="noopener noreferrer">El Tiempo: los cargueros</a>.
+    </p>
+  </div>
+</Base>
+
+<style>
+  .cabeza {
+    display: grid;
+    gap: 0.6rem;
+    max-width: 46rem;
+    margin-inline: auto;
+    padding: calc(12px + env(safe-area-inset-top)) var(--margen) 1.5rem;
+  }
+
+  .cabeza__controles {
+    margin-bottom: 1.25rem;
+  }
+
+  .cabeza h1 {
+    font-size: var(--t-grande);
+    line-height: 1.05;
+  }
+
+  .cabeza p {
+    font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+    line-height: 1.45;
+    color: var(--texto-2);
+  }
+
+  @media (min-width: 48rem) {
+    .cabeza {
+      padding-top: calc(6rem + env(safe-area-inset-top));
+    }
+  }
+
+  .pagina {
+    display: grid;
+    gap: 2.25rem;
+    max-width: 46rem;
+    margin-inline: auto;
+    padding: 0 var(--margen);
+  }
+
+  .definiciones {
+    display: grid;
+    margin: 0;
+    border-radius: var(--radio-m);
+    background: var(--fondo-elevado);
+    overflow: hidden;
+  }
+
+  .definiciones div {
+    display: grid;
+    gap: 3px;
+    padding: 14px 16px;
+  }
+
+  .definiciones div + div {
+    box-shadow: inset 0 0.5px 0 var(--separador);
+  }
+
+  .definiciones dt {
+    font-weight: 650;
+    color: var(--acento);
+    letter-spacing: -0.012em;
+  }
+
+  .definiciones dd {
+    margin: 0;
+    line-height: 1.45;
+  }
+
+  .celdas .celda {
+    align-items: flex-start;
+    padding-block: 14px;
+  }
+
+  .celdas .celda__texto {
+    gap: 3px;
+    font-weight: 600;
+  }
+
+  .celdas .celda__texto small {
+    font-size: var(--t-nota);
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  .celdas :global(.celda__flecha) {
+    align-self: center;
+  }
+</style>

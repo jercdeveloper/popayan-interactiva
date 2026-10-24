@@ -79,3 +79,16 @@ export function archivosDeInterfaz() {
   recorrer('src/layouts');
   return salida;
 }
+
+export const procesiones: {
+  id: string;
+  orden: number;
+  dia: string;
+  desdePascua: number;
+  nombre: string;
+  templo: string;
+  destino?: string;
+  recorrido?: string[];
+  pasos: { nombre: string; origen?: string }[];
+  fuentes: Fuente[];
+}[] = JSON.parse(readFileSync(ruta('src/content/procesiones.json'), 'utf8'));

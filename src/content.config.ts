@@ -110,4 +110,34 @@ const eventos = defineCollection({
   }),
 });
 
-export const collections = { lugares, rutas, hitos, eventos };
+/**
+ * Las procesiones de Semana Santa. La fecha no se escribe: sale del Domingo de Pascua de cada año
+ * (`desdePascua` son los días antes de él). El recorrido es la lista de esquinas de src/lib/esquinas.ts,
+ * calcada de los mapas que publica la Junta Permanente Pro Semana Santa.
+ */
+const procesiones = defineCollection({
+  loader: file('src/content/procesiones.json'),
+  schema: z.object({
+    orden: z.number().int(),
+    dia: z.string(),
+    desdePascua: z.number().int().min(-7).max(-1),
+    nombre: z.string(),
+    /** "20:00", o un texto cuando no hay hora fija ("Por la tarde") */
+    hora: z.string(),
+    templo: reference('lugares'),
+    /** Cuando la procesión termina en otro templo (el Domingo de Ramos llega a la Catedral) */
+    destino: reference('lugares').optional(),
+    resumen: z.string().max(220),
+    recorrido: z.array(z.string().regex(/^cra\d+-cl\d+$/)).min(4).optional(),
+    pasos: z.array(
+      z.object({
+        nombre: z.string(),
+        /** De dónde y de cuándo son las imágenes, como lo publica la Junta */
+        origen: z.string().optional(),
+      }),
+    ),
+    fuentes: z.array(fuente).min(1),
+  }),
+});
+
+export const collections = { lugares, rutas, hitos, eventos, procesiones };

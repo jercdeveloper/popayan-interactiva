@@ -69,6 +69,28 @@
   }
 }
 
+/*
+ * Noche de procesión: la Semana Santa se ve de noche en los dos temas, con el morado de los nazarenos
+ * muy oscuro y el acento terracota más cálido, como la luz de las velas.
+ */
+:root[data-noche] {
+  color-scheme: dark;
+  --fondo: #120e18;
+  --fondo-elevado: #1f1828;
+  --texto: #f5f2f7;
+  --texto-2: rgb(240 234 246 / 0.7);
+  --texto-3: rgb(240 234 246 / 0.46);
+  --separador: rgb(255 255 255 / 0.1);
+  --acento: #ff8a5c;
+  --acento-presionado: #ffa07a;
+  --sobre-acento: #1d1d1f;
+  --vidrio-tinte: rgb(40 30 52 / 0.6);
+  --vidrio-tinte-fuerte: rgb(40 30 52 / 0.8);
+  --vidrio-borde: rgb(255 255 255 / 0.14);
+  --vidrio-brillo: rgb(255 255 255 / 0.28);
+  --vidrio-sombra: 0 1px 1px rgb(0 0 0 / 0.3), 0 12px 34px -10px rgb(0 0 0 / 0.75);
+}
+
 /* ---------- Base ---------- */
 *,
 *::before,

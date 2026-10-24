@@ -22,6 +22,10 @@ const PAGINAS = [
   { ruta: '/informacion', titulo: 'Información útil' },
   { ruta: '/historia', titulo: 'Cinco siglos de historia' },
   { ruta: '/acerca', titulo: 'Hecha en Popayán, para Popayán' },
+  { ruta: '/semana-santa', titulo: 'Semana Santa' },
+  { ruta: '/semana-santa/viernes-santo', titulo: 'Procesión del Santo Entierro' },
+  { ruta: '/semana-santa/domingo-de-ramos', titulo: 'Procesión del Señor del Triunfo' },
+  { ruta: '/semana-santa/guia', titulo: 'Cómo se hace una procesión' },
 ];
 
 for (const { ruta, titulo } of PAGINAS) {

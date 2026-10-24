@@ -27,3 +27,8 @@ export function rangoDeDias(inicio: string, fin?: string) {
   if (inicio.slice(0, 7) !== fin.slice(0, 7)) return `${diaDelMes(inicio)} ${nombreDelMes(inicio).slice(0, 3)}.–${diaDelMes(fin)} ${nombreDelMes(fin).slice(0, 3)}.`;
   return `${diaDelMes(inicio)}–${diaDelMes(fin)}`;
 }
+
+const larga = formato({ weekday: 'long', day: 'numeric', month: 'long' });
+
+/** "martes 23 de marzo" */
+export const fechaLarga = (iso: string) => larga.format(fecha(iso)).replace(',', '');

@@ -112,8 +112,16 @@ const mesCorto = (iso: string) => nombreDelMes(iso).slice(0, 3);
                     </ol>
                   )}
 
-                  {(lugar || ruta) && (
+                  {(lugar || ruta || jornadas) && (
                     <ul class="evento__enlaces">
+                      {jornadas && (
+                        <li>
+                          <a class="ficha" href="/semana-santa">
+                            <Icono nombre="calendar-dots" peso="fill" />
+                            Las procesiones noche por noche
+                          </a>
+                        </li>
+                      )}
                       {lugar && (
                         <li>
                           <a class="ficha" href={`/lugares/${lugar.id}`}>

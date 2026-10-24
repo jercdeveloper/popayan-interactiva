@@ -1,0 +1,353 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Icono from '../../components/Icono.astro';
+import Circulo from '../../components/vidrio/Circulo.astro';
+import MapaRuta from '../../components/vidrio/MapaRuta.astro';
+import { aMapa } from '../../lib/lugares';
+import { desdePascua } from '../../lib/pascua';
+import { fechaLarga } from '../../lib/fechas';
+import { enLista, horaLegible, momento, trazadoDe, viasDelRecorrido } from '../../lib/semana-santa';
+
+export async function getStaticPaths() {
+  const todas = (await getCollection('procesiones')).sort((a, b) => a.data.orden - b.data.orden);
+  return todas.map((procesion, i) => ({
+    params: { id: procesion.id },
+    props: { procesion, anterior: todas[i - 1], siguiente: todas[i + 1] },
+  }));
+}
+
+const { procesion, anterior, siguiente } = Astro.props;
+const { dia, desdePascua: dias, nombre, hora, resumen, recorrido, pasos, fuentes } = procesion.data;
+const templo = (await getEntry(procesion.data.templo))!;
+const destino = procesion.data.destino ? (await getEntry(procesion.data.destino))! : null;
+const hoy = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Bogota' }).format(new Date());
+const anio = momento(hoy).anio;
+const trazado = recorrido ? trazadoDe(recorrido, templo.data.coordenadas) : undefined;
+const paradas = [templo, ...(destino ? [destino] : [])].map(aMapa);
+---
+
+<Base titulo={`${dia}: ${nombre}`} seccion="agenda" noche descripcion={resumen}>
+  <header class="cabeza">
+    <div class="cabeza__controles">
+      <Circulo icono="caret-left" etiqueta="Todas las procesiones" href="/semana-santa" />
+    </div>
+    <p class="cabeza__dia">
+      {dia} · <span data-fecha data-desde-pascua={dias} data-anio={anio}>{fechaLarga(desdePascua(anio, dias))}</span>
+    </p>
+    <h1>{nombre}</h1>
+    <p class="cabeza__resumen">{resumen}</p>
+  </header>
+
+  <article class="pagina">
+    <dl class="cifras">
+      <div>
+        <dt>Sale</dt>
+        <dd>{horaLegible(hora)}</dd>
+      </div>
+      <div>
+        <dt>Desde</dt>
+        <dd><a href={`/lugares/${templo.id}`}>{templo.data.nombre}</a></dd>
+      </div>
+      {
+        pasos.length > 0 && (
+          <div>
+            <dt>Pasos</dt>
+            <dd>{pasos.length}</dd>
+          </div>
+        )
+      }
+    </dl>
+
+    <a class="ir-al-mapa" href="#recorrido">
+      <Icono nombre="map-trifold" />
+      {recorrido ? 'Ver el recorrido en el mapa' : 'Ver dónde sale, en el mapa'}
+    </a>
+
+    {
+      pasos.length > 0 && (
+        <section class="grupo" aria-labelledby="titulo-pasos">
+          <h2 class="grupo__titulo" id="titulo-pasos">Los pasos, en el orden en que salen</h2>
+          <ol class="pasos">
+            {pasos.map((p, i) => (
+              <li class="paso">
+                <span class="paso__numero" aria-hidden="true">
+                  {i + 1}
+                </span>
+                <span class="paso__texto">
+                  <span class="paso__nombre">{p.nombre}</span>
+                  {p.origen && <span class="paso__origen">{p.origen}</span>}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )
+    }
+
+    <section class="grupo" id="recorrido" aria-labelledby="titulo-recorrido">
+      <h2 class="grupo__titulo" id="titulo-recorrido">El recorrido</h2>
+      <MapaRuta paradas={paradas} trazado={trazado} numerada={false} etiqueta={`Recorrido de la ${nombre}`} />
+      {
+        recorrido ? (
+          <p class="nota">
+            Sale de {templo.data.nombre} y va por la {enLista(viasDelRecorrido(recorrido))}, hasta volver al templo. Las
+            flechas marcan el sentido. Recorrido calcado del mapa que publica la Junta Permanente Pro Semana Santa: puede
+            cambiar de un año a otro.
+          </p>
+        ) : (
+          <p class="nota">
+            {destino ? `Va de ${templo.data.nombre} a ${destino.data.nombre}. ` : ''}
+            La Junta no publica el recorrido de esta procesión calle por calle.
+          </p>
+        )
+      }
+    </section>
+
+    <nav class="vecinas" aria-label="Otras noches">
+      {
+        anterior && (
+          <a class="vecina" href={`/semana-santa/${anterior.id}`}>
+            <Icono nombre="caret-left" />
+            <span>
+              <small>{anterior.data.dia}</small>
+              {anterior.data.nombre}
+            </span>
+          </a>
+        )
+      }
+      {
+        siguiente && (
+          <a class="vecina vecina--siguiente" href={`/semana-santa/${siguiente.id}`}>
+            <span>
+              <small>{siguiente.data.dia}</small>
+              {siguiente.data.nombre}
+            </span>
+            <Icono nombre="caret-right" />
+          </a>
+        )
+      }
+    </nav>
+
+    <section class="grupo" aria-labelledby="titulo-fuentes">
+      <h2 class="grupo__titulo" id="titulo-fuentes">Fuentes</h2>
+      <ul class="celdas">
+        {
+          fuentes.map((f) => (
+            <li>
+              <a class="celda" href={f.url} rel="noopener noreferrer">
+                <Icono nombre="link-simple" class="celda__icono" />
+                <span class="celda__texto">{f.titulo}</span>
+                <Icono nombre="arrow-up-right" class="celda__flecha" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="nota">La hora, los pasos y el recorrido los confirma la Junta cada año. Revísalos antes de ir.</p>
+    </section>
+  </article>
+</Base>
+
+<script>
+  import { desdePascua } from '../../lib/pascua';
+  import { fechaLarga } from '../../lib/fechas';
+  import { momento } from '../../lib/semana-santa';
+
+  // Si el sitio se compiló para otro año, la fecha se recalcula con el de hoy
+  const d = new Date();
+  const hoy = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const fecha = document.querySelector<HTMLElement>('[data-fecha]');
+  const anio = momento(hoy).anio;
+  if (fecha && Number(fecha.dataset.anio) !== anio) {
+    fecha.textContent = fechaLarga(desdePascua(anio, Number(fecha.dataset.desdePascua)));
+  }
+</script>
+
+<style>
+  .cabeza {
+    display: grid;
+    gap: 0.6rem;
+    max-width: 46rem;
+    margin-inline: auto;
+    padding: calc(12px + env(safe-area-inset-top)) var(--margen) 1.5rem;
+  }
+
+  .cabeza__controles {
+    margin-bottom: 1.25rem;
+  }
+
+  .cabeza__dia {
+    font-size: var(--t-nota);
+    font-weight: 700;
+    color: var(--acento);
+  }
+
+  .cabeza h1 {
+    font-size: var(--t-grande);
+    line-height: 1.05;
+  }
+
+  .cabeza__resumen {
+    font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+    line-height: 1.45;
+    color: var(--texto-2);
+  }
+
+  @media (min-width: 48rem) {
+    .cabeza {
+      padding-top: calc(6rem + env(safe-area-inset-top));
+    }
+  }
+
+  .pagina {
+    display: grid;
+    gap: 2.25rem;
+    max-width: 46rem;
+    margin-inline: auto;
+    padding: 0 var(--margen);
+  }
+
+  .cifras {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr) minmax(0, 0.7fr);
+    gap: 10px;
+    margin: 0;
+  }
+
+  .cifras div {
+    display: grid;
+    align-content: start;
+    gap: 2px;
+    padding: 14px;
+    border-radius: var(--radio-m);
+    background: var(--fondo-elevado);
+  }
+
+  .cifras dt {
+    font-size: var(--t-mini);
+    color: var(--texto-2);
+  }
+
+  .cifras dd {
+    margin: 0;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+  }
+
+  .cifras dd a {
+    color: var(--texto);
+    text-decoration-color: var(--acento);
+    text-underline-offset: 3px;
+  }
+
+  .ir-al-mapa {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    justify-self: start;
+    min-height: 44px;
+    margin-top: -1.25rem;
+    padding: 0 16px 0 12px;
+    border-radius: var(--radio-capsula);
+    background: color-mix(in srgb, var(--acento) 14%, transparent);
+    color: var(--acento);
+    font-size: var(--t-nota);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  #recorrido {
+    scroll-margin-top: 1.5rem;
+  }
+
+  /* ---------- La fila de pasos, como sale a la calle ---------- */
+  .pasos {
+    display: grid;
+    padding: 0;
+    list-style: none;
+    border-radius: var(--radio-m);
+    background: var(--fondo-elevado);
+    overflow: hidden;
+  }
+
+  .paso {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    gap: 12px;
+    align-items: baseline;
+    padding: 13px 16px;
+  }
+
+  .paso + .paso {
+    box-shadow: inset 0 0.5px 0 var(--separador);
+  }
+
+  .paso__numero {
+    font-family: var(--fuente-titulos);
+    font-weight: 700;
+    color: var(--acento);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  .paso__texto {
+    display: grid;
+    gap: 2px;
+  }
+
+  .paso__nombre {
+    font-weight: 600;
+    letter-spacing: -0.012em;
+  }
+
+  .paso__origen {
+    font-size: var(--t-nota);
+    line-height: 1.4;
+    color: var(--texto-2);
+  }
+
+  /* ---------- La noche anterior y la siguiente ---------- */
+  .vecinas {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .vecina {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px;
+    border-radius: var(--radio-m);
+    background: var(--fondo-elevado);
+    color: var(--texto);
+    font-size: var(--t-nota);
+    font-weight: 600;
+    line-height: 1.3;
+    text-decoration: none;
+  }
+
+  .vecina span {
+    display: grid;
+    gap: 2px;
+  }
+
+  .vecina small {
+    font-size: var(--t-mini);
+    font-weight: 700;
+    color: var(--acento);
+  }
+
+  .vecina :global(svg) {
+    flex: none;
+    color: var(--texto-3);
+  }
+
+  .vecina--siguiente {
+    grid-column: 2;
+    justify-content: space-between;
+    text-align: right;
+  }
+</style>

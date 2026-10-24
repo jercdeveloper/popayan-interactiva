@@ -1,0 +1,276 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Encabezado from '../../components/vidrio/Encabezado.astro';
+import Icono from '../../components/Icono.astro';
+import { desdePascua } from '../../lib/pascua';
+import { fechaLarga } from '../../lib/fechas';
+import { horaLegible, momento } from '../../lib/semana-santa';
+
+// Las fechas se calculan al compilar para la próxima Semana Santa; el navegador las corrige si el sitio
+// se compiló hace tiempo
+const hoy = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Bogota' }).format(new Date());
+const ahora = momento(hoy);
+const procesiones = await Promise.all(
+  (await getCollection('procesiones'))
+    .sort((a, b) => a.data.orden - b.data.orden)
+    .map(async (p) => ({ ...p, templo: (await getEntry(p.data.templo))! })),
+);
+const ramos = desdePascua(ahora.anio, -7);
+---
+
+<Base
+  titulo="Semana Santa"
+  seccion="agenda"
+  noche
+  descripcion="Las procesiones de Semana Santa en Popayán, noche por noche: de qué templo salen, a qué hora, qué pasos llevan y por qué calles van."
+>
+  <Encabezado
+    titulo="Semana Santa"
+    bajada="Las procesiones de Popayán salen cada noche de un templo distinto y recorren unos dos kilómetros del centro. Son Patrimonio Cultural Inmaterial de la Humanidad desde 2009."
+  />
+
+  <div class="pagina">
+    <!-- El estado se escribe al compilar y el navegador lo corrige con el día de hoy -->
+    <p class="estado" data-estado>
+      {
+        ahora.tipo === 'antes' ? (
+          <>
+            Faltan <strong>{ahora.dias} días</strong> para el Domingo de Ramos, el {fechaLarga(ramos)}.
+          </>
+        ) : (
+          <>
+            <strong>Es Semana Santa.</strong> Mira abajo la procesión de hoy.
+          </>
+        )
+      }
+    </p>
+
+    <section class="grupo" aria-labelledby="titulo-noches">
+      <h2 class="grupo__titulo" id="titulo-noches">Las procesiones de {ahora.anio}</h2>
+      <ol class="noches" data-anio={ahora.anio}>
+        {
+          procesiones.map((p) => (
+            <li>
+              <a class="noche" href={`/semana-santa/${p.id}`} data-desde-pascua={p.data.desdePascua}>
+                <span class="noche__dia">
+                  <span class="noche__nombre-dia">{p.data.dia}</span>
+                  <span class="noche__fecha" data-fecha>
+                    {fechaLarga(desdePascua(ahora.anio, p.data.desdePascua)).replace(/^\S+ /, '')}
+                  </span>
+                </span>
+                <span class="noche__texto">
+                  <span class="noche__titulo">{p.data.nombre}</span>
+                  <span class="noche__meta">
+                    {p.templo.data.nombre} · {horaLegible(p.data.hora)}
+                    {p.data.pasos.length > 0 && ` · ${p.data.pasos.length} pasos`}
+                  </span>
+                </span>
+                <span class="noche__hoy" aria-hidden="true">
+                  Hoy
+                </span>
+                <Icono nombre="caret-right" class="noche__flecha" />
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <a class="guia" href="/semana-santa/guia">
+      <Icono nombre="book-open-text" class="guia__icono" />
+      <span class="guia__texto">
+        <span class="guia__titulo">Cargueros, sahumadoras y regidores</span>
+        <span class="guia__bajada">Quién es quién en la procesión, las palabras de la Semana Santa y cómo verla con respeto</span>
+      </span>
+      <Icono nombre="caret-right" class="noche__flecha" />
+    </a>
+
+    <p class="nota">
+      Las fechas se calculan a partir del Domingo de Pascua. Los horarios, pasos y recorridos son los que publica la
+      Junta Permanente Pro Semana Santa de Popayán, que los confirma cada año: revísalos en{' '}
+      <a href="https://www.procesionespopayan.com/" rel="noopener noreferrer">procesionespopayan.com</a> antes de ir.
+      Fuentes: <a href="https://ich.unesco.org/es/RL/las-procesiones-de-semana-santa-de-popayan-00259" rel="noopener noreferrer">UNESCO</a>{' '}
+      · <a href="https://es.wikipedia.org/wiki/Semana_Santa_en_Popay%C3%A1n" rel="noopener noreferrer">Wikipedia</a>.
+    </p>
+  </div>
+</Base>
+
+<script>
+  import { desdePascua } from '../../lib/pascua';
+  import { fechaLarga } from '../../lib/fechas';
+  import { momento } from '../../lib/semana-santa';
+
+  const d = new Date();
+  const hoy = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const ahora = momento(hoy);
+  const lista = document.querySelector<HTMLElement>('[data-anio]')!;
+  const estado = document.querySelector<HTMLElement>('[data-estado]')!;
+  const fuerte = (texto: string) => Object.assign(document.createElement('strong'), { textContent: texto });
+
+  // Si el sitio se compiló para otro año, las fechas se recalculan
+  if (Number(lista.dataset.anio) !== ahora.anio) {
+    lista.dataset.anio = String(ahora.anio);
+    const titulo = document.getElementById('titulo-noches');
+    if (titulo) titulo.textContent = `Las procesiones de ${ahora.anio}`;
+    for (const a of lista.querySelectorAll<HTMLElement>('[data-desde-pascua]')) {
+      a.querySelector('[data-fecha]')!.textContent = fechaLarga(desdePascua(ahora.anio, Number(a.dataset.desdePascua))).replace(/^\S+ /, '');
+    }
+  }
+
+  if (ahora.tipo === 'antes') {
+    const dias = ahora.dias === 1 ? '1 día' : `${ahora.dias} días`;
+    estado.replaceChildren('Faltan ', fuerte(dias), ` para el Domingo de Ramos, el ${fechaLarga(desdePascua(ahora.anio, -7))}.`);
+  } else {
+    // Durante la semana se marca la noche de hoy
+    const deHoy = [...lista.querySelectorAll<HTMLElement>('[data-desde-pascua]')].filter(
+      (a) => Number(a.dataset.desdePascua) === ahora.desdePascua,
+    );
+    for (const a of deHoy) a.classList.add('noche--hoy');
+    estado.replaceChildren(
+      fuerte('Hoy: '),
+      deHoy.length ? deHoy.map((a) => a.querySelector('.noche__titulo')!.textContent).join(' y ') : 'no hay procesión en el centro',
+      '.',
+    );
+  }
+</script>
+
+<style>
+  .pagina {
+    display: grid;
+    gap: 2rem;
+    max-width: 46rem;
+    margin-inline: auto;
+    padding: 0.25rem var(--margen) 0;
+  }
+
+  .estado {
+    min-height: calc(2 * 1.15em + 44px);
+    padding: 20px 22px 22px;
+    border-radius: var(--radio-l);
+    background:
+      radial-gradient(120% 90% at 100% 0%, color-mix(in srgb, var(--acento) 22%, transparent), transparent 62%),
+      var(--fondo-elevado);
+    font-family: var(--fuente-titulos);
+    font-size: clamp(1.375rem, 1.15rem + 1vw, 1.875rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.026em;
+  }
+
+  .estado :global(strong) {
+    color: var(--acento);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .noches {
+    display: grid;
+    gap: 10px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .noche,
+  .guia {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr) auto auto;
+    gap: 14px;
+    align-items: center;
+    padding: 16px 14px 16px 18px;
+    border-radius: var(--radio-m);
+    background: var(--fondo-elevado);
+    color: var(--texto);
+    text-decoration: none;
+    transition: transform 160ms ease-out;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .noche:active,
+  .guia:active {
+    transform: scale(0.985);
+  }
+
+  .noche__dia {
+    display: grid;
+    gap: 2px;
+  }
+
+  .noche__nombre-dia {
+    font-size: var(--t-mini);
+    font-weight: 700;
+    color: var(--acento);
+  }
+
+  .noche__fecha {
+    font-family: var(--fuente-titulos);
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+
+  .noche__texto,
+  .guia__texto {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+  }
+
+  .noche__titulo,
+  .guia__titulo {
+    font-weight: 650;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+  }
+
+  .noche__meta,
+  .guia__bajada {
+    font-size: var(--t-nota);
+    line-height: 1.35;
+    color: var(--texto-2);
+  }
+
+  .noche__hoy {
+    visibility: hidden;
+    padding: 2px 8px;
+    border-radius: var(--radio-capsula);
+    background: var(--acento);
+    color: var(--sobre-acento);
+    font-size: 0.6875rem;
+    font-weight: 700;
+  }
+
+  .noche--hoy {
+    box-shadow: inset 0 0 0 2px var(--acento);
+  }
+
+  .noche--hoy .noche__hoy {
+    visibility: visible;
+  }
+
+  .noche :global(.noche__flecha),
+  .guia :global(.noche__flecha) {
+    color: var(--texto-3);
+  }
+
+  .guia {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .guia :global(.guia__icono) {
+    width: 28px;
+    height: 28px;
+    color: var(--acento);
+  }
+
+  @media (max-width: 26rem) {
+    .noche {
+      grid-template-columns: 5.25rem minmax(0, 1fr) auto;
+    }
+    .noche__hoy {
+      display: none;
+    }
+    .noche--hoy .noche__hoy {
+      display: none;
+    }
+  }
+</style>

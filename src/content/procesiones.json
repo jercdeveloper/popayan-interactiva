@@ -1,0 +1,679 @@
+[
+  {
+    "id": "domingo-de-ramos",
+    "orden": 1,
+    "dia": "Domingo de Ramos",
+    "desdePascua": -7,
+    "nombre": "Procesión del Señor del Triunfo",
+    "hora": "10:00",
+    "templo": "santuario-de-belen",
+    "destino": "catedral",
+    "resumen": "De día. El Señor del Triunfo baja desde la capilla de Belén por los quingos hasta la Catedral, recordando la entrada de Jesús en Jerusalén.",
+    "pasos": [],
+    "fuentes": [
+      {
+        "titulo": "Wikipedia: Semana Santa en Popayán",
+        "url": "https://es.wikipedia.org/wiki/Semana_Santa_en_Popay%C3%A1n"
+      },
+      {
+        "titulo": "Junta Pro Semana Santa: domingo de ramos",
+        "url": "https://www.procesionespopayan.com/domingo-de-ramos"
+      }
+    ]
+  },
+  {
+    "id": "lunes-santo",
+    "orden": 2,
+    "dia": "Lunes Santo",
+    "desdePascua": -6,
+    "nombre": "Procesión de la Institución de la Eucaristía",
+    "hora": "20:00",
+    "templo": "iglesia-del-carmen",
+    "resumen": "La organiza su propia junta, aparte de la Junta Pro Semana Santa. Sale del templo del Carmen y del claustro de la Casa Rosada y vuelve a ellos.",
+    "pasos": [
+      {
+        "nombre": "San Andrés"
+      },
+      {
+        "nombre": "San Bartolomé"
+      },
+      {
+        "nombre": "San Felipe"
+      },
+      {
+        "nombre": "San Juan"
+      },
+      {
+        "nombre": "San Judas Tadeo"
+      },
+      {
+        "nombre": "San Mateo"
+      },
+      {
+        "nombre": "La Institución de la Eucaristía"
+      },
+      {
+        "nombre": "San Pedro"
+      },
+      {
+        "nombre": "Santiago el Mayor"
+      },
+      {
+        "nombre": "Santiago el Menor"
+      },
+      {
+        "nombre": "San Simón"
+      },
+      {
+        "nombre": "Santo Tomás"
+      },
+      {
+        "nombre": "Amo Jesús de Yanaconas"
+      },
+      {
+        "nombre": "La Cruz a Cuestas"
+      },
+      {
+        "nombre": "Cristo en Agonía"
+      },
+      {
+        "nombre": "Cristo de las Lágrimas"
+      },
+      {
+        "nombre": "Nuestra Señora de los Dolores"
+      }
+    ],
+    "fuentes": [
+      {
+        "titulo": "Wikipedia: Semana Santa en Popayán",
+        "url": "https://es.wikipedia.org/wiki/Semana_Santa_en_Popay%C3%A1n"
+      }
+    ]
+  },
+  {
+    "id": "martes-santo",
+    "orden": 3,
+    "dia": "Martes Santo",
+    "desdePascua": -5,
+    "nombre": "Procesión de Nuestra Señora de los Dolores",
+    "hora": "20:00",
+    "templo": "san-agustin",
+    "resumen": "La primera de las cinco noches de la Junta. Sale de San Agustín y vuelve a él, y cierra con la Virgen de los Dolores.",
+    "recorrido": [
+      "cra7-cl7",
+      "cra7-cl5",
+      "cra8-cl5",
+      "cra9-cl5",
+      "cra10-cl5",
+      "cra10-cl4",
+      "cra9-cl4",
+      "cra8-cl4",
+      "cra6-cl4",
+      "cra5-cl4",
+      "cra4-cl4",
+      "cra3-cl4",
+      "cra3-cl5",
+      "cra4-cl5",
+      "cra5-cl5",
+      "cra6-cl5",
+      "cra6-cl6",
+      "cra6-cl7",
+      "cra7-cl7"
+    ],
+    "pasos": [
+      {
+        "nombre": "San Juan Evangelista",
+        "origen": "Imagen española, siglo XVIII"
+      },
+      {
+        "nombre": "La Magdalena",
+        "origen": "Imagen española, siglo XVIII"
+      },
+      {
+        "nombre": "La Verónica",
+        "origen": "Imagen española, siglo XVIII"
+      },
+      {
+        "nombre": "El Señor del Huerto",
+        "origen": "Imágenes del siglo XX, de José Ascensio Lamiel"
+      },
+      {
+        "nombre": "El Prendimiento",
+        "origen": "Imágenes quiteñas, siglo XVIII"
+      },
+      {
+        "nombre": "La Negación",
+        "origen": "El Señor: imagen española, siglo XVIII. San Pedro: imagen quiteña. El judío: talla payanesa"
+      },
+      {
+        "nombre": "Los Azotes",
+        "origen": "Imágenes quiteñas, siglo XVIII"
+      },
+      {
+        "nombre": "El Señor Caído",
+        "origen": "El Señor: imagen payanesa, siglo XVIII. El ángel: imagen quiteña"
+      },
+      {
+        "nombre": "El Amo Ecce Homo",
+        "origen": "Réplica en madera, siglo XX, de José Ascensio Lamiel"
+      },
+      {
+        "nombre": "El Encuentro",
+        "origen": "Imágenes en madera, siglo XXI, de Alcides Montesdeoca"
+      },
+      {
+        "nombre": "El Amo Jesús",
+        "origen": "El Señor: imagen española, siglo XVIII. El cirineo y los judíos: imágenes quiteñas"
+      },
+      {
+        "nombre": "El Señor del Perdón",
+        "origen": "Imagen en madera de origen español, siglo XVIII. La esfera, en plata, es del orfebre Ernesto Rodríguez (1968)"
+      },
+      {
+        "nombre": "El Calvario",
+        "origen": "Imagen española, siglo XVIII"
+      },
+      {
+        "nombre": "El Cristo de la Sed"
+      },
+      {
+        "nombre": "El Crucifijo",
+        "origen": "Imagen española, siglo XVIII. La cruz, en plata, es de orfebrería payanesa"
+      },
+      {
+        "nombre": "La Virgen de los Dolores",
+        "origen": "Imagen española, siglo XVIII"
+      }
+    ],
+    "fuentes": [
+      {
+        "titulo": "Junta Pro Semana Santa: martes santo",
+        "url": "https://www.procesionespopayan.com/martes-santo"
+      },
+      {
+        "titulo": "Wikipedia: Semana Santa en Popayán",
+        "url": "https://es.wikipedia.org/wiki/Semana_Santa_en_Popay%C3%A1n"
+      }
+    ]
+  },
+  {
+    "id": "miercoles-santo-ninos",
+    "orden": 4,
+    "dia": "Miércoles Santo",
+    "desdePascua": -4,
+    "nombre": "Procesión Chiquita",
+    "hora": "Por la tarde",
+    "templo": "iglesia-de-san-jose",
+    "resumen": "La de los niños: pasos a escala, cargados por niños vestidos de cargueros y regidores. Las fuentes no coinciden en el templo de salida: confírmalo con la Junta.",
+    "pasos": [
+      {
+        "nombre": "San Juan Evangelista"
+      },
+      {
+        "nombre": "La Verónica"
+      },
+      {
+        "nombre": "El Varón del Martillo"
+      },
+      {
+        "nombre": "El Señor del Huerto"
+      },
+      {
+        "nombre": "El Prendimiento"
+      },
+      {
+        "nombre": "La Negación"
+      },
+      {
+        "nombre": "La Sentencia"
+      },
+      {
+        "nombre": "Los Azotes"
+      },
+      {
+        "nombre": "El Señor Caído"
+      },
+      {
+        "nombre": "La Coronación"
+      },
+      {
+        "nombre": "El Amo Ecce Homo"
+      },
+      {
+        "nombre": "El Encuentro"
+      },
+      {
+        "nombre": "La Cruz a Cuestas"
+      },
+      {
+        "nombre": "El Señor del Perdón"
+      },
+      {
+        "nombre": "La Crucifixión"
+      },
+      {
+        "nombre": "Cristo en Agonía"
+      },
+      {
+        "nombre": "El Cachorro (Señor de la Expiración)"
+      },
+      {
+        "nombre": "El Santo Cristo de la Buena Muerte"
+      },
+      {
+        "nombre": "El Descendimiento"
+      },
+      {
+        "nombre": "La Piedad"
+      },
+      {
+        "nombre": "El Santo Sepulcro"
+      },
+      {
+        "nombre": "Nuestra Señora de los Dolores"
+      }
+    ],
+    "fuentes": [
+      {
+        "titulo": "Wikipedia: Semana Santa en Popayán",
+        "url": "https://es.wikipedia.org/wiki/Semana_Santa_en_Popay%C3%A1n"
+      }
+    ]
+  },
+  {
+    "id": "miercoles-santo",
+    "orden": 5,
+    "dia": "Miércoles Santo",
+    "desdePascua": -4,
+    "nombre": "Procesión del Amo Jesús",
+    "hora": "20:00",
+    "templo": "la-ermita",
+    "resumen": "Sale de La Ermita, la iglesia del Amo Jesús, primer patrono de la ciudad, y vuelve a ella.",
+    "recorrido": [
+      "cra3-cl5",
+      "cra4-cl5",
+      "cra5-cl5",
+      "cra6-cl5",
+      "cra6-cl6",
+      "cra6-cl7",
+      "cra7-cl7",
+      "cra7-cl5",
+      "cra8-cl5",
+      "cra9-cl5",
+      "cra10-cl5",
+      "cra10-cl4",
+      "cra9-cl4",
+      "cra8-cl4",
+      "cra6-cl4",
+      "cra5-cl4",
+      "cra4-cl4",
+      "cra3-cl4",
+      "cra3-cl5"
+    ],
+    "pasos": [
+      {
+        "nombre": "San Juan Evangelista",
+        "origen": "Imagen española, siglo XVIII"
+      },
+      {
+        "nombre": "La Magdalena",
+        "origen": "Imagen española, siglo XVIII"
+      },
+      {
+        "nombre": "La Verónica",
+        "origen": "Imagen española, siglo XVIII"
+      },
+      {
+        "nombre": "La Oración",
+        "origen": "Imágenes quiteñas, siglo XX"
+      },
+      {
+        "nombre": "El Prendimiento",
+        "origen": "El Señor y los judíos: imágenes quiteñas, siglo XVIII. El centurión: imagen payanesa"
+      },
+      {
+        "nombre": "La Negación",
+        "origen": "El Señor: imagen quiteña, siglo XVIII. San Pedro y el centurión: imágenes quiteñas"
+      },
+      {
+        "nombre": "Los Azotes",
+        "origen": "El Señor y los judíos: imágenes quiteñas, siglo XVIII"
+      },
+      {
+        "nombre": "El Señor Caído",
+        "origen": "El Señor: imagen payanesa, siglo XVIII. El ángel: imagen quiteña"
+      },
+      {
+        "nombre": "El Amo Ecce Homo",
+        "origen": "Réplica en madera, siglo XX"
+      },
+      {
+        "nombre": "El Encuentro",
+        "origen": "Imágenes en madera, siglo XXI, de Alcides Montesdeoca"
+      },
+      {
+        "nombre": "El Amo Jesús",
+        "origen": "El Señor: imagen italiana, siglo XVI. El romano y el cirineo: imágenes quiteñas, siglo XVI"
+      },
+      {
+        "nombre": "El Despojo",
+        "origen": "El Señor: imagen española. Los judíos: imágenes quiteñas, siglo XVIII"
+      },
+      {
+        "nombre": "El Señor del Perdón",
+        "origen": "Imagen en madera de origen español, siglo XVIII. La esfera, en plata, es del orfebre Ernesto Rodríguez (1968)"
+      },
+      {
+        "nombre": "El Cristo de la Sed"
+      },
+      {
+        "nombre": "El Cristo en Agonía",
+        "origen": "El Señor: imagen española, siglo XVI"
+      },
+      {
+        "nombre": "El Crucifijo",
+        "origen": "Imagen española (Sevilla), siglo XVII"
+      },
+      {
+        "nombre": "La Dolorosa",
+        "origen": "Imagen española, siglo XVIII"
+      }
+    ],
+    "fuentes": [
+      {
+        "titulo": "Junta Pro Semana Santa: miercoles santo",
+        "url": "https://www.procesionespopayan.com/miercoles-santo"
+      },
+      {
+        "titulo": "Wikipedia: Semana Santa en Popayán",
+        "url": "https://es.wikipedia.org/wiki/Semana_Santa_en_Popay%C3%A1n"
+      }
+    ]
+  },
+  {
+    "id": "jueves-santo",
+    "orden": 6,
+    "dia": "Jueves Santo",
+    "desdePascua": -3,
+    "nombre": "Procesión del Santo Cristo de la Veracruz",
+    "hora": "20:00",
+    "templo": "san-francisco",
+    "resumen": "Sale de San Francisco y vuelve a él. Lleva la Pasión desde el huerto hasta la cruz.",
+    "recorrido": [
+      "cra10-cl4",
+      "cra10-cl5",
+      "cra9-cl5",
+      "cra8-cl5",
+      "cra7-cl5",
+      "cra7-cl7",
+      "cra6-cl7",
+      "cra6-cl6",
+      "cra6-cl5",
+      "cra5-cl5",
+      "cra4-cl5",
+      "cra3-cl5",
+      "cra3-cl4",
+      "cra4-cl4",
+      "cra5-cl4",
+      "cra6-cl4",
+      "cra8-cl4",
+      "cra9-cl4",
+      "cra10-cl4"
+    ],
+    "pasos": [
+      {
+        "nombre": "San Juan Evangelista",
+        "origen": "Imagen española, siglo XVIII"
+      },
+      {
+        "nombre": "La Magdalena",
+        "origen": "Imagen española, siglo XVIII"
+      },
+      {
+        "nombre": "La Verónica",
+        "origen": "Imagen española, siglo XVIII"
+      },
+      {
+        "nombre": "El Señor del Huerto",
+        "origen": "El Señor y el ángel: imágenes españolas, siglo XVIII"
+      },
+      {
+        "nombre": "El Beso de Judas",
+        "origen": "El Señor: imagen quiteña, siglo XVIII. Los romanos: imágenes ecuatorianas de 1956"
+      },
+      {
+        "nombre": "El Prendimiento",
+        "origen": "Imágenes españolas, siglo XVIII"
+      },
+      {
+        "nombre": "La Sentencia",
+        "origen": "Imágenes españolas, siglo XVIII"
+      },
+      {
+        "nombre": "Los Azotes",
+        "origen": "El Señor: imagen italiana (Pisa), siglo XVIII. Los judíos: imágenes españolas, siglo XVIII"
+      },
+      {
+        "nombre": "La Coronación",
+        "origen": "Imágenes españolas, siglo XVIII"
+      },
+      {
+        "nombre": "El Amo Ecce Homo",
+        "origen": "Réplica en madera, siglo XX, de José Ascensio Lamiel, del original del siglo XVIII que está en la Basílica"
+      },
+      {
+        "nombre": "La Cruz a Cuestas",
+        "origen": "Imagen española, siglo XVIII. El cirineo y los judíos: tallas quiteñas"
+      },
+      {
+        "nombre": "El Señor del Perdón",
+        "origen": "Imagen española, siglo XVIII"
+      },
+      {
+        "nombre": "La Crucifixión",
+        "origen": "Imágenes españolas, siglo XVIII"
+      },
+      {
+        "nombre": "El Calvario",
+        "origen": "Cristo, la Virgen y San Juan: talla payanesa, siglo XXI, de Raúl Perugache"
+      },
+      {
+        "nombre": "El Señor de la Expiración",
+        "origen": "Imagen española, siglo XX: réplica del Cachorro de Sevilla"
+      },
+      {
+        "nombre": "El Santo Cristo de la Veracruz",
+        "origen": "Imagen española, siglo XVII"
+      },
+      {
+        "nombre": "La Dolorosa",
+        "origen": "Imagen española, siglo XVIII"
+      }
+    ],
+    "fuentes": [
+      {
+        "titulo": "Junta Pro Semana Santa: jueves santo",
+        "url": "https://www.procesionespopayan.com/jueves-santo"
+      },
+      {
+        "titulo": "Wikipedia: Semana Santa en Popayán",
+        "url": "https://es.wikipedia.org/wiki/Semana_Santa_en_Popay%C3%A1n"
+      }
+    ]
+  },
+  {
+    "id": "viernes-santo",
+    "orden": 7,
+    "dia": "Viernes Santo",
+    "desdePascua": -2,
+    "nombre": "Procesión del Santo Entierro",
+    "hora": "20:00",
+    "templo": "santo-domingo",
+    "resumen": "Sale de Santo Domingo y vuelve a él. La abre La Muerte y la cierra la Virgen de la Soledad.",
+    "recorrido": [
+      "cra5-cl5",
+      "cra4-cl5",
+      "cra3-cl5",
+      "cra3-cl4",
+      "cra4-cl4",
+      "cra5-cl4",
+      "cra6-cl4",
+      "cra8-cl4",
+      "cra9-cl4",
+      "cra10-cl4",
+      "cra10-cl5",
+      "cra9-cl5",
+      "cra8-cl5",
+      "cra7-cl5",
+      "cra7-cl7",
+      "cra6-cl7",
+      "cra6-cl6",
+      "cra6-cl5",
+      "cra5-cl5"
+    ],
+    "pasos": [
+      {
+        "nombre": "La Muerte",
+        "origen": "El esqueleto: alemán. El ángel: de origen quiteño. El dragón: hecho en Popayán, siglo XVIII"
+      },
+      {
+        "nombre": "María Salomé",
+        "origen": "Imagen española, siglo XVIII"
+      },
+      {
+        "nombre": "La Verónica",
+        "origen": "Imagen quiteña, siglo XX"
+      },
+      {
+        "nombre": "La Magdalena",
+        "origen": "Imagen quiteña, siglo XX"
+      },
+      {
+        "nombre": "El Varón del Martillo",
+        "origen": "Imagen quiteña, siglo XVIII"
+      },
+      {
+        "nombre": "El Varón de las Tenazas"
+      },
+      {
+        "nombre": "El Santo Cristo",
+        "origen": "Imagen española, siglo XVIII"
+      },
+      {
+        "nombre": "El Descendimiento",
+        "origen": "Talla de Alcides Montesdeoca (Ibarra, Ecuador), 1999. Los ángeles: imágenes quiteñas"
+      },
+      {
+        "nombre": "La Piedad",
+        "origen": "Talla payanesa de Alfonso de los Reyes P., siglo XX"
+      },
+      {
+        "nombre": "El Traslado",
+        "origen": "El Señor: talla de Alcides Montesdeoca (Ibarra, Ecuador), siglo XXI. Los varones: de la iglesia de La Encarnación, siglo XVIII"
+      },
+      {
+        "nombre": "Las Insignias",
+        "origen": "Imágenes quiteñas, siglo XVIII"
+      },
+      {
+        "nombre": "San Juan Evangelista",
+        "origen": "Imagen quiteña, siglo XVIII"
+      },
+      {
+        "nombre": "El Santo Sepulcro",
+        "origen": "El sepulcro: carey, marfil y plata dorada, español del siglo XVIII. El Cristo: talla de José A. Lamiel, siglo XX"
+      },
+      {
+        "nombre": "La Virgen de la Soledad",
+        "origen": "Imagen española, siglo XVIII"
+      }
+    ],
+    "fuentes": [
+      {
+        "titulo": "Junta Pro Semana Santa: viernes santo",
+        "url": "https://www.procesionespopayan.com/viernes-santo"
+      },
+      {
+        "titulo": "Wikipedia: Semana Santa en Popayán",
+        "url": "https://es.wikipedia.org/wiki/Semana_Santa_en_Popay%C3%A1n"
+      }
+    ]
+  },
+  {
+    "id": "sabado-santo",
+    "orden": 8,
+    "dia": "Sábado Santo",
+    "desdePascua": -1,
+    "nombre": "Procesión de Jesucristo Resucitado",
+    "hora": "22:00",
+    "templo": "catedral",
+    "resumen": "La última, más tarde que las demás. Sale de la Catedral y vuelve a ella con el Resucitado.",
+    "recorrido": [
+      "cra7-cl5",
+      "cra7-cl7",
+      "cra6-cl7",
+      "cra6-cl6",
+      "cra6-cl5",
+      "cra5-cl5",
+      "cra4-cl5",
+      "cra3-cl5",
+      "cra3-cl4",
+      "cra4-cl4",
+      "cra5-cl4",
+      "cra6-cl4",
+      "cra8-cl4",
+      "cra9-cl4",
+      "cra10-cl4",
+      "cra10-cl5",
+      "cra9-cl5",
+      "cra8-cl5",
+      "cra7-cl5"
+    ],
+    "pasos": [
+      {
+        "nombre": "Cirio Pascual"
+      },
+      {
+        "nombre": "María Salomé",
+        "origen": "Imagen española, siglo XVIII"
+      },
+      {
+        "nombre": "María la Madre de Santiago",
+        "origen": "Imagen quiteña, siglo XX"
+      },
+      {
+        "nombre": "María Magdalena"
+      },
+      {
+        "nombre": "El Ángel de la Resurrección",
+        "origen": "Imagen de Alfonso de los Reyes P., siglo XVIII"
+      },
+      {
+        "nombre": "San Juan",
+        "origen": "Imagen quiteña, siglo XVIII"
+      },
+      {
+        "nombre": "San Pedro",
+        "origen": "Imagen española, siglo XVII"
+      },
+      {
+        "nombre": "Nuestra Señora La Virgen de la Pascua",
+        "origen": "Imagen ecuatoriana de Alcides Montesdeoca, 1996"
+      },
+      {
+        "nombre": "Nuestro Señor Jesucristo Resucitado",
+        "origen": "Imagen ecuatoriana de Alcides Montesdeoca, 1998"
+      }
+    ],
+    "fuentes": [
+      {
+        "titulo": "Junta Pro Semana Santa: sabado santo",
+        "url": "https://www.procesionespopayan.com/sabado-santo"
+      },
+      {
+        "titulo": "Wikipedia: Semana Santa en Popayán",
+        "url": "https://es.wikipedia.org/wiki/Semana_Santa_en_Popay%C3%A1n"
+      }
+    ]
+  }
+]
