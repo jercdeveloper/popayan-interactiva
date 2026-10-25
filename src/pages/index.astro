@@ -1,245 +1,368 @@
 ---
 /**
- * Portada: la foto de la ciudad manda; el vidrio solo flota encima (la hora, los botones, la barra).
+ * Portada inmersiva: la ciudad contada en escenas a pantalla completa que responden al desplazamiento, como
+ * las páginas de producto de Apple, pero con Popayán como protagonista. Cada escena es un lugar real y cada
+ * frase sale de una ficha con fuentes.
+ *
+ * Sin JavaScript, o con "reducir movimiento", las escenas se ven quietas y completas, una debajo de otra.
+ * Con movimiento, el guion de abajo añade la clase "inmersivo": las escenas se alargan, el escenario queda
+ * fijo y lo que pasa en él avanza con el desplazamiento.
  */
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Icono from '../components/Icono.astro';
+import Sello from '../components/pasaporte/Sello.astro';
 import { rutasOrdenadas, formatearDuracion } from '../lib/rutas';
 import { diaDelMes, nombreDelMes } from '../lib/fechas';
 import { fotoDe, lineaCredito } from '../lib/fotos';
+import { CATEGORIAS } from '../lib/lugares';
 import { momento } from '../lib/semana-santa';
 
-const portada = fotoDe('parque-caldas')!;
-const ermita = fotoDe('la-ermita')!;
+const parque = fotoDe('parque-caldas')!;
+const torre = fotoDe('torre-del-reloj')!;
+const morro = fotoDe('morro-de-tulcan')!;
+const puente = fotoDe('puente-del-humilladero')!;
 const rutas = (await rutasOrdenadas()).map((r) => ({ ...r, foto: fotoDe(r.ruta.data.foto) }));
 const eventos = (await getCollection('eventos')).sort((a, b) => a.data.inicio.localeCompare(b.data.inicio));
 const hitos = (await getCollection('hitos')).sort((a, b) => a.data.anio - b.data.anio);
 const lugares = await getCollection('lugares');
 const datos = lugares.filter((l) => l.data.dato).map((l) => ({ id: l.id, nombre: l.data.nombre, dato: l.data.dato! }));
 const recetas = (await getCollection('recetas')).sort((a, b) => a.data.orden - b.data.orden);
+const morroFicha = (await getEntry('lugares', 'morro-de-tulcan'))!;
 const semanaSanta = momento(new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Bogota' }).format(new Date()));
+// Seis sellos de muestra, de seis clases de lugar, para la libreta de la escena del Pasaporte
+const muestra = ['torre-del-reloj', 'la-ermita', 'puente-del-humilladero', 'casa-museo-mosquera', 'la-fresa', 'hacienda-calibio']
+  .map((id) => lugares.find((l) => l.id === id)!)
+  .filter(Boolean);
 ---
 
 <Base seccion="inicio">
-  <header class="portada">
-    <Picture
-      src={portada.src}
-      formats={['avif', 'webp']}
-      widths={[640, 1024, 1600]}
-      sizes="100vw"
-      alt="El Parque Caldas con la Torre del Reloj y la cúpula de la Catedral, bajo un cielo azul"
-      class="portada__foto"
-      loading="eager"
-      fetchpriority="high"
-    />
-    <div class="portada__velo" aria-hidden="true"></div>
+  <!-- ---------- 1. Apertura: el parque, a sangre; al bajar, la foto se recoge en un marco ---------- -->
+  <section class="escena apertura" data-escena="apertura">
+    <div class="escenario">
+      <div class="apertura__marco" data-marco>
+        <Picture
+          src={parque.src}
+          formats={['avif', 'webp']}
+          widths={[640, 1024, 1600, 2200]}
+          sizes="100vw"
+          alt="El Parque Caldas con la Torre del Reloj y la cúpula de la Catedral, bajo un cielo azul"
+          class="escena__foto apertura__foto"
+          loading="eager"
+          fetchpriority="high"
+        />
+        <div class="velo velo--abajo" aria-hidden="true"></div>
+        <a class="credito" href={parque.credito.fuente} rel="noopener noreferrer">Foto: {lineaCredito(parque.credito)}</a>
+      </div>
 
-    <a class="marca-movil vidrio" href="/" aria-label="Popayán Interactiva, inicio">
-      <span class="marca-movil__torre isotipo" aria-hidden="true"></span>
-      <span>Popayán Interactiva</span>
-    </a>
+      <a class="marca-movil vidrio" href="/" aria-label="Popayán Interactiva, inicio">
+        <span class="marca-movil__torre isotipo" aria-hidden="true"></span>
+        <span>Popayán Interactiva</span>
+      </a>
 
-    <div class="portada__texto">
-      <h1>Popayán, contada lugar por lugar</h1>
-      <p>El Centro Histórico y sus alrededores en rutas, con historias que citan sus fuentes y un mapa que funciona sin señal.</p>
-      <div class="portada__acciones">
-        <a class="boton boton--lleno" href="#rutas">Empezar una ruta</a>
-        <a class="boton boton--vidrio vidrio" href="/mapa">
-          <Icono nombre="map-trifold" />
-          Abrir el mapa
-        </a>
+      <div class="apertura__texto" data-apertura-texto>
+        <h1>Popayán, <em>contada lugar por lugar</em></h1>
+        <p>El Centro Histórico y sus alrededores en rutas, con historias que citan sus fuentes y un mapa que funciona sin señal.</p>
+        <div class="acciones">
+          <a class="boton boton--lleno" href="#rutas">Empezar una ruta</a>
+          <a class="boton boton--vidrio vidrio" href="/mapa">
+            <Icono nombre="map-trifold" />
+            Abrir el mapa
+          </a>
+        </div>
       </div>
     </div>
-
-    <!-- La hora de Popayán, en la esfera de una sola manecilla del logo -->
-    <div class="hora vidrio">
-      <svg class="hora__esfera" viewBox="0 0 48 48" aria-hidden="true">
-        <circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="2" opacity="0.35"></circle>
-        {
-          Array.from({ length: 12 }, (_, i) => (
-            <line
-              x1="24"
-              y1="5"
-              x2="24"
-              y2={i % 3 === 0 ? 9 : 7.5}
-              stroke="currentColor"
-              stroke-width={i % 3 === 0 ? 2 : 1.4}
-              stroke-linecap="round"
-              transform={`rotate(${i * 30} 24 24)`}
-            />
-          ))
-        }
-        <g data-manecilla transform="rotate(0 24 24)">
-          <line x1="24" y1="24" x2="24" y2="11" stroke="var(--acento)" stroke-width="3" stroke-linecap="round"></line>
-        </g>
-        <circle cx="24" cy="24" r="2.6" fill="var(--acento)"></circle>
-      </svg>
-      <p aria-live="polite">
-        <span data-hora>La hora de Popayán</span><small>La torre marca la hora con una sola manecilla</small>
-      </p>
-    </div>
-
-    <a class="portada__credito" href={portada.credito.fuente} rel="noopener noreferrer">
-      Foto: {lineaCredito(portada.credito)}
-    </a>
-  </header>
-
-  <section class="seccion" id="rutas" aria-labelledby="titulo-rutas">
-    <div class="seccion__cabeza seccion__cabeza--enlace">
-      <h2 id="titulo-rutas">Rutas</h2>
-      <a href="/planificador">Arma tu plan de 1 a 3 días</a>
-      <p>Ocho recorridos con historia. Siete a pie por el centro y uno en carro por las haciendas.</p>
-    </div>
-    <ol class="carrusel" aria-label="Rutas">
-      {
-        rutas.map(({ ruta, paradas, minutos, foto }) => (
-          <li class="carrusel__item">
-            <a class="ruta" href={`/rutas/${ruta.id}`}>
-              {foto && (
-                <Picture
-                  src={foto.src}
-                  formats={['avif', 'webp']}
-                  widths={[480, 800]}
-                  sizes="(min-width: 48rem) 360px, 78vw"
-                  alt=""
-                  class="ruta__foto"
-                />
-              )}
-              <span class="ruta__texto vidrio">
-                <span class="ruta__nombre">{ruta.data.nombre}</span>
-                <span class="ruta__datos">
-                  {paradas.length} paradas · {formatearDuracion(minutos)} · {ruta.data.modo === 'carro' ? 'en carro' : 'a pie'}
-                </span>
-              </span>
-              {foto && <span class="solo-lector">Foto: {lineaCredito(foto.credito)}</span>}
-            </a>
-          </li>
-        ))
-      }
-    </ol>
   </section>
 
-  <section class="seccion" id="hoy" aria-labelledby="titulo-hoy">
-    <div class="seccion__cabeza">
-      <h2 id="titulo-hoy">Hoy en Popayán</h2>
+  <!-- ---------- 2. La torre: al bajar, la manecilla da la vuelta hasta la hora de Popayán ---------- -->
+  <section class="escena torre" aria-labelledby="titulo-torre" data-escena="torre">
+    <div class="escenario">
+      <Picture
+        src={torre.src}
+        formats={['avif', 'webp']}
+        widths={[640, 1024, 1600, 2200]}
+        sizes="100vw"
+        alt="La Torre del Reloj, blanca, con su esfera de una sola manecilla, junto al Parque Caldas"
+        class="escena__foto torre__foto"
+        data-torre-foto
+      />
+      <div class="velo velo--torre" aria-hidden="true"></div>
+
+      <div class="torre__reloj vidrio" aria-hidden="true">
+        <svg viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="54" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.5"></circle>
+          {
+            Array.from({ length: 12 }, (_, i) => (
+              <line
+                x1="60"
+                y1="10"
+                x2="60"
+                y2={i % 3 === 0 ? 20 : 16}
+                stroke="currentColor"
+                stroke-width={i % 3 === 0 ? 3 : 1.8}
+                stroke-linecap="round"
+                transform={`rotate(${i * 30} 60 60)`}
+              />
+            ))
+          }
+          <g data-manecilla transform="rotate(0 60 60)">
+            <path d="M60 64 L57 60 L60 24 L63 60 Z" fill="currentColor"></path>
+          </g>
+          <circle cx="60" cy="60" r="4.5" fill="var(--maiz)"></circle>
+        </svg>
+      </div>
+
+      <div class="torre__frases">
+        <h2 id="titulo-torre" class="frase" data-frase>Desde 1737, <em>una sola manecilla.</em></h2>
+        <p class="frase" data-frase>La de las horas. Los minutos no los marca.</p>
+        <p class="frase" data-frase>Por eso los guías dicen que en la Ciudad Blanca <em>el tiempo no pasa.</em></p>
+      </div>
+
+      <a class="torre__hora vidrio" href="/lugares/torre-del-reloj" data-torre-hora>
+        <span data-hora>La hora de Popayán</span>
+        <span class="torre__ir">La Torre del Reloj <Icono nombre="arrow-right" /></span>
+      </a>
+      <a class="credito" href={torre.credito.fuente} rel="noopener noreferrer">Foto: {lineaCredito(torre.credito)}</a>
     </div>
-    <div class="widgets">
-      <article class="widget">
-        <h3>Agenda</h3>
-        <ol class="widget__agenda">
+  </section>
+
+  <!-- ---------- 3. Rutas: en escritorio, la pista corre de lado mientras se baja ---------- -->
+  <section class="escena rutas" id="rutas" aria-labelledby="titulo-rutas" data-escena="rutas">
+    <div class="escenario rutas__escenario">
+      <div class="rutas__cabeza">
+        <h2 id="titulo-rutas">Ocho rutas. <em>Una ciudad.</em></h2>
+        <p>Siete a pie por el centro y una en carro por las haciendas. Cada parada, con su historia.</p>
+        <a class="enlace" href="/planificador">Arma tu plan de 1 a 3 días <Icono nombre="arrow-right" /></a>
+      </div>
+      <ol class="pista" data-pista aria-label="Rutas">
+        {
+          rutas.map(({ ruta, paradas, minutos, foto }, i) => (
+            <li class="pista__item">
+              <a class="tarjeta" href={`/rutas/${ruta.id}`}>
+                {foto && (
+                  <Picture
+                    src={foto.src}
+                    formats={['avif', 'webp']}
+                    widths={[480, 800, 1100]}
+                    sizes="(min-width: 48rem) 380px, 78vw"
+                    alt=""
+                    class="tarjeta__foto"
+                    data-transicion={`foto-ruta-${ruta.id}`}
+                  />
+                )}
+                <span class="tarjeta__numero" aria-hidden="true">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span class="tarjeta__pie vidrio">
+                  <span class="tarjeta__nombre">{ruta.data.nombre}</span>
+                  <span class="tarjeta__datos">
+                    {paradas.length} paradas · {formatearDuracion(minutos)} {ruta.data.modo === 'carro' ? 'en carro' : 'a pie'}
+                  </span>
+                </span>
+                {foto && <span class="solo-lector">Foto: {lineaCredito(foto.credito)}</span>}
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- ---------- El Pasaporte: la libreta se abre y los sellos caen, uno por bajada ---------- -->
+  <section class="escena pasaporte" aria-labelledby="titulo-pasaporte" data-escena="pasaporte">
+    <div class="escenario pasaporte__escenario">
+      <div class="libreta" aria-hidden="true">
+        <div class="libreta__hoja sello-ganado">
+          {
+            muestra.map((l) => (
+              <span class="libreta__sello" data-pp-sello>
+                <Sello id={l.id} clave={`portada-${l.id}`} tipo={CATEGORIAS[l.data.categoria].singular} icono={CATEGORIAS[l.data.categoria].icono} />
+              </span>
+            ))
+          }
+        </div>
+        <div class="libreta__tapa" data-pp-tapa>
+          <span class="libreta__escudo isotipo"></span>
+          <span class="libreta__nombre">Pasaporte <em>de Popayán</em></span>
+        </div>
+      </div>
+
+      <div class="pasaporte__texto" data-pp-texto>
+        <h2 id="titulo-pasaporte" class="pasaporte__titulo">Un sello <em>por cada lugar.</em></h2>
+        <p class="pasaporte__bajada">
+          Solo se gana estando allí, con la ubicación del teléfono o con el código QR del lugar. Sin cuentas: tus sellos
+          viven en tu teléfono.
+        </p>
+        <p class="pasaporte__cuenta" data-pasaporte-texto data-total={lugares.length}>
+          {lugares.length} lugares por sellar
+        </p>
+        <a class="boton boton--lleno" href="/pasaporte">Abrir mi pasaporte</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- 4. El Morro: parece una colina; la foto se acerca y resulta ser una pirámide ---------- -->
+  <section class="escena morro" aria-labelledby="titulo-morro" data-escena="morro">
+    <div class="escenario">
+      <Picture
+        src={morro.src}
+        formats={['avif', 'webp']}
+        widths={[640, 1024, 1600, 2200]}
+        sizes="100vw"
+        alt="El Morro de Tulcán, verde, con la estatua ecuestre en la cima, sobre los tejados de Popayán"
+        class="escena__foto morro__foto"
+        data-morro-foto
+      />
+      <div class="velo velo--abajo" aria-hidden="true"></div>
+      <p class="morro__frase morro__frase--a" data-morro-a>Parece una colina.</p>
+      <h2 id="titulo-morro" class="morro__frase morro__frase--b" data-morro-b>Es una <em>pirámide.</em></h2>
+      <a class="morro__nota vidrio" href="/lugares/morro-de-tulcan" data-morro-nota>
+        <span>{morroFicha.data.resumen}</span>
+        <span class="morro__ir">El Morro de Tulcán <Icono nombre="arrow-right" /></span>
+      </a>
+      <a class="credito" href={morro.credito.fuente} rel="noopener noreferrer">Foto: {lineaCredito(morro.credito)}</a>
+    </div>
+  </section>
+
+  <!-- ---------- 5. Semana Santa: la noche, con la cuenta que corre ---------- -->
+  <a class="escena semana" href="/semana-santa" aria-labelledby="titulo-semana" data-escena="semana">
+    <div class="escenario semana__escenario">
+      <span class="semana__luz" aria-hidden="true"></span>
+      <h2 id="titulo-semana" class="semana__titulo">Semana Santa</h2>
+      <p class="semana__cuenta" data-semana-santa data-dias={semanaSanta.tipo === 'antes' ? semanaSanta.dias : ''}>
+        {
+          semanaSanta.tipo === 'antes' ? (
+            <>
+              <span class="semana__cifra" data-cifra>
+                {semanaSanta.dias}
+              </span>
+              <span class="semana__texto">días para el Domingo de Ramos</span>
+            </>
+          ) : (
+            <span class="semana__texto">Es Semana Santa: mira la procesión de hoy</span>
+          )
+        }
+      </p>
+      <span class="semana__ir">Las procesiones, noche por noche <Icono nombre="arrow-right" /></span>
+    </div>
+  </a>
+
+  <!-- ---------- 6. Hoy: piezas de vidrio sobre el Humilladero ---------- -->
+  <section class="hoy" id="hoy" aria-labelledby="titulo-hoy">
+    <Picture src={puente.src} formats={['avif', 'webp']} widths={[640, 1200]} sizes="100vw" alt="" class="hoy__fondo" />
+    <div class="hoy__velo" aria-hidden="true"></div>
+    <h2 id="titulo-hoy" class="hoy__titulo">Hoy en Popayán</h2>
+
+    <div class="mosaico">
+      <div class="pieza pieza--agenda vidrio" data-pieza>
+        <h3 class="pieza__titulo">Agenda</h3>
+        <ol class="agenda">
           {
             eventos.map((e, i) => (
               <li data-evento data-inicio={e.data.inicio} data-fin={e.data.fin ?? e.data.inicio} hidden={i >= 4}>
-                <span class="widget__fecha">
-                  <span>{diaDelMes(e.data.inicio)}</span>
-                  <small>{nombreDelMes(e.data.inicio).slice(0, 3)}.</small>
-                </span>
-                <span class="widget__nombre">
-                  <span class="widget__ahora" hidden>
-                    Ahora
+                <a href="/agenda">
+                  <span class="agenda__dia">{diaDelMes(e.data.inicio)}</span>
+                  <span class="agenda__mes">{nombreDelMes(e.data.inicio)}</span>
+                  <span class="agenda__nombre">
+                    {e.data.nombre}
+                    <span class="agenda__ahora" hidden>
+                      Ahora
+                    </span>
                   </span>
-                  {e.data.nombre}
-                </span>
+                </a>
               </li>
             ))
           }
         </ol>
-        <a class="widget__mas" href="/agenda">Toda la agenda</a>
-      </article>
+        <a class="enlace" href="/agenda">Toda la agenda <Icono nombre="arrow-right" /></a>
+      </div>
 
-      <article class="widget" data-datos={JSON.stringify(datos)}>
-        <h3>¿Sabías que…?</h3>
-        <p class="widget__dato">{datos[0].dato}</p>
-        <a class="widget__mas" href={`/lugares/${datos[0].id}`} data-dato-enlace>{datos[0].nombre}</a>
-      </article>
+      <figure class="pieza pieza--dato vidrio" data-pieza data-datos={JSON.stringify(datos)}>
+        <h3 class="pieza__titulo">¿Sabías que…?</h3>
+        <blockquote>
+          <p class="dato__texto">{datos[0].dato}</p>
+        </blockquote>
+        <figcaption>
+          <a href={`/lugares/${datos[0].id}`} data-dato-enlace>{datos[0].nombre}</a>
+        </figcaption>
+      </figure>
 
-      <a class="widget widget--foto" href="/lugares/la-ermita">
-        <Picture
-          src={ermita.src}
-          formats={['avif', 'webp']}
-          widths={[480, 800]}
-          sizes="(min-width: 48rem) 380px, 92vw"
-          alt=""
-          class="widget__foto"
-        />
-        <span class="widget__pie vidrio">
-          <span>La Ermita de Jesús Nazareno</span>
-          <small>Considerada la iglesia más antigua de la ciudad</small>
-        </span>
-      </a>
-
-      <!-- La Semana Santa todo el año: cuánto falta o, durante la semana, la procesión de hoy -->
-      <a class="widget widget--noche" href="/semana-santa">
-        <h3>Semana Santa</h3>
-        <p class="widget__noche" data-semana-santa>
+      <div class="pieza pieza--cocina" data-pieza>
+        <h3 class="pieza__titulo">La cocina de Popayán</h3>
+        <ul class="carta" aria-label="Recetas">
           {
-            semanaSanta.tipo === 'antes' ? (
-              <>
-                Faltan <strong>{semanaSanta.dias} días</strong> para el Domingo de Ramos
-              </>
-            ) : (
-              <strong>Es Semana Santa</strong>
-            )
+            recetas.map((r) => (
+              <li>
+                <a href={`/recetario/${r.id}`}>{r.data.nombre}</a>
+              </li>
+            ))
           }
-        </p>
-        <span class="widget__mas">Las procesiones noche por noche</span>
-      </a>
+        </ul>
+        <a class="enlace" href="/recetario">El recetario vivo <Icono nombre="arrow-right" /></a>
+      </div>
+    </div>
+    <a class="credito credito--hoy" href={puente.credito.fuente} rel="noopener noreferrer">Foto: {lineaCredito(puente.credito)}</a>
+  </section>
 
-      <a class="widget widget--pasaporte" href="/pasaporte">
-        <h3>Pasaporte</h3>
-        <p class="widget__dato" data-pasaporte-texto data-total={lugares.length}>
-          <strong>{lugares.length} lugares</strong> para sellar estando en ellos
-        </p>
-        <span class="widget__mas">Ver mi pasaporte</span>
-      </a>
+  <!-- ---------- 7. Historia: el año corre de 1537 a hoy mientras se baja ---------- -->
+  <section class="escena historia" aria-labelledby="titulo-historia" data-escena="historia">
+    <div class="escenario historia__escenario">
+      <h2 id="titulo-historia" class="historia__titulo">Cinco siglos de <em>historia</em></h2>
+      <div class="contador" aria-hidden="true" data-contador data-hitos={JSON.stringify(hitos.map((h) => ({ anio: h.data.anio, titulo: h.data.titulo })))}>
+        <span class="contador__anio" data-contador-anio>{hitos[0].data.anio}</span>
+        <span class="contador__titulo" data-contador-titulo>{hitos[0].data.titulo}</span>
+        <span class="contador__linea"><span data-contador-avance></span></span>
+      </div>
+      <ol class="anios" aria-label="Momentos de la historia de Popayán">
+        {
+          hitos.map((h) => (
+            <li>
+              <span class="anios__anio">{h.data.anio}</span>
+              <span class="anios__titulo">{h.data.titulo}</span>
+            </li>
+          ))
+        }
+      </ol>
+      <div class="historia__enlaces">
+        <a class="enlace" href="/historia">La línea de tiempo <Icono nombre="arrow-right" /></a>
+        <a class="enlace" href="/personajes">Los personajes de esta historia <Icono nombre="arrow-right" /></a>
+      </div>
     </div>
   </section>
 
-  <section class="seccion" aria-labelledby="titulo-cocina">
-    <div class="seccion__cabeza seccion__cabeza--enlace">
-      <h2 id="titulo-cocina">La cocina de Popayán</h2>
-      <a href="/recetario">Ver el recetario</a>
+  <!-- ---------- 8. Cierre ---------- -->
+  <section class="cierre" aria-labelledby="titulo-cierre">
+    <span class="cierre__torre isotipo" aria-hidden="true"></span>
+    <h2 id="titulo-cierre">Empieza por <em>una ruta.</em></h2>
+    <div class="acciones">
+      <a class="boton boton--lleno" href="/rutas">Ver las rutas</a>
+      <a class="boton boton--tinte" href="/mapa">
+        <Icono nombre="map-trifold" />
+        Abrir el mapa
+      </a>
     </div>
-    <ul class="tiempo cocina" aria-label="Recetas">
-      {
-        recetas.map((r) => (
-          <li class="tiempo__hito">
-            <a class="plato" href={`/recetario/${r.id}`}>
-              <span class="plato__icono" aria-hidden="true">
-                <Icono nombre={r.data.icono} peso="fill" />
-              </span>
-              <span class="tiempo__titulo">{r.data.nombre}</span>
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </section>
-
-  <section class="seccion" aria-labelledby="titulo-tiempo">
-    <div class="seccion__cabeza seccion__cabeza--enlace">
-      <h2 id="titulo-tiempo">Cinco siglos de historia</h2>
-      <a href="/historia">Ver la línea de tiempo</a>
-    </div>
-    <ol class="tiempo" aria-label="Momentos de la historia de Popayán">
-      {
-        hitos.map((h) => (
-          <li class="tiempo__hito">
-            <span class="tiempo__anio">{h.data.anio}</span>
-            <span class="tiempo__titulo">{h.data.titulo}</span>
-          </li>
-        ))
-      }
-    </ol>
   </section>
 </Base>
 
 <script>
-  import { animate } from 'motion';
+  import { animate, inView, scroll } from 'motion';
   import { momento } from '../lib/semana-santa';
   import { sellosGuardados } from '../lib/sello-cliente';
+
+  const raiz = document.documentElement;
+  const conMovimiento = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (conMovimiento) raiz.classList.add('inmersivo');
+
+  // Cuánto de un tramo [a, b] del avance se ha recorrido, entre 0 y 1
+  const tramo = (p: number, a: number, b: number) => Math.min(1, Math.max(0, (p - a) / (b - a)));
+  const suave = (t: number) => 1 - Math.pow(1 - t, 3);
+  const $ = <T extends Element = HTMLElement>(sel: string) => document.querySelector<T>(sel);
+  // El avance de una escena: 0 cuando su escenario se fija arriba, 1 cuando se suelta
+  const escena = (nombre: string, fn: (p: number) => void, offset = ['start start', 'end end']) => {
+    const el = $(`[data-escena="${nombre}"]`);
+    if (el) scroll((p: number) => fn(p), { target: el, offset });
+  };
 
   // ---------- La hora de Popayán ----------
   const NUMEROS = ['doce', 'una', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez', 'once'];
@@ -253,31 +376,18 @@ const semanaSanta = momento(new Intl.DateTimeFormat('en-CA', { timeZone: 'Americ
   const minuto = Number(partes.find((p) => p.type === 'minute')?.value ?? 0);
   const h12 = hora % 12;
   const art = (n: number) => (n === 1 ? 'la' : 'las');
-  const texto =
-    minuto < 10
-      ? `En Popayán son ${art(h12)} ${NUMEROS[h12]}`
-      : minuto < 40
-        ? `En Popayán ya pasaron ${art(h12)} ${NUMEROS[h12]}`
-        : `En Popayán son casi ${art((h12 + 1) % 12)} ${NUMEROS[(h12 + 1) % 12]}`;
-  const hTexto = document.querySelector('[data-hora]');
-  if (hTexto) hTexto.textContent = texto;
-
-  // La manecilla llega a la hora con un resorte, desde las doce
-  const manecilla = document.querySelector<SVGGElement>('[data-manecilla]');
-  const angulo = (h12 + minuto / 60) * 30;
-  if (manecilla) {
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      manecilla.setAttribute('transform', `rotate(${angulo} 24 24)`);
-    } else {
-      animate(0, angulo, {
-        type: 'spring',
-        bounce: 0.25,
-        duration: 1.1,
-        delay: 0.3,
-        onUpdate: (v) => manecilla.setAttribute('transform', `rotate(${v} 24 24)`),
-      });
-    }
-  }
+  const hTexto = $('[data-hora]');
+  if (hTexto)
+    hTexto.textContent =
+      minuto < 10
+        ? `En Popayán son ${art(h12)} ${NUMEROS[h12]}`
+        : minuto < 40
+          ? `En Popayán ya pasaron ${art(h12)} ${NUMEROS[h12]}`
+          : `En Popayán son casi ${art((h12 + 1) % 12)} ${NUMEROS[(h12 + 1) % 12]}`;
+  const anguloHora = (h12 + minuto / 60) * 30;
+  const manecilla = $<SVGGElement>('[data-manecilla]');
+  const girar = (grados: number) => manecilla?.setAttribute('transform', `rotate(${grados} 60 60)`);
+  girar(anguloHora);
 
   // ---------- Agenda: lo que pasa ahora y lo que viene ----------
   const hoy = new Date();
@@ -285,91 +395,342 @@ const semanaSanta = momento(new Intl.DateTimeFormat('en-CA', { timeZone: 'Americ
   const aFecha = (iso: string) => Date.parse(`${iso}T00:00:00Z`);
   let mostrados = 0;
   for (const li of document.querySelectorAll<HTMLElement>('[data-evento]')) {
-    const ini = aFecha(li.dataset.inicio!);
-    const fin = aFecha(li.dataset.fin!);
-    const vigente = fin >= hoyUTC && mostrados < 4;
+    const vigente = aFecha(li.dataset.fin!) >= hoyUTC && mostrados < 4;
     li.hidden = !vigente;
     if (vigente) {
       mostrados++;
-      if (ini <= hoyUTC) li.querySelector<HTMLElement>('.widget__ahora')!.hidden = false;
+      if (aFecha(li.dataset.inicio!) <= hoyUTC) li.querySelector<HTMLElement>('.agenda__ahora')!.hidden = false;
     }
   }
 
   // ---------- Semana Santa, contada desde el día de hoy del visitante ----------
-  const semanaSanta = document.querySelector<HTMLElement>('[data-semana-santa]');
-  if (semanaSanta) {
-    const d = new Date();
-    const hoy = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    const ahora = momento(hoy);
-    const fuerte = (texto: string) => Object.assign(document.createElement('strong'), { textContent: texto });
+  const cuenta = $('[data-semana-santa]');
+  if (cuenta) {
+    const hoyIso = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
+    const ahora = momento(hoyIso);
+    const parte = (clase: string, texto: string) => Object.assign(document.createElement('span'), { className: clase, textContent: texto });
     if (ahora.tipo === 'antes') {
-      semanaSanta.replaceChildren('Faltan ', fuerte(ahora.dias === 1 ? '1 día' : `${ahora.dias} días`), ' para el Domingo de Ramos');
+      const cifra = parte('semana__cifra', String(ahora.dias));
+      cifra.dataset.cifra = '';
+      cuenta.replaceChildren(cifra, parte('semana__texto', ahora.dias === 1 ? 'día para el Domingo de Ramos' : 'días para el Domingo de Ramos'));
+      cuenta.dataset.dias = String(ahora.dias);
     } else {
-      semanaSanta.replaceChildren(fuerte('Es Semana Santa'), ': mira la procesión de hoy');
+      cuenta.replaceChildren(parte('semana__texto', 'Es Semana Santa: mira la procesión de hoy'));
+      cuenta.dataset.dias = '';
     }
   }
 
   // ---------- Cuántos sellos lleva el visitante (se guardan en su teléfono) ----------
-  const pasaporte = document.querySelector<HTMLElement>('[data-pasaporte-texto]');
+  const pasaporte = $('[data-pasaporte-texto]');
   const sellos = Object.keys(sellosGuardados()).length;
-  if (pasaporte && sellos > 0) {
-    pasaporte.replaceChildren(
-      'Llevas ',
-      Object.assign(document.createElement('strong'), { textContent: `${sellos} de ${pasaporte.dataset.total}` }),
-      ' sellos',
-    );
-  }
+  if (pasaporte && sellos > 0) pasaporte.textContent = `Llevas ${sellos} de ${pasaporte.dataset.total} sellos`;
 
   // ---------- Un dato distinto en cada visita ----------
-  const caja = document.querySelector<HTMLElement>('[data-datos]');
+  const caja = $('[data-datos]');
   if (caja) {
     const lista: { id: string; nombre: string; dato: string }[] = JSON.parse(caja.dataset.datos ?? '[]');
     const elegido = lista[Math.floor(Math.random() * lista.length)];
     if (elegido) {
-      caja.querySelector('.widget__dato')!.textContent = elegido.dato;
+      caja.querySelector('.dato__texto')!.textContent = elegido.dato;
       const enlace = caja.querySelector<HTMLAnchorElement>('[data-dato-enlace]')!;
       enlace.textContent = elegido.nombre;
       enlace.href = `/lugares/${elegido.id}`;
     }
   }
+
+  if (conMovimiento) {
+    // ---------- 1. Apertura: la foto se recoge en un marco y el texto se va hacia arriba ----------
+    const marco = $('[data-marco]');
+    const texto = $('[data-apertura-texto]');
+    escena('apertura', (p) => {
+      const t = suave(tramo(p, 0, 1));
+      if (marco) {
+        marco.style.transform = `scale(${1 - 0.1 * t})`;
+        marco.style.borderRadius = `${36 * t}px`;
+      }
+      if (texto) {
+        texto.style.opacity = String(1 - tramo(p, 0, 0.55));
+        texto.style.transform = `translateY(${-70 * t}px)`;
+      }
+    });
+
+    // ---------- 2. La torre: la manecilla da una vuelta entera y se detiene en la hora de ahora ----------
+    const frases = [...document.querySelectorAll<HTMLElement>('[data-frase]')];
+    const fotoTorre = $('[data-torre-foto]');
+    const horaTorre = $('[data-torre-hora]');
+    escena('torre', (p) => {
+      girar(suave(tramo(p, 0.02, 0.9)) * (360 + anguloHora));
+      if (fotoTorre) fotoTorre.style.transform = `scale(${1.12 - 0.12 * p})`;
+      const n = frases.length;
+      frases.forEach((f, i) => {
+        const entra = tramo(p, (i / n) * 0.9, (i / n) * 0.9 + 0.08);
+        const sale = i === n - 1 ? 0 : tramo(p, ((i + 1) / n) * 0.9 - 0.06, ((i + 1) / n) * 0.9);
+        f.style.opacity = String(entra * (1 - sale));
+        f.style.transform = `translateY(${(1 - entra) * 28 - sale * 28}px)`;
+      });
+      if (horaTorre) {
+        const t = tramo(p, 0.86, 0.96);
+        horaTorre.style.opacity = String(t);
+        horaTorre.style.transform = `translateY(${(1 - t) * 16}px)`;
+      }
+    });
+
+    // ---------- 3. Rutas: en escritorio, la pista corre de lado ----------
+    const seccionRutas = $('[data-escena="rutas"]');
+    const pista = $('[data-pista]');
+    const ancha = matchMedia('(min-width: 48rem)');
+    let sobra = 0;
+    const medir = () => {
+      if (!seccionRutas || !pista) return;
+      if (!ancha.matches) {
+        sobra = 0;
+        seccionRutas.style.height = '';
+        pista.style.transform = '';
+        return;
+      }
+      sobra = Math.max(0, pista.scrollWidth - pista.clientWidth);
+      seccionRutas.style.height = `${innerHeight + sobra}px`;
+    };
+    medir();
+    addEventListener('resize', medir);
+    ancha.addEventListener('change', medir);
+    escena('rutas', (p) => {
+      if (pista && sobra) pista.style.transform = `translateX(${-p * sobra}px)`;
+    });
+    // Quien navega con el teclado lleva la página hasta la tarjeta que recibe el foco
+    pista?.addEventListener('focusin', (e) => {
+      if (!sobra || !seccionRutas) return;
+      const item = (e.target as HTMLElement).closest('li')!;
+      const p = Math.min(1, item.offsetLeft / (sobra + pista.clientWidth / 2));
+      scrollTo({ top: seccionRutas.offsetTop + p * sobra, behavior: 'instant' });
+    });
+
+    // ---------- El Pasaporte: la tapa se abre y cada sello cae en su turno, con el golpe de un sello de goma ----------
+    const tapa = $('[data-pp-tapa]');
+    const textoPasaporte = $('[data-pp-texto]');
+    const sellosEscena = [...document.querySelectorAll<HTMLElement>('[data-pp-sello]')];
+    const caidos = new Set<number>();
+    escena('pasaporte', (p) => {
+      if (tapa) {
+        const t = suave(tramo(p, 0.04, 0.3));
+        tapa.style.transform = `rotateY(${-172 * t}deg)`;
+        tapa.style.opacity = String(t > 0.92 ? 0 : 1);
+      }
+      if (textoPasaporte) {
+        const t = tramo(p, 0.25, 0.4);
+        textoPasaporte.style.opacity = String(t);
+        textoPasaporte.style.transform = `translateY(${(1 - t) * 24}px)`;
+      }
+      sellosEscena.forEach((sello, i) => {
+        const umbral = 0.32 + i * 0.09;
+        if (p >= umbral && !caidos.has(i)) {
+          caidos.add(i);
+          animate(sello, { opacity: [0, 1], scale: [1.8, 1], rotate: [-16, 0] }, { type: 'spring', bounce: 0.38, duration: 0.55 });
+          setTimeout(() => navigator.vibrate?.(14), 160);
+        } else if (p < umbral - 0.03 && caidos.has(i)) {
+          // Al volver hacia arriba, el sello se levanta del papel
+          caidos.delete(i);
+          animate(sello, { opacity: 0, scale: 1.4 }, { duration: 0.2 });
+        }
+      });
+    });
+
+    // ---------- 4. El Morro: la foto se acerca a la cima ----------
+    const fotoMorro = $('[data-morro-foto]');
+    const fraseA = $('[data-morro-a]');
+    const fraseB = $('[data-morro-b]');
+    const notaMorro = $('[data-morro-nota]');
+    escena('morro', (p) => {
+      if (fotoMorro) fotoMorro.style.transform = `scale(${1 + 0.55 * suave(tramo(p, 0.15, 0.85))})`;
+      if (fraseA) {
+        const sale = tramo(p, 0.3, 0.42);
+        fraseA.style.opacity = String(1 - sale);
+        fraseA.style.transform = `translateY(${-sale * 30}px)`;
+      }
+      if (fraseB) {
+        const entra = tramo(p, 0.45, 0.6);
+        fraseB.style.opacity = String(entra);
+        fraseB.style.transform = `scale(${0.92 + 0.08 * entra})`;
+      }
+      if (notaMorro) {
+        const entra = tramo(p, 0.7, 0.85);
+        notaMorro.style.opacity = String(entra);
+        notaMorro.style.transform = `translateY(${(1 - entra) * 24}px)`;
+      }
+    });
+
+    // ---------- 5. Semana Santa: la cuenta corre hasta los días que faltan, desde que la escena asoma ----------
+    escena(
+      'semana',
+      (p) => {
+        const cifra = $('[data-cifra]');
+        const dias = Number(cuenta?.dataset.dias);
+        if (cifra && dias) cifra.textContent = String(Math.round(dias * suave(tramo(p, 0.2, 0.62))));
+      },
+      ['start end', 'end end'],
+    );
+
+    // ---------- 6. Hoy: las piezas llegan al verlas y los sellos caen como puestos a mano ----------
+    for (const pieza of document.querySelectorAll<HTMLElement>('[data-pieza]')) {
+      inView(
+        pieza,
+        () => {
+          animate(pieza, { opacity: [0, 1], y: [32, 0], scale: [0.97, 1] }, { type: 'spring', bounce: 0, duration: 0.8 });
+        },
+        { amount: 0.25 },
+      );
+    }
+
+    // ---------- 7. Historia: el año corre entre los hitos ----------
+    const contador = $('[data-contador]');
+    if (contador) {
+      const lista: { anio: number; titulo: string }[] = JSON.parse(contador.dataset.hitos ?? '[]');
+      const anio = $('[data-contador-anio]')!;
+      const titulo = $('[data-contador-titulo]')!;
+      const avance = $('[data-contador-avance]')!;
+      let ultimo = -1;
+      escena('historia', (p) => {
+        const f = tramo(p, 0.05, 0.92) * (lista.length - 1);
+        const i = Math.min(lista.length - 2, Math.floor(f));
+        const t = f - i;
+        anio.textContent = String(Math.round(lista[i].anio + (lista[i + 1].anio - lista[i].anio) * t));
+        const cerca = Math.round(f);
+        if (cerca !== ultimo) {
+          ultimo = cerca;
+          titulo.textContent = lista[cerca].titulo;
+          animate(titulo, { opacity: [0, 1], y: [10, 0] }, { duration: 0.35 });
+        }
+        avance.style.transform = `scaleX(${tramo(p, 0.05, 0.92)})`;
+      });
+    }
+  }
 </script>
 
 <style>
-  /* ---------- Portada: la foto manda, el texto se apoya en un velo ---------- */
-  .portada {
+  /* ================= Lo común a las escenas ================= */
+  .escena {
     position: relative;
-    display: grid;
-    align-content: end;
-    min-height: min(94svh, 880px);
-    padding: calc(5.5rem + env(safe-area-inset-top)) var(--margen) 7.5rem;
+    display: block;
     color: #fff;
+    text-decoration: none;
+  }
+
+  .escenario {
+    position: relative;
+    min-height: 100svh;
     overflow: hidden;
     isolation: isolate;
   }
 
-  .portada :global(.portada__foto) {
+  /* Con movimiento: la escena se alarga y su escenario queda fijo mientras pasa lo que tiene que pasar */
+  :global(.inmersivo) .escena .escenario {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    min-height: 0;
+  }
+
+  .escenario :global(.escena__foto) {
     position: absolute;
     inset: 0;
     z-index: -2;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* En el celular, la torre (el logo) queda en el cuadro */
-    object-position: 84% 40%;
+    will-change: transform;
   }
 
-  .portada__velo {
+  .velo {
     position: absolute;
     inset: 0;
     z-index: -1;
+  }
+
+  .velo--abajo {
     background:
-      linear-gradient(to top, rgb(0 0 0 / 0.72) 0%, rgb(0 0 0 / 0.38) 45%, transparent 75%),
-      linear-gradient(to right, rgb(0 0 0 / 0.35), transparent 55%),
-      linear-gradient(to bottom, rgb(0 0 0 / 0.22), transparent 22%);
+      linear-gradient(to top, rgb(14 8 4 / 0.8) 0%, rgb(14 8 4 / 0.35) 40%, transparent 68%),
+      linear-gradient(to bottom, rgb(0 0 0 / 0.3), transparent 24%);
+  }
+
+  .credito {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    right: 4px;
+    font-size: 0.6875rem;
+    color: rgb(255 255 255 / 0.72);
+    text-decoration: none;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg) translateY(50%);
+  }
+
+  .acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .enlace {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    justify-self: start;
+    min-height: var(--tactil);
+    font-weight: 600;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .enlace :global(svg),
+  .torre__ir :global(svg),
+  .morro__ir :global(svg),
+  .semana__ir :global(svg) {
+    width: 18px;
+    height: 18px;
+    flex: none;
+    transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .enlace:hover :global(svg),
+  .torre__hora:hover :global(svg),
+  .morro__nota:hover :global(svg),
+  .semana:hover .semana__ir :global(svg) {
+    transform: translateX(4px);
+  }
+
+  /* El texto de abajo deja libre la barra de pestañas en el celular */
+  .apertura__texto,
+  .torre__frases,
+  .morro__frase,
+  .semana__escenario {
+    --pie: calc(7rem + env(safe-area-inset-bottom));
+  }
+
+  /* ================= 1. Apertura ================= */
+  .apertura {
+    background: var(--fondo);
+  }
+
+  :global(.inmersivo) .apertura {
+    height: 170svh;
+  }
+
+  .apertura__marco {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    isolation: isolate;
+    transform-origin: 50% 40%;
+    will-change: transform;
+  }
+
+  .apertura__marco :global(.apertura__foto) {
+    object-position: 84% 40%;
   }
 
   .marca-movil {
     position: absolute;
+    z-index: 3;
     top: calc(12px + env(safe-area-inset-top));
     left: var(--margen);
     display: inline-flex;
@@ -390,445 +751,1030 @@ const semanaSanta = momento(new Intl.DateTimeFormat('en-CA', { timeZone: 'Americ
     height: 32px;
   }
 
-  .portada__texto {
+  .apertura__texto {
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    right: 0;
+    bottom: var(--pie);
     display: grid;
-    gap: 1rem;
+    gap: 1.1rem;
     width: 100%;
-    max-width: var(--ancho-max);
+    max-width: calc(var(--ancho-max) + 2 * var(--margen));
     margin-inline: auto;
+    padding-inline: var(--margen);
+    will-change: transform, opacity;
   }
 
-  .portada h1 {
-    max-width: 12ch;
-    font-size: var(--t-gigante);
-    line-height: 1;
-    letter-spacing: -0.035em;
+  .apertura h1 {
+    max-width: 11ch;
+    font-size: clamp(3.3rem, 1.6rem + 7.4vw, 7.25rem);
+    line-height: 0.92;
+    letter-spacing: -0.025em;
   }
 
-  .portada__texto p {
+  .apertura h1 em {
+    display: block;
+  }
+
+  .apertura__texto p {
     max-width: 30rem;
     font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.3125rem);
     line-height: 1.4;
     color: rgb(255 255 255 / 0.9);
   }
 
-  .portada__acciones {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 0.5rem;
+  /* ================= 2. La torre ================= */
+  .torre {
+    background: #0d0b0a;
   }
 
-  .hora {
+  :global(.inmersivo) .torre {
+    height: 340svh;
+  }
+
+  .torre__escenario,
+  .torre .escenario {
+    display: grid;
+    align-content: end;
+  }
+
+  .torre :global(.torre__foto) {
+    object-position: 33% 40%;
+  }
+
+  .velo--torre {
+    background:
+      linear-gradient(to top, rgb(10 8 6 / 0.88) 0%, rgb(10 8 6 / 0.5) 45%, rgb(10 8 6 / 0.15) 75%),
+      linear-gradient(to bottom, rgb(0 0 0 / 0.35), transparent 30%);
+  }
+
+  .torre__reloj {
     position: absolute;
+    top: calc(5.5rem + env(safe-area-inset-top));
     right: var(--margen);
-    bottom: 7.5rem;
-    display: none;
-    align-items: center;
-    gap: 12px;
-    max-width: 19rem;
-    padding: 12px 18px 12px 12px;
+    width: clamp(9rem, 32vw, 17rem);
+    aspect-ratio: 1;
+    padding: clamp(10px, 1.6vw, 20px);
+    border-radius: 50%;
+    /* Vidrio oscuro: sobre una foto en penumbra, el vidrio claro se vería como un disco blanco */
+    background: rgb(20 14 10 / 0.3);
+    color: #fff;
+  }
+
+  .torre__reloj svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .torre__frases {
+    display: grid;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: calc(var(--ancho-max) + 2 * var(--margen));
+    margin-inline: auto;
+    padding: 0 var(--margen) calc(var(--pie) + 4.5rem);
+  }
+
+  .frase {
+    max-width: 15ch;
+    font-family: var(--fuente-titulos);
+    font-size: clamp(2.4rem, 1.4rem + 4.6vw, 5.25rem);
+    font-weight: 600;
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    will-change: transform, opacity;
+  }
+
+  .frase em {
+    font-weight: 500;
+  }
+
+  /* Con movimiento, las tres frases ocupan el mismo sitio y se relevan */
+  :global(.inmersivo) .torre__frases {
+    grid-template-areas: 'frase';
+  }
+
+  :global(.inmersivo) .frase {
+    grid-area: frase;
+    align-self: end;
+    opacity: 0;
+  }
+
+  .torre__hora {
+    position: absolute;
+    left: var(--margen);
+    bottom: var(--pie, calc(7rem + env(safe-area-inset-bottom)));
+    display: grid;
+    gap: 2px;
+    padding: 12px 18px;
     border-radius: var(--radio-m);
     color: var(--texto);
-  }
-
-  .hora__esfera {
-    width: 52px;
-    height: 52px;
-    flex: none;
-  }
-
-  .hora p {
-    display: grid;
-    font-size: var(--t-nota);
     font-weight: 600;
-    line-height: 1.25;
-  }
-
-  .hora small {
-    font-size: var(--t-mini);
-    font-weight: 400;
-    color: var(--texto-2);
-  }
-
-  .portada__credito {
-    position: absolute;
-    right: var(--margen);
-    bottom: calc(5.4rem + env(safe-area-inset-bottom));
-    font-size: 0.6875rem;
-    color: rgb(255 255 255 / 0.78);
     text-decoration: none;
   }
 
-  @media (min-width: 48rem) {
-    .portada :global(.portada__foto) {
-      object-position: 60% 40%;
-    }
-    .marca-movil {
-      display: none;
-    }
-    .hora {
-      display: flex;
-    }
-    .portada__credito {
-      bottom: 2rem;
-    }
-    .portada {
-      padding-bottom: 5rem;
-    }
-    .hora {
-      bottom: 5rem;
-    }
+  .torre__hora {
+    --pie: calc(7rem + env(safe-area-inset-bottom));
   }
 
-  /* ---------- Secciones ---------- */
-  .seccion {
-    padding-top: 3.5rem;
+  .torre__ir {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--t-nota);
+    color: var(--acento);
   }
 
-  .seccion__cabeza {
+  :global(.inmersivo) .torre__hora {
+    opacity: 0;
+  }
+
+  /* ================= 3. Rutas ================= */
+  .rutas {
+    color: var(--texto);
+    background: var(--fondo);
+  }
+
+  .rutas__escenario {
     display: grid;
-    gap: 0.4rem;
-    max-width: var(--ancho-max);
+    grid-template-columns: minmax(0, 1fr);
+    align-content: center;
+    gap: 2rem;
+    padding: 5rem 0 calc(7rem + env(safe-area-inset-bottom));
+  }
+
+  :global(.inmersivo) .rutas .rutas__escenario {
+    padding-block: 4.5rem calc(6.5rem + env(safe-area-inset-bottom));
+  }
+
+  .rutas__cabeza {
+    display: grid;
+    gap: 0.8rem;
+    width: 100%;
+    max-width: calc(var(--ancho-max) + 2 * var(--margen));
     margin-inline: auto;
     padding-inline: var(--margen);
   }
 
-  .seccion__cabeza h2 {
-    font-size: var(--t-grande);
+  .rutas__cabeza h2 {
+    font-size: clamp(2.6rem, 1.6rem + 4.4vw, 5.25rem);
+    line-height: 0.96;
+    letter-spacing: -0.02em;
   }
 
-  .seccion__cabeza p {
-    max-width: 34rem;
+  .rutas__cabeza h2 em {
+    color: var(--acento);
+  }
+
+  .rutas__cabeza p {
+    max-width: 32rem;
+    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
     color: var(--texto-2);
   }
 
-  .seccion__cabeza--enlace {
-    grid-template-columns: 1fr auto;
-    align-items: end;
-  }
-
-  .seccion__cabeza--enlace p {
-    grid-column: 1 / -1;
-  }
-
-  .seccion__cabeza--enlace a {
-    font-weight: 600;
+  .rutas__cabeza .enlace {
     color: var(--acento);
-    text-decoration: none;
   }
 
-  /* ---------- Carruseles: desplazamiento nativo, con inercia y anclaje ---------- */
-  .carrusel,
-  .tiempo {
+  /* En el celular, la pista se desliza con el dedo */
+  .pista {
+    --orilla: max(var(--margen), calc((100vw - var(--ancho-max)) / 2 + var(--margen)));
     display: grid;
     grid-auto-flow: column;
-    gap: 14px;
-    margin-top: 1.25rem;
-    padding: 4px max(var(--margen), calc((100vw - var(--ancho-max)) / 2 + var(--margen))) 24px;
+    grid-auto-columns: min(78vw, 380px);
+    gap: 16px;
+    padding: 4px var(--orilla) 12px;
     list-style: none;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
-    scroll-padding-inline: max(var(--margen), calc((100vw - var(--ancho-max)) / 2 + var(--margen)));
+    scroll-padding-inline: var(--orilla);
     overscroll-behavior-x: contain;
     scrollbar-width: none;
+    will-change: transform;
   }
 
-  .carrusel::-webkit-scrollbar,
-  .tiempo::-webkit-scrollbar {
+  .pista::-webkit-scrollbar {
     display: none;
   }
 
-  .carrusel {
-    grid-auto-columns: min(78vw, 360px);
-  }
-
-  .carrusel__item,
-  .tiempo__hito {
+  .pista__item {
     scroll-snap-align: start;
   }
 
-  .ruta {
+  /* En el celular la escena de rutas no se fija: su contenido puede ser más alto que la pantalla */
+  @media (max-width: 47.99rem) {
+    :global(.inmersivo) .rutas .rutas__escenario {
+      position: relative;
+      height: auto;
+      min-height: 100svh;
+    }
+  }
+
+  /* En escritorio y con movimiento, la pista no se desliza: la mueve el desplazamiento de la página */
+  @media (min-width: 48rem) {
+    :global(.inmersivo) .pista {
+      overflow: visible;
+    }
+  }
+
+  .tarjeta {
     position: relative;
-    display: block;
-    aspect-ratio: 3 / 4;
-    border-radius: var(--radio-l);
+    display: grid;
+    align-content: end;
+    aspect-ratio: 4 / 5;
+    padding: 12px;
+    border-radius: 28px;
     overflow: hidden;
     isolation: isolate;
-    background: var(--acento);
+    background: var(--teja-hondo);
     color: var(--texto);
     text-decoration: none;
-    box-shadow: 0 18px 40px -22px rgb(0 0 0 / 0.45);
+    box-shadow: 0 30px 60px -36px rgb(0 0 0 / 0.55);
     transition: transform 160ms ease-out;
     -webkit-tap-highlight-color: transparent;
   }
 
-  .ruta:active {
+  .tarjeta:active {
     transform: scale(0.98);
   }
 
-  .ruta :global(.ruta__foto) {
+  .tarjeta :global(.tarjeta__foto) {
     position: absolute;
     inset: 0;
     z-index: -1;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   @media (hover: hover) {
-    .ruta:hover :global(.ruta__foto) {
+    .tarjeta:hover :global(.tarjeta__foto) {
+      transform: scale(1.05);
+    }
+  }
+
+  .tarjeta__numero {
+    position: absolute;
+    top: 14px;
+    left: 20px;
+    font-family: var(--fuente-titulos);
+    font-size: 2.6rem;
+    font-style: italic;
+    font-weight: 500;
+    line-height: 1;
+    color: #fff;
+    text-shadow: 0 2px 18px rgb(0 0 0 / 0.45);
+  }
+
+  .tarjeta__pie {
+    display: grid;
+    gap: 4px;
+    padding: 14px 18px 16px;
+    border-radius: 20px;
+  }
+
+  .tarjeta__nombre {
+    font-family: var(--fuente-titulos);
+    font-size: 1.6rem;
+    font-weight: 600;
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  .tarjeta__datos {
+    font-size: var(--t-mini);
+    font-weight: 600;
+    color: var(--texto-2);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ================= 4. El Morro ================= */
+  .morro {
+    background: #1e2a1c;
+  }
+
+  :global(.inmersivo) .morro {
+    height: 300svh;
+  }
+
+  .morro :global(.morro__foto) {
+    object-position: 50% 45%;
+    transform-origin: 49% 40%;
+  }
+
+  .morro .escenario {
+    display: grid;
+    align-content: end;
+    gap: 1.25rem;
+    padding: 6rem var(--margen) calc(7rem + env(safe-area-inset-bottom));
+  }
+
+  .morro__frase {
+    max-width: calc(var(--ancho-max));
+    width: 100%;
+    margin-inline: auto;
+    font-family: var(--fuente-titulos);
+    font-size: clamp(2.8rem, 1.4rem + 6.4vw, 7rem);
+    font-weight: 600;
+    line-height: 0.95;
+    letter-spacing: -0.025em;
+    will-change: transform, opacity;
+  }
+
+  .morro__frase em {
+    font-weight: 500;
+    color: var(--maiz);
+  }
+
+  .morro__nota {
+    display: grid;
+    gap: 8px;
+    width: 100%;
+    max-width: 30rem;
+    margin-inline: auto 0;
+    padding: 16px 20px;
+    border-radius: var(--radio-m);
+    color: var(--texto);
+    font-size: 1.0625rem;
+    line-height: 1.4;
+    text-decoration: none;
+  }
+
+  .morro__ir {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--t-nota);
+    font-weight: 600;
+    color: var(--acento);
+  }
+
+  :global(.inmersivo) .morro .escenario {
+    grid-template-areas: 'frase' 'nota';
+  }
+
+  :global(.inmersivo) .morro__frase {
+    grid-area: frase;
+    align-self: end;
+  }
+
+  :global(.inmersivo) .morro__frase--b,
+  :global(.inmersivo) .morro__nota {
+    opacity: 0;
+  }
+
+  :global(.inmersivo) .morro__nota {
+    grid-area: nota;
+  }
+
+  /* ================= 5. Semana Santa ================= */
+  .semana {
+    background: var(--noche);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :global(.inmersivo) .semana {
+    height: 200svh;
+  }
+
+  .semana__escenario {
+    display: grid;
+    align-content: center;
+    gap: 0.75rem;
+    padding: 6rem max(var(--margen), calc((100vw - var(--ancho-max)) / 2 + var(--margen))) var(--pie);
+  }
+
+  /* La luz de las velas: un resplandor cálido que respira despacio */
+  .semana__luz {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(45% 55% at 78% 82%, rgb(255 150 90 / 0.4), transparent 70%),
+      radial-gradient(30% 40% at 18% 90%, rgb(232 181 58 / 0.18), transparent 70%);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .semana__luz {
+      animation: velas 3.4s ease-in-out infinite alternate;
+    }
+  }
+
+  @keyframes velas {
+    to {
+      opacity: 0.72;
       transform: scale(1.04);
     }
   }
 
-  .ruta__texto {
-    position: absolute;
-    left: 10px;
-    right: 10px;
-    bottom: 10px;
-    display: grid;
-    gap: 2px;
-    padding: 14px 16px;
-    border-radius: var(--radio-m);
-  }
-
-  .ruta__nombre {
-    font-family: var(--fuente-titulos);
-    font-size: var(--t-titulo);
-    font-weight: 700;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-  }
-
-  .ruta__datos {
-    font-size: var(--t-mini);
-    color: var(--texto-2);
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* ---------- Widgets de "Hoy": superficies sólidas, como en el iPhone ---------- */
-  .widgets {
-    display: grid;
-    gap: 14px;
-    max-width: var(--ancho-max);
-    margin: 1.25rem auto 0;
-    padding-inline: var(--margen);
-  }
-
-  .widget {
-    position: relative;
-    display: grid;
-    align-content: start;
-    gap: 0.75rem;
-    min-height: 15rem;
-    padding: 20px;
-    border-radius: var(--radio-l);
-    background: var(--fondo-elevado);
-    color: var(--texto);
-    text-decoration: none;
-    overflow: hidden;
-  }
-
-  .widget h3 {
+  .semana__titulo {
     font-family: var(--fuente);
     font-size: var(--t-nota);
     font-weight: 600;
-    letter-spacing: -0.01em;
+    letter-spacing: 0;
+    color: #ff9a6e;
+  }
+
+  .semana__cuenta {
+    display: grid;
+    gap: 0.25rem;
+    font-family: var(--fuente-titulos);
+  }
+
+  .semana__cuenta :global(.semana__cifra) {
+    font-size: clamp(7rem, 3rem + 22vw, 17rem);
+    font-weight: 600;
+    line-height: 0.82;
+    letter-spacing: -0.045em;
+    color: #ffb48f;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  .semana__cuenta :global(.semana__texto) {
+    max-width: 16ch;
+    font-size: clamp(1.8rem, 1.2rem + 2.4vw, 3.2rem);
+    font-style: italic;
+    font-weight: 500;
+    line-height: 1.04;
+  }
+
+  .semana__ir {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 1.5rem;
+    font-weight: 600;
+    color: rgb(255 255 255 / 0.88);
+  }
+
+  /* ================= 6. Hoy ================= */
+  .hoy {
+    position: relative;
+    display: grid;
+    gap: 1.5rem;
+    padding: 5rem max(var(--margen), calc((100vw - var(--ancho-max)) / 2 + var(--margen))) 5rem;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .hoy :global(.hoy__fondo) {
+    position: absolute;
+    inset: -40px;
+    z-index: -2;
+    width: calc(100% + 80px);
+    height: calc(100% + 80px);
+    object-fit: cover;
+    filter: blur(28px) saturate(1.25);
+  }
+
+  .hoy__velo {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: color-mix(in srgb, var(--fondo) 38%, transparent);
+  }
+
+  .hoy__titulo {
+    font-size: clamp(2.6rem, 1.6rem + 4.4vw, 5.25rem);
+    line-height: 0.96;
+    letter-spacing: -0.02em;
+  }
+
+  .mosaico {
+    display: grid;
+    gap: 14px;
+  }
+
+  .pieza {
+    display: grid;
+    align-content: start;
+    gap: 1rem;
+    padding: 22px;
+    border-radius: 28px;
+    color: var(--texto);
+    text-decoration: none;
+  }
+
+  :global(.inmersivo) .pieza {
+    opacity: 0;
+  }
+
+  .pieza__titulo {
+    font-family: var(--fuente);
+    font-size: var(--t-nota);
+    font-weight: 600;
+    letter-spacing: 0;
     color: var(--acento);
   }
 
-  .widget__agenda {
+  .pieza .enlace {
+    color: var(--acento);
+  }
+
+  .agenda {
     display: grid;
-    gap: 12px;
     padding: 0;
     list-style: none;
   }
 
-  .widget__agenda li {
+  .agenda li[hidden] {
+    display: none;
+  }
+
+  .agenda li + li a {
+    border-top: 1px solid var(--separador);
+  }
+
+  .agenda a {
     display: grid;
-    grid-template-columns: 3.75rem 1fr;
-    gap: 12px;
+    grid-template-columns: 3.4rem 1fr;
+    grid-template-areas:
+      'dia nombre'
+      'mes nombre';
+    column-gap: 14px;
     align-items: center;
-  }
-
-  .widget__agenda li[hidden] {
-    display: none;
-  }
-
-  .widget__fecha {
-    display: grid;
-    font-family: var(--fuente-titulos);
-    font-size: 1.25rem;
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: -0.03em;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .widget__fecha small {
-    font-size: var(--t-mini);
-    font-weight: 500;
-    letter-spacing: 0;
-    color: var(--texto-2);
-  }
-
-  .widget__nombre {
-    font-size: var(--t-nota);
-    font-weight: 600;
-    line-height: 1.25;
-  }
-
-  .widget__ahora {
-    display: inline-block;
-    margin-right: 6px;
-    padding: 1px 7px;
-    border-radius: var(--radio-capsula);
-    background: var(--acento);
-    color: var(--sobre-acento);
-    font-size: 0.6875rem;
-    font-weight: 700;
-    vertical-align: 2px;
-  }
-
-  .widget__ahora[hidden] {
-    display: none;
-  }
-
-  .widget__dato {
-    font-family: var(--fuente-titulos);
-    font-size: 1.375rem;
-    font-weight: 600;
-    line-height: 1.25;
-    letter-spacing: -0.02em;
-  }
-
-  .widget__mas {
-    align-self: end;
-    font-size: var(--t-nota);
-    font-weight: 600;
-    color: var(--acento);
-    text-decoration: none;
-  }
-
-  .widget--foto {
-    padding: 0;
-    min-height: 17rem;
-  }
-
-  .widget--foto :global(.widget__foto) {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .widget__pie {
-    position: absolute;
-    left: 10px;
-    right: 10px;
-    bottom: 10px;
-    display: grid;
-    padding: 12px 16px;
-    border-radius: var(--radio-m);
-    font-weight: 700;
-    letter-spacing: -0.015em;
-  }
-
-  .widget__pie small {
-    font-size: var(--t-mini);
-    font-weight: 400;
-    color: var(--texto-2);
-  }
-
-  /* La de Semana Santa va de noche, como su sección, y ocupa todo el ancho */
-  .widget--noche {
-    min-height: 0;
-    color: #f5f2f7;
-    background:
-      radial-gradient(120% 120% at 100% 0%, rgb(255 138 92 / 0.24), transparent 60%),
-      #1f1828;
-  }
-
-  .widget--noche h3,
-  .widget--noche .widget__mas,
-  .widget--noche :global(strong) {
-    color: #ff8a5c;
-  }
-
-  .widget--pasaporte {
-    min-height: 0;
-  }
-
-  .widget--pasaporte :global(strong) {
-    color: var(--acento);
-  }
-
-  .widget__noche {
-    font-family: var(--fuente-titulos);
-    font-size: 1.5rem;
-    font-weight: 700;
-    line-height: 1.15;
-    letter-spacing: -0.025em;
-  }
-
-  @media (min-width: 48rem) {
-    .widgets {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-    .widget--noche {
-      grid-column: span 2;
-    }
-  }
-
-  /* ---------- La cocina, en el mismo carrusel que la historia ---------- */
-  .plato {
-    display: grid;
-    gap: 12px;
+    padding: 12px 0;
     color: var(--texto);
     text-decoration: none;
   }
 
-  .plato__icono {
+  .agenda__dia {
+    grid-area: dia;
+    font-family: var(--fuente-titulos);
+    font-size: 2.4rem;
+    font-weight: 600;
+    line-height: 0.9;
+    color: var(--acento);
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  .agenda__mes {
+    grid-area: mes;
+    font-size: var(--t-mini);
+    color: var(--texto-2);
+  }
+
+  .agenda__nombre {
+    grid-area: nombre;
+    font-family: var(--fuente-titulos);
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 1.15;
+  }
+
+  .agenda__ahora {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 8px;
+    border-radius: var(--radio-capsula);
+    background: var(--acento);
+    color: var(--sobre-acento);
+    font-family: var(--fuente);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    vertical-align: 4px;
+  }
+
+  .agenda__ahora[hidden] {
+    display: none;
+  }
+
+  .pieza--dato blockquote {
+    margin: 0;
+  }
+
+  .dato__texto {
+    font-family: var(--fuente-titulos);
+    font-size: clamp(1.6rem, 1.3rem + 1.2vw, 2.25rem);
+    font-style: italic;
+    font-weight: 500;
+    line-height: 1.16;
+    text-wrap: pretty;
+  }
+
+  .dato__texto::before {
+    content: '“';
+    color: var(--acento);
+  }
+
+  .dato__texto::after {
+    content: '”';
+    color: var(--acento);
+  }
+
+  .pieza--dato figcaption a {
+    font-weight: 600;
+    color: var(--texto);
+    text-decoration-color: var(--acento);
+    text-underline-offset: 4px;
+  }
+
+  .pieza--dato figcaption a::before {
+    content: '— ';
+    color: var(--texto-2);
+  }
+
+  /* La cocina es la única pieza sólida: el amarillo del maíz no necesita vidrio */
+  .pieza--cocina {
+    background: var(--maiz);
+    color: var(--tinta);
+  }
+
+  .pieza--cocina .pieza__titulo,
+  .pieza--cocina .enlace {
+    color: var(--tinta);
+  }
+
+  .carta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.1em 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--fuente-titulos);
+    font-size: clamp(1.5rem, 1.25rem + 1vw, 2.1rem);
+    font-weight: 600;
+    line-height: 1.18;
+  }
+
+  .carta li:not(:last-child)::after {
+    content: '·';
+    padding-inline: 0.3em;
+    color: rgb(29 29 31 / 0.45);
+  }
+
+  .carta a {
+    color: var(--tinta);
+    text-decoration: none;
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 2px no-repeat;
+    transition: background-size 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .carta a:hover {
+    background-size: 100% 2px;
+  }
+
+  .carta li:nth-child(even) a {
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  .credito--hoy {
+    color: var(--texto-2);
+  }
+
+  @media (min-width: 48rem) {
+    .mosaico {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+    .pieza--agenda {
+      grid-column: span 3;
+      grid-row: span 2;
+    }
+    .pieza--dato,
+    .pieza--cocina {
+      grid-column: span 3;
+    }
+  }
+
+  /* ================= El Pasaporte ================= */
+  .pasaporte {
+    background:
+      radial-gradient(60% 50% at 30% 45%, rgb(255 170 110 / 0.16), transparent 70%),
+      var(--noche);
+  }
+
+  :global(.inmersivo) .pasaporte {
+    height: 300svh;
+  }
+
+  .pasaporte__escenario {
     display: grid;
-    place-items: center;
-    width: 52px;
-    height: 52px;
-    border-radius: 14px;
-    background: radial-gradient(120% 90% at 20% 0%, #c4532c, #9c3d1c);
-    color: #ffffff;
-    font-size: 1.6rem;
+    align-content: center;
+    justify-items: center;
+    gap: 2rem;
+    padding: 5rem var(--margen) calc(7rem + env(safe-area-inset-bottom));
+    perspective: 1800px;
   }
 
-  /* ---------- Línea de tiempo en miniatura ---------- */
-  .tiempo {
-    grid-auto-columns: min(46vw, 13rem);
+  /* La libreta: una hoja de papel con sus seis sellos y, encima, la tapa de cuero que se abre hacia la izquierda */
+  .libreta {
+    position: relative;
+    width: min(78vw, 22rem);
+    aspect-ratio: 5 / 6;
+    transform-style: preserve-3d;
   }
 
-  .tiempo__hito {
+  .libreta__hoja {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-content: center;
+    gap: 2px 6px;
+    padding: 6% 7%;
+    border-radius: 6px 14px 14px 6px;
+    background:
+      repeating-radial-gradient(circle at 100% 0%, transparent 0 20px, rgb(168 67 31 / 0.07) 20px 21px),
+      repeating-radial-gradient(circle at 0% 100%, transparent 0 28px, rgb(232 181 58 / 0.12) 28px 29px),
+      #f6efe1;
+    box-shadow:
+      inset 8px 0 12px -8px rgb(60 30 10 / 0.35),
+      0 40px 70px -30px rgb(0 0 0 / 0.8);
+  }
+
+  .libreta__sello:nth-child(odd) {
+    transform: translateY(6%);
+  }
+
+  :global(.inmersivo) .libreta__sello {
+    opacity: 0;
+  }
+
+  .libreta__tapa {
+    position: absolute;
+    inset: 0;
+    display: none;
+    justify-items: center;
+    align-content: center;
+    gap: 1rem;
+    border-radius: 6px 14px 14px 6px;
+    background:
+      radial-gradient(120% 80% at 20% 0%, rgb(255 255 255 / 0.12), transparent 55%),
+      repeating-linear-gradient(115deg, rgb(0 0 0 / 0.035) 0 2px, transparent 2px 5px),
+      var(--teja-hondo);
+    color: #f3cf74;
+    text-align: center;
+    transform-origin: 0 50%;
+    backface-visibility: hidden;
+    box-shadow: inset 6px 0 10px -4px rgb(0 0 0 / 0.45);
+    will-change: transform;
+  }
+
+  /* Sin movimiento, la libreta se ve ya abierta */
+  :global(.inmersivo) .libreta__tapa {
+    display: grid;
+  }
+
+  .libreta__tapa::before {
+    content: '';
+    position: absolute;
+    inset: 10px;
+    border: 1.5px solid rgb(232 181 58 / 0.55);
+    border-radius: 4px 10px 10px 4px;
+  }
+
+  .libreta__escudo {
+    width: 3.6rem;
+    height: 4.2rem;
+    background: linear-gradient(160deg, #fbe39a, #e8b53a 45%, #b9832a);
+  }
+
+  .libreta__nombre {
+    font-family: var(--fuente-titulos);
+    font-size: 1.9rem;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .libreta__nombre em {
+    display: block;
+    font-size: 0.72em;
+  }
+
+  .pasaporte__texto {
+    display: grid;
+    justify-items: start;
+    gap: 1rem;
+    max-width: 28rem;
+  }
+
+  :global(.inmersivo) .pasaporte__texto {
+    opacity: 0;
+  }
+
+  .pasaporte__titulo {
+    font-size: clamp(2.4rem, 1.5rem + 4vw, 4.5rem);
+    line-height: 0.96;
+    letter-spacing: -0.02em;
+  }
+
+  .pasaporte__titulo em {
+    font-weight: 500;
+    color: #ffb48f;
+  }
+
+  .pasaporte__bajada {
+    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+    line-height: 1.45;
+    color: rgb(255 255 255 / 0.84);
+  }
+
+  .pasaporte__cuenta {
+    font-family: var(--fuente-titulos);
+    font-size: 1.5rem;
+    font-style: italic;
+    color: #f3cf74;
+  }
+
+  @media (min-width: 48rem) {
+    .pasaporte__escenario {
+      grid-template-columns: auto minmax(0, 28rem);
+      justify-content: center;
+      gap: 4rem;
+      padding-bottom: 4.5rem;
+    }
+    .libreta {
+      width: min(36vw, 24rem);
+    }
+  }
+
+  /* ================= 7. Historia ================= */
+  .historia {
+    background: var(--cantera);
+  }
+
+  :global(.inmersivo) .historia {
+    height: 320svh;
+  }
+
+  .historia__escenario {
+    display: grid;
+    align-content: center;
+    gap: 2rem;
+    padding: 6rem max(var(--margen), calc((100vw - var(--ancho-max)) / 2 + var(--margen))) calc(7rem + env(safe-area-inset-bottom));
+  }
+
+  .historia__titulo {
+    font-size: clamp(2.4rem, 1.6rem + 3.6vw, 4.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+  }
+
+  .contador {
+    display: none;
+  }
+
+  :global(.inmersivo) .contador {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .contador__anio {
+    font-family: var(--fuente-titulos);
+    font-size: clamp(7rem, 3rem + 20vw, 16rem);
+    font-weight: 600;
+    line-height: 0.82;
+    letter-spacing: -0.045em;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  .contador__titulo {
+    min-height: 2.6em;
+    max-width: 26ch;
+    font-family: var(--fuente-titulos);
+    font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.4rem);
+    font-style: italic;
+    font-weight: 500;
+    line-height: 1.12;
+    color: rgb(255 248 240 / 0.9);
+  }
+
+  .contador__linea {
+    display: block;
+    height: 2px;
+    background: rgb(255 255 255 / 0.25);
+    border-radius: 1px;
+    overflow: hidden;
+  }
+
+  .contador__linea span {
+    display: block;
+    height: 100%;
+    background: var(--maiz);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  /* Sin movimiento, los años se leen en fila; con movimiento, los lee solo el lector de pantalla */
+  .anios {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(60vw, 15rem);
+    margin-inline: calc(-1 * max(var(--margen), calc((100vw - var(--ancho-max)) / 2 + var(--margen))));
+    padding: 0 max(var(--margen), calc((100vw - var(--ancho-max)) / 2 + var(--margen)));
+    list-style: none;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .anios li {
     display: grid;
     align-content: start;
-    gap: 6px;
-    min-height: 8.5rem;
-    padding: 18px;
-    border-radius: var(--radio-m);
-    background: var(--fondo-elevado);
+    gap: 10px;
+    padding: 0 1.5rem 0 1rem;
+    border-left: 1px solid rgb(255 255 255 / 0.25);
   }
 
-  .tiempo__anio {
+  .anios__anio {
     font-family: var(--fuente-titulos);
-    font-size: 1.75rem;
-    font-weight: 700;
-    letter-spacing: -0.035em;
-    color: var(--acento);
-    font-variant-numeric: tabular-nums;
+    font-size: clamp(3rem, 2.4rem + 2.6vw, 4.5rem);
+    font-weight: 600;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
   }
 
-  .tiempo__titulo {
+  .anios__titulo {
     font-size: var(--t-nota);
-    font-weight: 600;
-    line-height: 1.3;
+    line-height: 1.35;
+    color: rgb(255 248 240 / 0.78);
+  }
+
+  :global(.inmersivo) .anios {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .historia__enlaces {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 2rem;
+  }
+
+  /* ================= 8. Cierre ================= */
+  .cierre {
+    display: grid;
+    justify-items: center;
+    gap: 1.5rem;
+    padding: 6rem var(--margen) 5rem;
+    text-align: center;
+  }
+
+  .cierre__torre {
+    display: block;
+    width: 64px;
+    height: 74px;
+  }
+
+  .cierre h2 {
+    font-size: clamp(2.6rem, 1.6rem + 4.4vw, 5.25rem);
+    line-height: 0.96;
+    letter-spacing: -0.02em;
+  }
+
+  .cierre h2 em {
+    color: var(--acento);
+  }
+
+  /* ================= Escritorio ================= */
+  @media (min-width: 48rem) {
+    .marca-movil {
+      display: none;
+    }
+    .apertura__marco :global(.apertura__foto) {
+      object-position: 60% 40%;
+    }
+    .apertura__texto,
+    .torre__frases,
+    .torre__hora,
+    .morro__frase,
+    .semana__escenario {
+      --pie: 4.5rem;
+    }
+    .credito {
+      top: auto;
+      bottom: 1rem;
+      right: var(--margen);
+      writing-mode: horizontal-tb;
+      transform: none;
+    }
+    .torre__reloj {
+      top: 50%;
+      right: max(var(--margen), calc((100vw - var(--ancho-max)) / 2 + var(--margen)));
+      transform: translateY(-50%);
+    }
+    .torre__hora {
+      left: auto;
+      right: max(var(--margen), calc((100vw - var(--ancho-max)) / 2 + var(--margen)));
+    }
+    .morro .escenario {
+      padding-bottom: 4.5rem;
+    }
+    .rutas__escenario,
+    :global(.inmersivo) .rutas .rutas__escenario {
+      padding-block: 6.5rem 3rem;
+    }
+    .historia__escenario {
+      padding-bottom: 4.5rem;
+    }
   }
 </style>

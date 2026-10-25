@@ -32,10 +32,8 @@ const { paradas, etiqueta, trazado, numerada = true } = Astro.props;
   import urlWorker from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import fuente from '../../lib/mapa-fuente.json';
   import type { LugarMapa } from '../../lib/lugares';
+  import { alCambiarTema, temaEfectivo } from '../../lib/tema';
 
-  const oscuro = matchMedia('(prefers-color-scheme: dark)');
-  // Las páginas de Semana Santa van de noche aunque el teléfono esté en tema claro
-  const tema = () => (document.documentElement.hasAttribute('data-noche') || oscuro.matches ? 'oscuro' : 'claro');
   const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const color = (variable: string) => getComputedStyle(document.documentElement).getPropertyValue(variable).trim();
 
@@ -65,7 +63,7 @@ const { paradas, etiqueta, trazado, numerada = true } = Astro.props;
 
     const mapa = new maplibregl.Map({
       container: contenedor.querySelector<HTMLElement>('.mapa-ruta__lienzo')!,
-      style: estiloMapa(tema(), location.origin, PALETA_VIDRIO),
+      style: estiloMapa(temaEfectivo(), location.origin, PALETA_VIDRIO),
       bounds: encuadre,
       fitBoundsOptions: { padding: 48, maxZoom: 17 },
       maxBounds: [
@@ -186,8 +184,9 @@ const { paradas, etiqueta, trazado, numerada = true } = Astro.props;
       });
     }
     mapa.on('load', capas);
-    oscuro.addEventListener('change', () => {
-      mapa.setStyle(estiloMapa(tema(), location.origin, PALETA_VIDRIO));
+    // Con el botón de tema o con el del teléfono, el mapa cambia de paleta
+    alCambiarTema((tema) => {
+      mapa.setStyle(estiloMapa(tema, location.origin, PALETA_VIDRIO));
       mapa.once('style.load', capas);
     });
 

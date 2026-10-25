@@ -264,5 +264,160 @@
     "licencia": "CC BY-SA 4.0",
     "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
     "fuente": "https://commons.wikimedia.org/wiki/File:Casa_Julio_Arboleda_Popay%C3%A1n.jpg"
+  },
+  "gobernacion-del-cauca": {
+    "titulo": "Gobernación del Cauca Popayán.jpg",
+    "autor": "DavidSMSilva",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Gobernaci%C3%B3n_del_Cauca_Popay%C3%A1n.jpg",
+    "alt": "La fachada blanca de la Gobernación del Cauca, con balcones de madera"
+  },
+  "carantantas": {
+    "titulo": "Carantantas of Popayán 02.jpg",
+    "autor": "Bernard Gagnon",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Carantantas_of_Popay%C3%A1n_02.jpg",
+    "alt": "Carantantas de Popayán sobre una hoja de plátano"
+  },
+  "receta-carantanta": {
+    "titulo": "Sopa de Carantanta 0.jpg",
+    "autor": "Xemenendura",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Sopa_de_Carantanta_0.jpg",
+    "alt": "Un plato de sopa de carantanta con papa y carne molida"
+  },
+  "receta-champus": {
+    "titulo": "Champus.jpg",
+    "autor": "Tory Stewart",
+    "licencia": "CC BY-SA 2.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/2.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Champus.jpg",
+    "alt": "Un vaso de champús con maíz y trozos de fruta"
+  },
+  "personaje-belalcazar": {
+    "titulo": "Benalcazar.png",
+    "autor": "Autor desconocido",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Benalcazar.png",
+    "alt": "Retrato de Sebastián de Belalcázar con armadura",
+    "cambios": "Convertida a JPEG"
+  },
+  "personaje-caldas": {
+    "titulo": "Francisco José de Caldas, ca. 1836.jpg",
+    "autor": "José María Espinosa Prieto",
+    "licencia": "Dominio público",
+    "urlLicencia": null,
+    "fuente": "https://commons.wikimedia.org/wiki/File:Francisco_Jos%C3%A9_de_Caldas,_ca._1836.jpg",
+    "alt": "Retrato de Francisco José de Caldas, hacia 1836"
+  },
+  "personaje-camilo-torres": {
+    "titulo": "Camilo Torres y Tenorio.jpg",
+    "autor": "Ministerio de Cultura de Colombia",
+    "licencia": "Dominio público",
+    "urlLicencia": null,
+    "fuente": "https://commons.wikimedia.org/wiki/File:Camilo_Torres_y_Tenorio.jpg",
+    "alt": "Retrato grabado de Camilo Torres Tenorio"
+  },
+  "personaje-mosquera": {
+    "titulo": "Presidente Tomás Cipriano de Mosquera.jpg",
+    "autor": "Desconocido",
+    "licencia": "Dominio público",
+    "urlLicencia": null,
+    "fuente": "https://commons.wikimedia.org/wiki/File:Presidente_Tom%C3%A1s_Cipriano_de_Mosquera.jpg",
+    "alt": "Retrato al óleo de Tomás Cipriano de Mosquera con uniforme y banda presidencial"
+  },
+  "personaje-guillermo-valencia": {
+    "titulo": "GuillermoValencia.jpg",
+    "autor": "Cultura Banco de la República",
+    "licencia": "Dominio público",
+    "urlLicencia": null,
+    "fuente": "https://commons.wikimedia.org/wiki/File:GuillermoValencia.jpg",
+    "alt": "Fotografía de Guillermo Valencia joven"
+  },
+  "personaje-josefina-valencia": {
+    "titulo": "Cabinet of Rojas Pinilla.jpg",
+    "autor": "Revista Semana",
+    "licencia": "Dominio público",
+    "urlLicencia": null,
+    "fuente": "https://commons.wikimedia.org/wiki/File:Cabinet_of_Rojas_Pinilla.jpg",
+    "alt": "Josefina Valencia, al centro, con el gabinete del general Rojas Pinilla en 1956"
+  },
+  "personaje-guillermo-leon-valencia": {
+    "titulo": "Guillermo León Valencia 1a.JPG",
+    "autor": "Julian David Muñoz Ortega",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Guillermo_Le%C3%B3n_Valencia_1a.JPG",
+    "alt": "Busto de Guillermo León Valencia sobre su pedestal",
+    "cambios": "Recortada"
+  },
+  "excursion-silvia": {
+    "titulo": "Silvia Cauca 3.JPG",
+    "autor": "Isischogalatea",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Silvia_Cauca_3.JPG",
+    "alt": "El valle de Silvia, con el pueblo entre montañas verdes"
+  },
+  "excursion-coconuco": {
+    "titulo": "Termales de Coconuco.jpg",
+    "autor": "john galindo",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Termales_de_Coconuco.jpg",
+    "alt": "Las piscinas de los termales de Coconuco entre montañas"
+  },
+  "excursion-purace": {
+    "titulo": "Puracé crater in 2017 - Parque Nacional Natural Puracé.jpg",
+    "autor": "Thomas Fuhrmann",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Purac%C3%A9_crater_in_2017_-_Parque_Nacional_Natural_Purac%C3%A9.jpg",
+    "alt": "El cráter del volcán Puracé, gris, bajo las nubes"
+  },
+  "excursion-tierradentro": {
+    "titulo": "Tombs in Tierra Dentro.jpg",
+    "autor": "inyucho",
+    "licencia": "CC BY 2.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by/2.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Tombs_in_Tierra_Dentro.jpg",
+    "alt": "Una tumba de Tierradentro con pinturas rojas y negras en sus paredes"
+  },
+  "semana-santa": {
+    "titulo": "Paso de La Verónica.jpg",
+    "autor": "Sonilortiz",
+    "licencia": "CC BY 3.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by/3.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Paso_de_La_Ver%C3%B3nica.jpg",
+    "alt": "El paso de La Verónica, de noche, entre velas, en una procesión de Popayán"
+  },
+  "procesion-lunes-santo": {
+    "titulo": "San Felipe - Lunes Santo 2019.png",
+    "autor": "Wfpc92",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:San_Felipe_-_Lunes_Santo_2019.png",
+    "alt": "El paso de San Felipe iluminado con velas en la procesión del Lunes Santo de 2019",
+    "cambios": "Convertida a JPEG"
+  },
+  "procesion-miercoles-santo": {
+    "titulo": "El Despojo, Miércoles Santo, Semana Santa en Popayán.jpg",
+    "autor": "DavidSMSilva",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:El_Despojo,_Mi%C3%A9rcoles_Santo,_Semana_Santa_en_Popay%C3%A1n.jpg",
+    "alt": "El paso de El Despojo, con el Amo Jesús, adornado con rosas"
+  },
+  "procesion-viernes-santo": {
+    "titulo": "Virgen de la Soledad, Santo Domingo Popayán Viernes Santo.jpg",
+    "autor": "DavidSMSilva",
+    "licencia": "CC BY-SA 4.0",
+    "urlLicencia": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Virgen_de_la_Soledad,_Santo_Domingo_Popay%C3%A1n_Viernes_Santo.jpg",
+    "alt": "La Virgen de la Soledad en su paso, en la iglesia de Santo Domingo"
   }
 }

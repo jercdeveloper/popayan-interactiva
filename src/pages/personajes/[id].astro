@@ -1,0 +1,284 @@
+---
+import { getCollection, getEntries, render } from 'astro:content';
+import { getImage } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Icono from '../../components/Icono.astro';
+import Retrato from '../../components/Retrato.astro';
+import Circulo from '../../components/vidrio/Circulo.astro';
+import { CATEGORIAS } from '../../lib/lugares';
+import { fotoDe } from '../../lib/fotos';
+
+export async function getStaticPaths() {
+  const todos = (await getCollection('personajes')).sort((a, b) => a.data.nacimiento.anio - b.data.nacimiento.anio);
+  return todos.map((persona, i) => ({ params: { id: persona.id }, props: { persona, anterior: todos[i - 1], siguiente: todos[i + 1] } }));
+}
+
+const { persona, anterior, siguiente } = Astro.props;
+const { Content } = await render(persona);
+const { nombre, iniciales, nacimiento, muerte, oficio, resumen, fuentes } = persona.data;
+const lugares = await Promise.all(
+  (await getEntries(persona.data.lugares)).map(async (l) => {
+    const f = fotoDe(l.id);
+    return { lugar: l, miniatura: f ? (await getImage({ src: f.src, width: 96, height: 96, fit: 'cover', format: 'webp' })).src : null };
+  }),
+);
+const vida = muerte
+  ? `${nacimiento.lugar}, ${nacimiento.anio} – ${muerte.lugar}, ${muerte.anio}`
+  : `Nació en ${nacimiento.lugar}, ${nacimiento.anio}`;
+const retrato = fotoDe(`personaje-${persona.id}`);
+---
+
+<Base titulo={nombre} descripcion={resumen}>
+  <!-- La sala: el retrato colgado sobre la cantera, y el nombre en grande al lado -->
+  <header class="sala">
+    <div class="sala__controles">
+      <Circulo icono="caret-left" etiqueta="Todos los personajes" href="/personajes" />
+    </div>
+    <div class="sala__obra">
+      <Retrato foto={retrato} iniciales={iniciales} alt={retrato?.credito.alt ?? ''} tamano="grande" conCredito />
+    </div>
+    <div class="sala__texto">
+      <h1>{nombre}</h1>
+      <p class="sala__oficio">{oficio}</p>
+      <p class="sala__vida">{vida}</p>
+    </div>
+  </header>
+
+  <article class="pagina">
+    <p class="resumen">{resumen}</p>
+
+    <div class="cuerpo">
+      <Content />
+    </div>
+
+    {
+      lugares.length > 0 && (
+        <section class="grupo" aria-labelledby="titulo-lugares">
+          <h2 class="grupo__titulo" id="titulo-lugares">
+            Sus lugares en Popayán
+          </h2>
+          <ul class="celdas">
+            {lugares.map(({ lugar, miniatura }) => (
+              <li>
+                <a class="celda" href={`/lugares/${lugar.id}`}>
+                  {miniatura ? (
+                    <img class="lugar__foto" src={miniatura} alt="" width="40" height="40" loading="lazy" decoding="async" />
+                  ) : (
+                    <Icono nombre={CATEGORIAS[lugar.data.categoria].icono} class="celda__icono" />
+                  )}
+                  <span class="celda__texto">
+                    {lugar.data.nombre}
+                    <small>{lugar.data.resumen}</small>
+                  </span>
+                  <Icono nombre="caret-right" class="celda__flecha" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <nav class="vecinas" aria-label="Otros personajes">
+      {
+        anterior && (
+          <a class="vecina" href={`/personajes/${anterior.id}`}>
+            <Icono nombre="caret-left" />
+            <span>
+              <small>{anterior.data.nacimiento.anio}</small>
+              {anterior.data.nombre}
+            </span>
+          </a>
+        )
+      }
+      {
+        siguiente && (
+          <a class="vecina vecina--siguiente" href={`/personajes/${siguiente.id}`}>
+            <span>
+              <small>{siguiente.data.nacimiento.anio}</small>
+              {siguiente.data.nombre}
+            </span>
+            <Icono nombre="caret-right" />
+          </a>
+        )
+      }
+    </nav>
+
+    <section class="grupo" aria-labelledby="titulo-fuentes">
+      <h2 class="grupo__titulo" id="titulo-fuentes">Fuentes</h2>
+      <ul class="celdas">
+        {
+          fuentes.map((f) => (
+            <li>
+              <a class="celda" href={f.url} rel="noopener noreferrer">
+                <Icono nombre="link-simple" class="celda__icono" />
+                <span class="celda__texto">{f.titulo}</span>
+                <Icono nombre="arrow-up-right" class="celda__flecha" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </article>
+</Base>
+
+<style>
+  /* ---------- La sala, sobre cantera ---------- */
+  .sala {
+    position: relative;
+    display: grid;
+    gap: 1.75rem;
+    padding: calc(4.5rem + env(safe-area-inset-top)) max(var(--margen), calc((100vw - 52rem) / 2 + var(--margen))) 4.25rem;
+    background:
+      radial-gradient(90% 70% at 70% 10%, rgb(255 240 220 / 0.16), transparent 65%),
+      var(--cantera);
+    color: #fff;
+  }
+
+  /* El borde de la hoja, como en las cabeceras con foto */
+  .sala::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 26px;
+    border-radius: 26px 26px 0 0;
+    background: var(--fondo);
+  }
+
+  .sala__controles {
+    position: absolute;
+    top: calc(12px + env(safe-area-inset-top));
+    left: var(--margen);
+  }
+
+  .sala__obra {
+    width: min(62vw, 17rem);
+  }
+
+  .sala__texto {
+    display: grid;
+    gap: 0.6rem;
+    align-content: end;
+  }
+
+  .sala h1 {
+    max-width: 13ch;
+    font-size: clamp(2.6rem, 1.6rem + 4.4vw, 4.75rem);
+    line-height: 0.96;
+    letter-spacing: -0.02em;
+  }
+
+  .sala__oficio {
+    font-family: var(--fuente-titulos);
+    font-size: clamp(1.3rem, 1.1rem + 0.8vw, 1.7rem);
+    font-style: italic;
+    font-weight: 500;
+    line-height: 1.2;
+    color: #ffe2cf;
+  }
+
+  .sala__vida {
+    font-size: var(--t-nota);
+    color: rgb(255 248 240 / 0.8);
+  }
+
+  @media (min-width: 48rem) {
+    .sala {
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: end;
+      gap: 3rem;
+      padding-top: calc(8rem + env(safe-area-inset-top));
+    }
+    .sala__controles {
+      top: calc(80px + env(safe-area-inset-top));
+    }
+    .sala__obra {
+      width: 20rem;
+    }
+  }
+
+  .pagina {
+    display: grid;
+    gap: 2rem;
+    max-width: 42rem;
+    margin-inline: auto;
+    padding: 0.5rem var(--margen) 0;
+  }
+
+  .resumen {
+    font-family: var(--fuente-titulos);
+    font-size: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+    font-style: italic;
+    font-weight: 500;
+    line-height: 1.22;
+    letter-spacing: -0.008em;
+  }
+
+  .cuerpo {
+    display: grid;
+    gap: 1rem;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    letter-spacing: -0.012em;
+  }
+
+  .lugar__foto {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    object-fit: cover;
+  }
+
+  .celdas .celda__texto small {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .vecinas {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .vecina {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px;
+    border-radius: var(--radio-m);
+    background: var(--fondo-elevado);
+    color: var(--texto);
+    font-size: var(--t-nota);
+    font-weight: 600;
+    line-height: 1.3;
+    text-decoration: none;
+  }
+
+  .vecina span {
+    display: grid;
+    gap: 2px;
+  }
+
+  .vecina small {
+    font-size: var(--t-mini);
+    font-weight: 700;
+    color: var(--acento);
+  }
+
+  .vecina :global(svg) {
+    flex: none;
+    color: var(--texto-3);
+  }
+
+  .vecina--siguiente {
+    grid-column: 2;
+    justify-content: space-between;
+    text-align: right;
+  }
+</style>

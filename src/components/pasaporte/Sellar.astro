@@ -30,7 +30,7 @@ const radio = radioDe(categoria);
     <Sello id={id} tipo={CATEGORIAS[categoria].singular} icono={CATEGORIAS[categoria].icono} />
   </div>
   <div class="sellar__texto">
-    <h2 id="titulo-sellar">Pasaporte de Popayán</h2>
+    <h2 id="titulo-sellar">Sella este lugar <em>en tu pasaporte</em></h2>
     <p data-sellar-estado aria-live="polite">Cuando estés aquí, sella {nombre} en tu pasaporte.</p>
     <div class="sellar__acciones">
       <button type="button" class="boton boton--lleno" data-sellar-boton>Sellar mi pasaporte</button>
@@ -112,18 +112,25 @@ const radio = radioDe(categoria);
 </script>
 
 <style>
+  /* Una hoja del pasaporte: papel con tinte dorado y fondo de seguridad, igual que en la página del Pasaporte */
   .sellar {
     display: grid;
-    grid-template-columns: 7.5rem minmax(0, 1fr);
-    gap: 18px;
+    grid-template-columns: 9.5rem minmax(0, 1fr);
+    gap: 22px;
     align-items: center;
-    padding: 18px;
-    border-radius: var(--radio-l);
-    background: var(--fondo-elevado);
+    padding: 22px;
+    border-radius: 18px;
+    background:
+      repeating-radial-gradient(circle at 100% 0%, transparent 0 22px, color-mix(in srgb, var(--acento) 7%, transparent) 22px 23px),
+      repeating-radial-gradient(circle at 0% 100%, transparent 0 30px, color-mix(in srgb, var(--maiz) 9%, transparent) 30px 31px),
+      color-mix(in srgb, var(--fondo-elevado) 90%, var(--maiz));
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.4) inset,
+      0 16px 34px -24px rgb(40 20 8 / 0.5);
   }
 
   .sellar__dibujo {
-    padding: 4px;
+    padding: 2px;
   }
 
   .sellar__texto {
@@ -132,10 +139,15 @@ const radio = radioDe(categoria);
   }
 
   .sellar h2 {
-    font-family: var(--fuente);
-    font-size: var(--t-nota);
+    font-size: clamp(1.6rem, 1.35rem + 1vw, 2.1rem);
     font-weight: 600;
+    line-height: 1;
     letter-spacing: -0.01em;
+  }
+
+  .sellar h2 em {
+    display: block;
+    font-weight: 500;
     color: var(--acento);
   }
 
@@ -174,7 +186,7 @@ const radio = radioDe(categoria);
       text-align: center;
     }
     .sellar__dibujo {
-      width: 8.5rem;
+      width: 10rem;
     }
     .sellar__acciones {
       justify-content: center;

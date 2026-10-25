@@ -6,6 +6,7 @@ import Compartir from '../../components/Compartir.astro';
 import CabeceraFoto from '../../components/vidrio/CabeceraFoto.astro';
 import Circulo from '../../components/vidrio/Circulo.astro';
 import Sellar from '../../components/pasaporte/Sellar.astro';
+import Iniciales from '../../components/Iniciales.astro';
 import { CATEGORIAS } from '../../lib/lugares';
 import { fotoDe } from '../../lib/fotos';
 
@@ -21,6 +22,10 @@ const rutas = (await getCollection('rutas'))
   .sort((a, b) => a.data.orden - b.data.orden);
 const { nombre, categoria, epoca, resumen, dato, fuentes, revision, direccion, negocio } = lugar.data;
 const foto = fotoDe(lugar.id);
+// Las personas ligadas a este lugar
+const personajes = (await getCollection('personajes'))
+  .filter((p) => p.data.lugares.some((l) => l.id === lugar.id))
+  .sort((a, b) => a.data.nacimiento.anio - b.data.nacimiento.anio);
 // Las recetas que se pueden probar aquí
 const recetas = (await getCollection('recetas'))
   .filter((r) => r.data.dondeProbar.some((l) => l.id === lugar.id))
@@ -48,6 +53,9 @@ const tipo = CATEGORIAS[categoria];
   <article class="hoja">
     <p class="resumen">{resumen}</p>
 
+    <!-- El Pasaporte va primero: es lo que se hace estando aquí -->
+    <Sellar id={lugar.id} nombre={nombre} categoria={categoria} coordenadas={lugar.data.coordenadas} />
+
     {
       (direccion || negocio) && (
         <ul class="celdas">
@@ -73,21 +81,12 @@ const tipo = CATEGORIAS[categoria];
 
     {
       dato && (
-        <aside class="dato" aria-label="Dato curioso">
-          <svg class="dato__esfera" viewBox="0 0 48 48" aria-hidden="true">
-            <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="2.5" />
-            <line x1="24" y1="24" x2="33" y2="15" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" />
-            <circle cx="24" cy="24" r="3" fill="currentColor" />
-          </svg>
-          <div>
-            <h2>¿Sabías que…?</h2>
-            <p>{dato}</p>
-          </div>
+        <aside class="dato" aria-labelledby="titulo-dato">
+          <h2 id="titulo-dato">¿Sabías que…?</h2>
+          <p>{dato}</p>
         </aside>
       )
     }
-
-    <Sellar id={lugar.id} nombre={nombre} categoria={categoria} coordenadas={lugar.data.coordenadas} />
 
     <div class="cuerpo">
       <Content />
@@ -105,6 +104,30 @@ const tipo = CATEGORIAS[categoria];
                 <a class="celda" href={`/rutas/${r.id}`}>
                   <Icono nombre={r.data.modo === 'carro' ? 'car-simple' : 'footprints'} class="celda__icono" />
                   <span class="celda__texto">{r.data.nombre}</span>
+                  <Icono nombre="caret-right" class="celda__flecha" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      personajes.length > 0 && (
+        <section class="grupo" aria-labelledby="titulo-personajes">
+          <h2 class="grupo__titulo" id="titulo-personajes">
+            {personajes.length === 1 ? 'Su personaje' : 'Sus personajes'}
+          </h2>
+          <ul class="celdas">
+            {personajes.map((p) => (
+              <li>
+                <a class="celda" href={`/personajes/${p.id}`}>
+                  <Iniciales iniciales={p.data.iniciales} tamano="chico" />
+                  <span class="celda__texto">
+                    {p.data.nombre}
+                    <small>{p.data.oficio}</small>
+                  </span>
                   <Icono nombre="caret-right" class="celda__flecha" />
                 </a>
               </li>
@@ -207,32 +230,41 @@ const tipo = CATEGORIAS[categoria];
     background: var(--fondo);
   }
 
-  .hoja > * {
+  .hoja > :global(*) {
     width: 100%;
     max-width: 42rem;
     margin-inline: auto;
   }
 
+  /* La entradilla, como en una revista: la letra del Quijote de Ibarra, en cursiva */
   .resumen {
     font-family: var(--fuente-titulos);
-    font-size: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem);
-    font-weight: 600;
-    line-height: 1.25;
-    letter-spacing: -0.022em;
+    font-size: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+    font-style: italic;
+    font-weight: 500;
+    line-height: 1.22;
+    letter-spacing: -0.008em;
+    text-wrap: pretty;
   }
 
+  /* El dato, como una cita destacada entre dos filetes */
   .dato {
+    position: relative;
     display: grid;
-    grid-template-columns: 44px 1fr;
-    gap: 14px;
-    padding: 20px;
-    border-radius: var(--radio-l);
-    background: var(--fondo-elevado);
+    gap: 0.75rem;
+    padding: 1.4rem 0 1.5rem 3.4rem;
+    border-block: 1px solid var(--separador);
+    border-top: 2px solid var(--acento);
   }
 
-  .dato__esfera {
-    width: 44px;
-    height: 44px;
+  .dato::before {
+    content: '“';
+    position: absolute;
+    top: 0.6rem;
+    left: -0.2rem;
+    font-family: var(--fuente-titulos);
+    font-size: 5.5rem;
+    line-height: 1;
     color: var(--acento);
   }
 
@@ -240,16 +272,17 @@ const tipo = CATEGORIAS[categoria];
     font-family: var(--fuente);
     font-size: var(--t-nota);
     font-weight: 600;
-    letter-spacing: -0.01em;
+    letter-spacing: 0;
     color: var(--acento);
   }
 
   .dato p {
-    margin-top: 4px;
-    font-size: 1.1875rem;
+    font-family: var(--fuente-titulos);
+    font-size: clamp(1.4rem, 1.2rem + 0.9vw, 1.85rem);
+    font-style: italic;
     font-weight: 500;
-    line-height: 1.35;
-    letter-spacing: -0.018em;
+    line-height: 1.22;
+    text-wrap: pretty;
   }
 
   .cuerpo {
@@ -259,4 +292,16 @@ const tipo = CATEGORIAS[categoria];
     line-height: 1.6;
     letter-spacing: -0.012em;
   }
+
+  /* Capitular en el primer párrafo del texto, en teja */
+  .cuerpo > :global(p:first-of-type::first-letter) {
+    float: left;
+    margin: 0.06em 0.1em 0 0;
+    font-family: var(--fuente-titulos);
+    font-size: 3.6em;
+    font-weight: 600;
+    line-height: 0.8;
+    color: var(--acento);
+  }
+
 </style>

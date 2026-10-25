@@ -7,6 +7,7 @@ import Compartir from '../../components/Compartir.astro';
 import CabeceraFoto from '../../components/vidrio/CabeceraFoto.astro';
 import Circulo from '../../components/vidrio/Circulo.astro';
 import MapaRuta from '../../components/vidrio/MapaRuta.astro';
+import ColeccionRuta from '../../components/pasaporte/ColeccionRuta.astro';
 import {
   resumirRuta,
   rutasOrdenadas,
@@ -60,6 +61,7 @@ const lista = await Promise.all(
     meta={enCarro ? 'Ruta en carro' : 'Ruta a pie'}
     icono={enCarro ? 'car-simple' : 'footprints'}
     alto="grande"
+    transicion={`foto-ruta-${ruta.id}`}
   >
     <Fragment slot="controles">
       <Circulo icono="caret-left" etiqueta="Todas las rutas" href="/rutas" />
@@ -91,6 +93,8 @@ const lista = await Promise.all(
 
     <div class="intro"><Content /></div>
 
+    <ColeccionRuta ruta={ruta.id} paradas={paradas} />
+
     <section class="seccion-mapa" aria-labelledby="titulo-mapa">
       <h2 class="grupo__titulo" id="titulo-mapa">El recorrido</h2>
       <MapaRuta paradas={paradas.map(aMapa)} etiqueta={`Mapa de la ${ruta.data.nombre}`} />
@@ -106,14 +110,14 @@ const lista = await Promise.all(
     <ol class="paradas" aria-label="Paradas">
       {
         lista.map(({ parada, icono, miniatura, tramo }, i) => (
-          <li class="parada" id={`parada-${i + 1}`}>
+          <li class="parada revelar" id={`parada-${i + 1}`}>
             {tramo && (
               <p class="parada__tramo">
                 <Icono nombre={enCarro ? 'car-simple' : 'footprints'} />
                 {tramo}
               </p>
             )}
-            <a class="parada__tarjeta" href={`/lugares/${parada.id}`}>
+            <a class="parada__tarjeta" href={`/lugares/${parada.id}`} data-parada-sello={parada.id}>
               <span class="parada__numero" aria-hidden="true">
                 {i + 1}
               </span>
@@ -326,6 +330,12 @@ const lista = await Promise.all(
     font-size: var(--t-mini);
     font-weight: 700;
     font-variant-numeric: tabular-nums;
+  }
+
+  /* Parada ya sellada: el número lleva el borde dentado de un sello */
+  .parada--sellada .parada__numero {
+    outline: 2px dashed var(--acento);
+    outline-offset: 2px;
   }
 
   .parada__foto {

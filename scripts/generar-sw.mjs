@@ -27,10 +27,18 @@ await writeFile(join(DIST, 'mapa', 'indice.json'), JSON.stringify({ cache: CACHE
 const { count, size, warnings } = await generateSW({
   globDirectory: DIST,
   globPatterns: ['**/*.{html,js,css,svg,png,ico,woff2,webmanifest}'],
-  // Subconjuntos de fuentes que el español no usa (símbolos y matemáticas)
+  // Subconjuntos de fuentes que el español no usa (símbolos, matemáticas y el latino extendido de Ibarra;
+  // las letras del español están en el latino básico). Si una página los pide, se descargan en ese momento
   // Las tarjetas para compartir se descargan solo cuando alguien comparte
   // La hoja de códigos QR es para quien los instala, no para el visitante: no va sin conexión
-  globIgnores: ['mapa/**', 'tarjetas/**', 'pasaporte/codigos/**', '_astro/*-math-*', '_astro/*-symbols-*'],
+  globIgnores: [
+    'mapa/**',
+    'tarjetas/**',
+    'pasaporte/codigos/**',
+    '_astro/*-math-*',
+    '_astro/*-symbols-*',
+    '_astro/ibarra-real-nova-latin-ext-*',
+  ],
   swDest: join(DIST, 'sw.js'),
   mode: 'production',
   sourcemap: false,

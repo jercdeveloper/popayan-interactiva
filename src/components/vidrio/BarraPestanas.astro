@@ -7,7 +7,8 @@
  */
 import Icono from '../Icono.astro';
 
-export type Pestana = 'inicio' | 'rutas' | 'mapa' | 'agenda' | 'informacion';
+// La agenda no tiene pestaña: el Pasaporte ocupa su lugar, y la agenda vive en Inicio y en Útil
+export type Pestana = 'inicio' | 'rutas' | 'mapa' | 'pasaporte' | 'agenda' | 'informacion';
 
 interface Props {
   activa?: Pestana;
@@ -18,7 +19,7 @@ const pestanas = [
   { id: 'inicio', texto: 'Inicio', href: '/', icono: 'house' },
   { id: 'rutas', texto: 'Rutas', href: '/rutas', icono: 'footprints' },
   { id: 'mapa', texto: 'Mapa', href: '/mapa', icono: 'map-trifold' },
-  { id: 'agenda', texto: 'Agenda', href: '/agenda', icono: 'calendar-dots' },
+  { id: 'pasaporte', texto: 'Pasaporte', href: '/pasaporte', icono: 'stamp' },
   { id: 'informacion', texto: 'Útil', href: '/informacion', icono: 'lifebuoy' },
 ] as const;
 ---
@@ -32,6 +33,7 @@ const pestanas = [
           <a href={p.href} class="pestanas__item" aria-current={p.id === activa ? 'page' : undefined} data-pestana={p.id}>
             <Icono nombre={p.icono} peso={p.id === activa ? 'fill' : 'regular'} />
             <span>{p.texto}</span>
+            {p.id === 'pasaporte' && <span class="pestanas__cuenta" data-cuenta-sellos hidden />}
           </a>
         </li>
       ))
@@ -41,6 +43,15 @@ const pestanas = [
 
 <script>
   import { animate } from 'motion';
+  import { sellosGuardados } from '../../lib/sello-cliente';
+
+  // Cuántos sellos lleva el visitante, en la pestaña del Pasaporte, como el número de una app
+  const cuenta = document.querySelector<HTMLElement>('[data-cuenta-sellos]');
+  const sellos = Object.keys(sellosGuardados()).length;
+  if (cuenta && sellos > 0) {
+    cuenta.textContent = String(sellos);
+    cuenta.hidden = false;
+  }
 
   const barra = document.querySelector<HTMLElement>('[data-pestanas]');
   const lente = barra?.querySelector<HTMLElement>('[data-lente]');
@@ -126,6 +137,27 @@ const pestanas = [
     transform: scale(0.94);
   }
 
+  .pestanas__cuenta {
+    position: absolute;
+    top: 2px;
+    left: calc(50% + 6px);
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 9px;
+    background: var(--acento);
+    color: var(--sobre-acento);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    line-height: 18px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pestanas__cuenta[hidden] {
+    display: none;
+  }
+
   .pestanas__item[aria-current='page'] {
     color: var(--acento);
   }
@@ -155,6 +187,11 @@ const pestanas = [
     .pestanas__item :global(svg) {
       width: 20px;
       height: 20px;
+    }
+
+    .pestanas__cuenta {
+      position: static;
+      margin-left: 2px;
     }
   }
 </style>

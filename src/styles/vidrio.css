@@ -16,8 +16,8 @@
   --separador: rgb(60 60 67 / 0.14);
 
   /* Acento: uno solo, terracota (el color de los tejados de la ciudad) */
-  --acento: #c4532c;
-  --acento-presionado: #a8441f;
+  --acento: #ba4d27; /* 4,6:1 sobre el fondo gris y 5:1 sobre blanco: pasa AA en texto pequeño */
+  --acento-presionado: #9e3f1d;
   --sobre-acento: #ffffff;
 
   /* El vidrio */
@@ -37,9 +37,25 @@
   --ancho-max: 76rem;
   --tactil: 44px;
 
-  /* Tipografía del sistema: San Francisco en Apple, Roboto en Android, Segoe en Windows */
+  /*
+   * Dos voces. La interfaz y el texto, en la fuente del sistema, como en las apps de Apple. Los títulos,
+   * las cifras grandes y las citas, en Ibarra Real Nova: la letra que Gerónimo Gil talló para el Quijote
+   * que imprimió Joaquín Ibarra en 1780, de los años de la Popayán colonial.
+   */
   --fuente: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-  --fuente-titulos: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  --fuente-titulos: 'Ibarra Real Nova', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+
+  /*
+   * Los colores de la ciudad como campos enteros, uno por tipo de contenido. Sobre ellos, el texto es
+   * blanco (o tinta, sobre el maíz) y el secundario se tiñe del mismo campo, nunca gris.
+   */
+  --teja: #a8431f; /* rutas: los tejados */
+  --teja-hondo: #7f3013;
+  --cantera: #5f554b; /* historia y personajes: la piedra de las portadas */
+  --morro: #2f4f35; /* naturaleza y excursiones: el Morro de Tulcán */
+  --noche: #1b1622; /* Semana Santa */
+  --maiz: #e8b53a; /* el recetario */
+  --tinta: #1d1d1f;
 
   /* Escala: el tracking cambia con el tamaño (grande, negativo; pequeño, cero) */
   --t-gigante: clamp(2.6rem, 1.6rem + 4.6vw, 5.4rem);
@@ -50,8 +66,13 @@
   --t-mini: 0.8125rem;
 }
 
+/*
+ * Oscuro: cuando el teléfono lo pide y el visitante no eligió claro, o cuando el visitante lo elige con
+ * el botón (data-tema, que pone public/js/tema.js antes de pintar). Los dos bloques llevan los mismos
+ * valores: si se cambia uno, se cambia el otro.
+ */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-tema='claro']) {
     --fondo: #000000;
     --fondo-elevado: #1c1c1e;
     --texto: #f5f5f7;
@@ -67,6 +88,35 @@
     --vidrio-brillo: rgb(255 255 255 / 0.32);
     --vidrio-sombra: 0 1px 1px rgb(0 0 0 / 0.3), 0 12px 34px -10px rgb(0 0 0 / 0.7);
   }
+}
+
+:root[data-tema='oscuro'] {
+  color-scheme: dark;
+  --fondo: #000000;
+  --fondo-elevado: #1c1c1e;
+  --texto: #f5f5f7;
+  --texto-2: rgb(235 235 245 / 0.72);
+  --texto-3: rgb(235 235 245 / 0.48);
+  --separador: rgb(84 84 88 / 0.6);
+  --acento: #ff7a4d;
+  --acento-presionado: #ff9470;
+  --sobre-acento: #1d1d1f;
+  --vidrio-tinte: rgb(36 36 40 / 0.58);
+  --vidrio-tinte-fuerte: rgb(36 36 40 / 0.78);
+  --vidrio-borde: rgb(255 255 255 / 0.16);
+  --vidrio-brillo: rgb(255 255 255 / 0.32);
+  --vidrio-sombra: 0 1px 1px rgb(0 0 0 / 0.3), 0 12px 34px -10px rgb(0 0 0 / 0.7);
+}
+
+:root[data-tema='claro'] {
+  color-scheme: light;
+}
+
+/* Al cambiar de tema con el botón, el nuevo se abre en círculo (lo anima src/lib/tema.ts) */
+:root.cambiando-tema::view-transition-old(root),
+:root.cambiando-tema::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
 }
 
 /*
@@ -119,10 +169,19 @@ h1,
 h2,
 h3 {
   font-family: var(--fuente-titulos);
-  font-weight: 700;
-  line-height: 1.07;
-  letter-spacing: -0.028em;
+  font-weight: 600;
+  line-height: 1.04;
+  letter-spacing: -0.012em;
   text-wrap: balance;
+  /* Ibarra trae cifras de estilo antiguo; en los títulos van alineadas */
+  font-variant-numeric: lining-nums;
+}
+
+/* Las cursivas de Ibarra hacen el énfasis de los títulos */
+h1 em,
+h2 em {
+  font-style: italic;
+  font-weight: 500;
 }
 
 p {
@@ -265,6 +324,38 @@ a {
 /* Las páginas cambian con un fundido nativo; la barra de pestañas pasa de una página a otra */
 @view-transition {
   navigation: auto;
+}
+
+/* Los bloques de contenido suben a su sitio al entrar en pantalla, guiados por el desplazamiento y sin guion */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .grupo,
+    .revelar {
+      animation: revelar linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 32%;
+    }
+  }
+}
+
+@keyframes revelar {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.985);
+  }
+}
+
+/* La foto de la ruta crece de la tarjeta a la cabecera (public/js/transicion.js le pone el nombre) */
+::view-transition-group(foto-ruta) {
+  animation-duration: 480ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+::view-transition-old(foto-ruta),
+::view-transition-new(foto-ruta) {
+  height: 100%;
+  object-fit: cover;
+  overflow: clip;
 }
 
 @media (prefers-reduced-motion: reduce) {

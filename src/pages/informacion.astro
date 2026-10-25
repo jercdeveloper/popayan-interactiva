@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Encabezado from '../components/vidrio/Encabezado.astro';
+import { fotoDe } from '../lib/fotos';
 import Icono from '../components/Icono.astro';
 import { getCollection } from 'astro:content';
 
@@ -52,6 +53,8 @@ const excursiones = (await getCollection('excursiones')).sort((a, b) => a.data.d
   descripcion="Emergencias, cómo llegar, el clima mes a mes y la oficina de turismo de Popayán."
 >
   <Encabezado
+    foto={fotoDe('los-portales')}
+    alt="Los Portales, en el Centro Histórico"
     ancho="angosto"
     titulo="Información útil"
     bajada="Lo que conviene tener a mano en Popayán. Una vez abierta, esta página funciona sin señal."
@@ -124,6 +127,16 @@ const excursiones = (await getCollection('excursiones')).sort((a, b) => a.data.d
             <span class="celda__texto">
               Planea tu viaje
               <small>Un plan de 1 a 3 días con las rutas, la agenda y las excursiones.</small>
+            </span>
+            <Icono nombre="caret-right" class="celda__flecha" />
+          </a>
+        </li>
+        <li>
+          <a class="celda" href="/agenda">
+            <Icono nombre="calendar-dots" class="celda__icono" />
+            <span class="celda__texto">
+              Agenda
+              <small>El año de Popayán: festivales, congresos y la Semana Santa.</small>
             </span>
             <Icono nombre="caret-right" class="celda__flecha" />
           </a>

@@ -2,6 +2,7 @@
 import { getCollection, getEntries, getEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Encabezado from '../components/vidrio/Encabezado.astro';
+import { fotoDe } from '../lib/fotos';
 import Icono from '../components/Icono.astro';
 import { diaDeLaSemana, diaDelMes, mesYAnio, nombreDelMes } from '../lib/fechas';
 
@@ -44,6 +45,8 @@ const mesCorto = (iso: string) => nombreDelMes(iso).slice(0, 3);
   descripcion="Lo que pasa en Popayán a lo largo del año: Congreso Gastronómico, Navidad, Fiestas de Pubenza, Semana Santa y más."
 >
   <Encabezado
+    foto={fotoDe('teatro-municipal')}
+    alt="El Teatro Municipal Guillermo Valencia"
     ancho="medio"
     titulo="Agenda"
     bajada="El año de Popayán, del Congreso Gastronómico a la Semana Santa. Cuando los organizadores todavía no anuncian las fechas, lo decimos."
@@ -317,7 +320,8 @@ const mesCorto = (iso: string) => nombreDelMes(iso).slice(0, 3);
     padding: 0 14px 0 11px;
     border-radius: var(--radio-capsula);
     background: color-mix(in srgb, var(--acento) 12%, transparent);
-    color: var(--acento);
+    /* Sobre el tinte, el tono más profundo del acento: el normal no llega a 4,5:1 */
+    color: var(--acento-presionado);
     font-size: var(--t-nota);
     font-weight: 600;
     text-decoration: none;

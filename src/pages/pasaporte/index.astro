@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import Encabezado from '../../components/vidrio/Encabezado.astro';
 import Icono from '../../components/Icono.astro';
 import Compartir from '../../components/Compartir.astro';
 import Sello from '../../components/pasaporte/Sello.astro';
@@ -26,16 +25,21 @@ const colecciones = [
 
 <Base
   titulo="Pasaporte"
+  seccion="pasaporte"
   descripcion="El Pasaporte de Popayán: sella cada lugar cuando estés en él y completa las colecciones de las rutas. Sin cuentas: tus sellos viven en tu teléfono."
 >
-  <Encabezado
-    ancho="ancho"
-    titulo="Pasaporte de Popayán"
-    bajada="Cada lugar tiene su sello. Se gana estando allí: con la ubicación del teléfono o con el código QR del lugar."
-  />
+  <!-- La tapa: cuero teja con el escudo de la torre en oro. Al bajar, se levanta como la de un pasaporte de verdad -->
+  <header class="mesa">
+    <div class="tapa">
+      <span class="tapa__escudo isotipo" aria-hidden="true"></span>
+      <h1 class="tapa__titulo">Pasaporte <em>de Popayán</em></h1>
+      <p class="tapa__lema">{lugares.length} lugares · un sello por cada uno</p>
+    </div>
+  </header>
 
   <div class="pagina" data-pasaporte data-ids={JSON.stringify(lugares.map((l) => l.id))}>
-    <section class="resumen" aria-label="Tu avance">
+    <!-- La primera hoja: tu avance -->
+    <section class="hoja-pasaporte resumen" aria-label="Tu avance">
       <p class="resumen__cifra">
         <strong data-cuenta>0</strong>
         <span>de {lugares.length} sellos</span>
@@ -44,11 +48,14 @@ const colecciones = [
       <p class="resumen__texto" data-resumen-texto>
         Todavía no tienes sellos. Empieza por la <a href="/rutas/templos">Ruta de los templos</a>.
       </p>
+      <p class="resumen__como">
+        Cada sello se gana estando allí: con la ubicación del teléfono o con el código QR del lugar.
+      </p>
     </section>
 
     {
-      colecciones.map((c) => (
-        <section class="coleccion" aria-labelledby={`coleccion-${c.id}`} data-coleccion={c.id}>
+      colecciones.map((c, i) => (
+        <section class="hoja-pasaporte coleccion revelar" aria-labelledby={`coleccion-${c.id}`} data-coleccion={c.id} data-folio={i + 2}>
           <header class="coleccion__cabeza">
             <h2 id={`coleccion-${c.id}`}>
               {c.ruta ? <a href={`/rutas/${c.id}`}>{c.nombre}</a> : c.nombre}
@@ -237,42 +244,183 @@ const colecciones = [
 </script>
 
 <style>
+  /* ---------- La mesa y la tapa ---------- */
+  .mesa {
+    position: relative;
+    display: grid;
+    place-items: center;
+    padding: calc(4.5rem + env(safe-area-inset-top)) var(--margen) 4.5rem;
+    background:
+      radial-gradient(60% 50% at 50% 45%, rgb(255 170 110 / 0.16), transparent 70%),
+      var(--noche);
+    perspective: 1600px;
+    overflow: hidden;
+  }
+
+  /* El borde de la hoja, como en las cabeceras con foto */
+  .mesa::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 26px;
+    border-radius: 26px 26px 0 0;
+    background: var(--fondo);
+  }
+
+  .tapa {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: 1.1rem;
+    width: min(80vw, 22rem);
+    aspect-ratio: 5 / 7;
+    padding: 2rem 1.5rem;
+    border-radius: 10px 18px 18px 10px;
+    /* Cuero: el teja hondo, con una luz de lado y un grano muy fino */
+    background:
+      radial-gradient(120% 80% at 20% 0%, rgb(255 255 255 / 0.12), transparent 55%),
+      repeating-linear-gradient(115deg, rgb(0 0 0 / 0.035) 0 2px, transparent 2px 5px),
+      var(--teja-hondo);
+    color: var(--maiz);
+    text-align: center;
+    box-shadow:
+      inset 6px 0 10px -4px rgb(0 0 0 / 0.45),
+      0 40px 70px -30px rgb(0 0 0 / 0.8),
+      0 4px 10px rgb(0 0 0 / 0.3);
+    transform-origin: 50% 0;
+  }
+
+  /* El filete dorado, a unos milímetros del borde */
+  .tapa::before {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    border: 1.5px solid rgb(232 181 58 / 0.55);
+    border-radius: 6px 12px 12px 6px;
+    pointer-events: none;
+  }
+
+  .tapa__escudo {
+    width: 4.5rem;
+    height: 5.2rem;
+    background: linear-gradient(160deg, #fbe39a, #e8b53a 45%, #b9832a);
+    filter: drop-shadow(0 1px 0 rgb(0 0 0 / 0.35));
+  }
+
+  .tapa__titulo {
+    font-size: clamp(2.1rem, 1.6rem + 2.2vw, 2.8rem);
+    font-weight: 600;
+    line-height: 0.98;
+    letter-spacing: 0.01em;
+    color: #f3cf74;
+    text-shadow: 0 1px 0 rgb(0 0 0 / 0.35);
+  }
+
+  .tapa__titulo em {
+    display: block;
+    font-size: 0.72em;
+  }
+
+  .tapa__lema {
+    font-size: var(--t-mini);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: rgb(243 207 116 / 0.8);
+  }
+
+  /* Al bajar, la tapa se levanta y deja ver la primera hoja */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .tapa {
+        animation: abrir-tapa linear both;
+        animation-timeline: view();
+        animation-range: exit 5% exit 85%;
+      }
+    }
+  }
+
+  @keyframes abrir-tapa {
+    to {
+      transform: rotateX(-68deg) translateY(-6%);
+      opacity: 0.2;
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .mesa {
+      padding-top: calc(7rem + env(safe-area-inset-top));
+    }
+  }
+
   .pagina {
     display: grid;
-    gap: 2.25rem;
+    gap: 1.5rem;
     max-width: 52rem;
     margin-inline: auto;
     padding: 0.25rem var(--margen) 0;
+  }
+
+  /* ---------- Las hojas: papel con un tinte dorado y un fondo de seguridad, como las de un pasaporte ---------- */
+  .hoja-pasaporte {
+    position: relative;
+    padding: 22px 20px 24px;
+    border-radius: 18px;
+    background:
+      repeating-radial-gradient(circle at 100% 0%, transparent 0 22px, color-mix(in srgb, var(--acento) 7%, transparent) 22px 23px),
+      repeating-radial-gradient(circle at 0% 100%, transparent 0 30px, color-mix(in srgb, var(--maiz) 9%, transparent) 30px 31px),
+      color-mix(in srgb, var(--fondo-elevado) 90%, var(--maiz));
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.4) inset,
+      0 16px 34px -24px rgb(40 20 8 / 0.5);
+  }
+
+  /* El número de la hoja, en la esquina de abajo */
+  .coleccion::after {
+    content: attr(data-folio);
+    position: absolute;
+    right: 18px;
+    bottom: 10px;
+    font-family: var(--fuente-titulos);
+    font-size: 0.875rem;
+    font-style: italic;
+    color: var(--texto-3);
   }
 
   /* ---------- El avance ---------- */
   .resumen {
     display: grid;
     gap: 12px;
-    padding: 20px 22px 22px;
-    border-radius: var(--radio-l);
-    background: var(--fondo-elevado);
   }
 
   .resumen__cifra {
     display: flex;
     align-items: baseline;
-    gap: 10px;
+    gap: 12px;
     font-family: var(--fuente-titulos);
-    font-weight: 700;
+    font-weight: 600;
   }
 
   .resumen__cifra strong {
-    font-size: 3rem;
-    line-height: 1;
+    font-size: clamp(4.5rem, 3rem + 6vw, 6.5rem);
+    font-weight: 600;
+    line-height: 0.85;
     letter-spacing: -0.04em;
     color: var(--acento);
-    font-variant-numeric: tabular-nums;
+    font-variant-numeric: lining-nums tabular-nums;
   }
 
   .resumen__cifra span {
-    font-size: 1.25rem;
-    letter-spacing: -0.02em;
+    font-size: clamp(1.4rem, 1.2rem + 0.8vw, 1.8rem);
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  .resumen__como {
+    font-size: var(--t-nota);
+    color: var(--texto-2);
   }
 
   .resumen__barra {
@@ -316,8 +464,9 @@ const colecciones = [
   }
 
   .coleccion__cabeza h2 {
-    font-size: var(--t-titulo);
-    letter-spacing: -0.02em;
+    font-size: clamp(1.6rem, 1.3rem + 1.2vw, 2.1rem);
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
 
   .coleccion__cabeza h2 a {
@@ -357,10 +506,8 @@ const colecciones = [
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(6.25rem, 1fr));
     gap: 6px;
-    padding: 14px;
+    padding: 0;
     list-style: none;
-    border-radius: var(--radio-l);
-    background: var(--fondo-elevado);
   }
 
   .hueco {

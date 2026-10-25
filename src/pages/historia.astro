@@ -23,7 +23,18 @@ const conLugar = await Promise.all(
 ---
 
 <Base titulo="Historia" descripcion="Los momentos que dieron forma al Centro Histórico de Popayán, cada uno con su fuente.">
-  <Encabezado ancho="medio" titulo="Cinco siglos de historia" bajada="Los momentos que dieron forma al centro, cada uno con su fuente." />
+  <Encabezado
+    foto={fotoDe('santo-domingo')}
+    alt="La iglesia de Santo Domingo" ancho="medio" titulo="Cinco siglos de historia" bajada="Los momentos que dieron forma al centro, cada uno con su fuente." />
+
+  <a class="a-personajes" href="/personajes">
+    <Icono nombre="users-three" peso="fill" class="a-personajes__icono" />
+    <span>
+      <strong>Personajes</strong>
+      Caldas, Camilo Torres, Mosquera, Quintín Lame, Josefina Valencia y más
+    </span>
+    <Icono nombre="caret-right" class="a-personajes__flecha" />
+  </a>
 
   <ol class="linea">
     {
@@ -57,6 +68,48 @@ const conLugar = await Promise.all(
 </Base>
 
 <style>
+  .a-personajes {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 14px;
+    align-items: center;
+    max-width: calc(46rem - 2 * var(--margen));
+    margin: 0 auto 1.5rem;
+    padding: 16px;
+    border-radius: var(--radio-m);
+    background: var(--fondo-elevado);
+    color: var(--texto-2);
+    font-size: var(--t-nota);
+    line-height: 1.4;
+    text-decoration: none;
+  }
+
+  @media (max-width: 47.99rem) {
+    .a-personajes {
+      margin-inline: var(--margen);
+    }
+  }
+
+  .a-personajes span {
+    display: grid;
+    gap: 2px;
+  }
+
+  .a-personajes strong {
+    font-size: 1.0625rem;
+    color: var(--texto);
+  }
+
+  .a-personajes :global(.a-personajes__icono) {
+    width: 30px;
+    height: 30px;
+    color: var(--acento);
+  }
+
+  .a-personajes :global(.a-personajes__flecha) {
+    color: var(--texto-3);
+  }
+
   /* Una línea que baja por la izquierda, con un punto terracota en cada año */
   .linea {
     position: relative;

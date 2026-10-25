@@ -151,3 +151,29 @@ describe('recetario', () => {
     expect(new Set(recetas.map((r) => r.orden)).size).toBe(recetas.length);
   });
 });
+
+describe('personajes', () => {
+  const personas = readdirSync('src/content/personajes').map((f) => {
+    const [, frente] = readFileSync(`src/content/personajes/${f}`, 'utf8').split('---');
+    return {
+      id: f.replace(/\.md$/, ''),
+      ...(parse(frente) as { iniciales: string; nacimiento: { anio: number }; muerte?: { anio: number }; lugares?: string[] }),
+    };
+  });
+
+  it('sus lugares existen', () => {
+    for (const p of personas) for (const l of p.lugares ?? []) expect(idsLugares.has(l), `${p.id} → ${l}`).toBe(true);
+  });
+
+  it('nadie muere antes de nacer ni vive más de 110 años', () => {
+    for (const p of personas) {
+      if (!p.muerte) continue;
+      expect(p.muerte.anio, p.id).toBeGreaterThan(p.nacimiento.anio);
+      expect(p.muerte.anio - p.nacimiento.anio, p.id).toBeLessThan(110);
+    }
+  });
+
+  it('las iniciales son mayúsculas', () => {
+    for (const p of personas) expect(p.iniciales, p.id).toMatch(/^[A-ZÁÉÍÓÚÑ]{2,3}$/);
+  });
+});

@@ -194,4 +194,20 @@ const recetas = defineCollection({
   }),
 });
 
-export const collections = { lugares, rutas, hitos, eventos, procesiones, excursiones, recetas };
+/** Personas de la historia de Popayán, enlazadas a sus lugares en la guía. */
+const personajes = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/personajes' }),
+  schema: z.object({
+    nombre: z.string(),
+    /** Las iniciales del círculo, cuando el nombre no basta ("FJC") */
+    iniciales: z.string().max(3),
+    nacimiento: z.object({ anio: z.number().int(), lugar: z.string() }),
+    muerte: z.object({ anio: z.number().int(), lugar: z.string() }).optional(),
+    oficio: z.string(),
+    resumen: z.string().max(220),
+    lugares: z.array(reference('lugares')).default([]),
+    fuentes: z.array(fuente).min(1),
+  }),
+});
+
+export const collections = { lugares, rutas, hitos, eventos, procesiones, excursiones, recetas, personajes };

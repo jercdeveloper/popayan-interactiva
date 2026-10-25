@@ -1,20 +1,37 @@
 ---
-/** Título grande de una página sin foto, como los títulos grandes de iOS. */
+/**
+ * El título de una página. Con foto, es una cabecera a sangre como la de las fichas (el título sobre la
+ * ciudad, y la página sube como una hoja); sin foto, es un título grande, como los títulos grandes de iOS.
+ */
+import CabeceraFoto from './CabeceraFoto.astro';
+import type { Foto } from '../../lib/fotos';
+
 interface Props {
   titulo: string;
   bajada?: string;
   /** El ancho de la columna de la página, para que el título quede alineado con lo que sigue */
   ancho?: 'angosto' | 'medio' | 'ancho';
+  foto?: Foto | null;
+  /** Qué se ve en la foto, para quien no la ve */
+  alt?: string;
 }
 
-const { titulo, bajada, ancho } = Astro.props;
+const { titulo, bajada, ancho, foto, alt = '' } = Astro.props;
 ---
 
-<header class:list={["encabezado", ancho && `encabezado--${ancho}`]}>
-  <h1>{titulo}</h1>
-  {bajada && <p>{bajada}</p>}
-  <slot />
-</header>
+{
+  foto ? (
+    <CabeceraFoto foto={foto} alt={alt} titulo={titulo} bajada={bajada} ancho={ancho}>
+      <slot />
+    </CabeceraFoto>
+  ) : (
+    <header class:list={['encabezado', ancho && `encabezado--${ancho}`]}>
+      <h1>{titulo}</h1>
+      {bajada && <p>{bajada}</p>}
+      <slot />
+    </header>
+  )
+}
 
 <style>
   .encabezado {
@@ -39,8 +56,8 @@ const { titulo, bajada, ancho } = Astro.props;
 
   .encabezado h1 {
     font-size: var(--t-gigante);
-    line-height: 1;
-    letter-spacing: -0.035em;
+    line-height: 0.98;
+    letter-spacing: -0.02em;
   }
 
   .encabezado p {

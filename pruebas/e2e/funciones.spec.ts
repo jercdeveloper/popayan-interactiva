@@ -120,7 +120,7 @@ test.describe('Semana Santa', () => {
 
   test('la portada lleva a Semana Santa', async ({ page }) => {
     await page.goto('/');
-    await page.locator('.widget--noche').click();
+    await page.locator('.semana').click();
     await expect(page).toHaveURL(/\/semana-santa$/);
   });
 });

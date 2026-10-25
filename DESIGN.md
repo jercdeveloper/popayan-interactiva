@@ -8,8 +8,8 @@ colors:
   texto-2: "rgb(60 60 67 / 0.72)"
   texto-3: "rgb(60 60 67 / 0.5)"
   separador: "rgb(60 60 67 / 0.14)"
-  acento: "#c4532c"
-  acento-presionado: "#a8441f"
+  acento: "#ba4d27"
+  acento-presionado: "#9e3f1d"
   sobre-acento: "#ffffff"
   vidrio-tinte: "rgb(255 255 255 / 0.62)"
   vidrio-borde: "rgb(255 255 255 / 0.55)"
@@ -75,7 +75,7 @@ El contenido es sólido y protagonista: fotos reales de Popayán, el mapa, el te
 ## 2. Color
 
 - Neutros de Apple: `#f5f5f7` de fondo y blanco para lo elevado; en oscuro, negro y `#1c1c1e`.
-- **Un solo acento, terracota** (`#c4532c`; `#ff7a4d` en oscuro), el de los tejados. Va en botones llenos, pestaña activa, fechas, cifras, años y los íconos de las celdas.
+- **Un solo acento, terracota** (`#ba4d27`; `#ff7a4d` en oscuro), el de los tejados. Va en botones llenos, pestaña activa, fechas, cifras, años y los íconos de las celdas.
 - Texto secundario y terciario con transparencia, como en iOS, para que se adapte a cualquier superficie.
 - Semana Santa tiene una tarjeta nocturna propia (`#1b1622` con un resplandor terracota) en los dos temas.
 

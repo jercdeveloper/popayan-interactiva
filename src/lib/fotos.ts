@@ -12,6 +12,10 @@ export interface Credito {
   licencia: string;
   urlLicencia: string | null;
   fuente: string;
+  /** Qué se ve en la foto, para las que no son de un lugar (un plato, un retrato, una procesión) */
+  alt?: string;
+  /** Lo que se le cambió a la foto original, como pide la licencia ("Recortada") */
+  cambios?: string;
 }
 
 const archivos = import.meta.glob<{ default: ImageMetadata }>('../assets/fotos/*.jpg', { eager: true });

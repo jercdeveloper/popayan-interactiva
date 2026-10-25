@@ -1,0 +1,117 @@
+---
+/**
+ * El retrato de una persona, enmarcado como en la sala de un museo: un paspartú claro y una sombra corta.
+ * Solo retratos con licencia libre, con su crédito; si no hay, el marco guarda sus iniciales en grande,
+ * nunca un retrato inventado.
+ */
+import { Picture } from 'astro:assets';
+import { lineaCredito, type Foto } from '../lib/fotos';
+
+interface Props {
+  foto: Foto | null;
+  iniciales: string;
+  /** Para quien no ve la imagen */
+  alt?: string;
+  tamano?: 'sala' | 'grande';
+  /** Muestra el crédito bajo el marco (en la ficha); en las listas va en la página de créditos */
+  conCredito?: boolean;
+}
+
+const { foto, iniciales, alt = '', tamano = 'sala', conCredito = false } = Astro.props;
+---
+
+<figure class:list={['retrato', `retrato--${tamano}`]}>
+  <span class="retrato__marco">
+    {
+      foto ? (
+        <Picture
+          src={foto.src}
+          formats={['avif', 'webp']}
+          widths={tamano === 'grande' ? [400, 720] : [240, 480]}
+          sizes={tamano === 'grande' ? '(min-width: 48rem) 320px, 62vw' : '(min-width: 48rem) 260px, 44vw'}
+          alt={alt}
+          class="retrato__foto"
+        />
+      ) : (
+        <span class="retrato__iniciales" aria-hidden="true">
+          {iniciales}
+        </span>
+      )
+    }
+  </span>
+  {
+    conCredito && foto && (
+      <figcaption>
+        <a href={foto.credito.fuente} rel="noopener noreferrer">
+          {lineaCredito(foto.credito)}
+        </a>
+      </figcaption>
+    )
+  }
+</figure>
+
+<style>
+  .retrato {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+  }
+
+  /* El paspartú: un borde claro que separa el retrato de la pared, como en una sala */
+  .retrato__marco {
+    display: block;
+    aspect-ratio: 4 / 5;
+    padding: 7px;
+    border-radius: 6px;
+    background: #f4efe6;
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.6) inset,
+      0 18px 34px -18px rgb(30 18 10 / 0.55),
+      0 2px 6px rgb(30 18 10 / 0.12);
+  }
+
+  .retrato--grande .retrato__marco {
+    padding: 10px;
+  }
+
+  /* El <picture> que envuelve la foto ocupa todo el marco; si no, la foto queda sin alto */
+  .retrato__marco :global(picture) {
+    display: block;
+    height: 100%;
+  }
+
+  .retrato :global(.retrato__foto),
+  .retrato__iniciales {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 2px;
+    object-fit: cover;
+    object-position: 50% 22%;
+  }
+
+  .retrato__iniciales {
+    background: radial-gradient(120% 90% at 30% 10%, rgb(255 255 255 / 0.12), transparent 60%), var(--cantera);
+    color: #f4efe6;
+    font-family: var(--fuente-titulos);
+    font-size: 3.2rem;
+    font-weight: 600;
+    font-style: italic;
+    letter-spacing: -0.02em;
+  }
+
+  .retrato--grande .retrato__iniciales {
+    font-size: 5rem;
+  }
+
+  figcaption {
+    font-size: 0.6875rem;
+    color: rgb(255 255 255 / 0.72);
+  }
+
+  figcaption a {
+    color: inherit;
+    text-decoration: none;
+  }
+</style>

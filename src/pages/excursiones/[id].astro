@@ -4,6 +4,7 @@ import Base from '../../layouts/Base.astro';
 import Icono from '../../components/Icono.astro';
 import CabeceraFoto from '../../components/vidrio/CabeceraFoto.astro';
 import Circulo from '../../components/vidrio/Circulo.astro';
+import { fotoDe } from '../../lib/fotos';
 
 export async function getStaticPaths() {
   const excursiones = await getCollection('excursiones');
@@ -18,10 +19,11 @@ const DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', '
 const revisado = aviso
   ? new Intl.DateTimeFormat('es-CO', { timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric' }).format(aviso.fecha)
   : null;
+const foto = fotoDe(`excursion-${excursion.id}`);
 ---
 
 <Base titulo={nombre} descripcion={resumen}>
-  <CabeceraFoto foto={null} alt="" titulo={nombre} meta={`Excursión · a ${distanciaKm} km de Popayán`} icono={icono}>
+  <CabeceraFoto foto={foto} alt={foto?.credito.alt ?? nombre} titulo={nombre} meta={`Excursión · a ${distanciaKm} km de Popayán`} icono={icono} campo="morro">
     <Fragment slot="controles">
       <Circulo icono="caret-left" etiqueta="Planea tu viaje" href="/planificador" />
     </Fragment>

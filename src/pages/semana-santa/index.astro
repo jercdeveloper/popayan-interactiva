@@ -2,6 +2,7 @@
 import { getCollection, getEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Encabezado from '../../components/vidrio/Encabezado.astro';
+import { fotoDe } from '../../lib/fotos';
 import Icono from '../../components/Icono.astro';
 import { desdePascua } from '../../lib/pascua';
 import { fechaLarga } from '../../lib/fechas';
@@ -26,6 +27,8 @@ const ramos = desdePascua(ahora.anio, -7);
   descripcion="Las procesiones de Semana Santa en Popayán, noche por noche: de qué templo salen, a qué hora, qué pasos llevan y por qué calles van."
 >
   <Encabezado
+    foto={fotoDe('semana-santa')}
+    alt="El paso de La Verónica, de noche, entre velas, en una procesión de Popayán"
     ancho="medio"
     titulo="Semana Santa"
     bajada="Las procesiones de Popayán salen cada noche de un templo distinto y recorren unos dos kilómetros del centro. Son Patrimonio Cultural Inmaterial de la Humanidad desde 2009."

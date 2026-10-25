@@ -5,27 +5,27 @@ primary_target: "src/pages/index.astro"
 related_targets: []
 ---
 
-# Portada (src/pages/index.astro)
+# Portada (src/pages/index.astro) y sistema de identidad
 
 ## Alcance y modo
 
-Persuade. Primera pantalla de la PWA. Público: visitantes que recorren el Centro Histórico a pie y payaneses. Acción principal: **empezar una ruta**. Protagonista: **la torre viva**. Riesgos que el usuario marcó: que parezca folleto, app genérica, lenta, o solemne y aburrida.
+Persuade en la portada; Read y Operate en fichas, listas y herramientas. Público: visitantes a pie en el centro y payaneses. Acción principal de la portada: empezar una ruta. El usuario (25 de octubre de 2026) conserva la base Liquid Glass / Apple pero la encuentra «simple, genérica y sin encanto»; pidió tipografía con carácter, color con presencia, y momentos y movimiento. Referencias de nivel: apps de Apple, revistas de viaje, sitios de museos y patrimonio. No eligió ilustración propia.
 
 ## Direction contract
 
-THESIS: La portada es una cuadra encalada del centro: la Torre del Reloj se alza sobre una fila de fachadas dibujadas con su mismo trazo, y cada portón es la entrada a una ruta. Rechaza el héroe de titular + botón + fila de tarjetas iguales.
+THESIS: Popayán como revista de viaje dentro de una app de Apple: la interfaz nativa y el vidrio se quedan, pero la ciudad toma la superficie con su letra (la del Quijote de Ibarra, 1780), sus colores como campos enteros (teja, cal, noche, cantera, Morro, maíz) y su ritmo editorial. Rechaza la pila de tarjetas blancas sobre gris, los mosaicos de íconos y los rótulos sobre los títulos.
 
-OWN-WORLD: Cal mineral `#F2F3F0` como suelo y muros; trazo piedra `#3A332D` del dibujo de la torre en toda ilustración y regla; la teja `#A8482A` como campo de color (tejados y portones registrados en planos planos, no como acento suelto); verde Morro para lo que está abierto o cercano; Bodoni Moda para títulos, Atkinson Hyperlegible Next para todo lo demás. Una sola manecilla como gesto de movimiento.
+OWN-WORLD: Ibarra Real Nova para títulos, cifras grandes y citas en cursiva; la fuente del sistema para la interfaz y el texto. Campos de color por tipo de contenido: teja para rutas, noche para Semana Santa, cantera para historia y personajes, Morro para naturaleza y excursiones, maíz para el recetario; cal y negro como suelo. El vidrio solo flota (barra, controles, tema). Índices editoriales con filetes finos en lugar de tarjetas iguales.
 
-STORY: El visitante ve la torre marcar la hora real de Popayán con su única manecilla, entiende en una línea que la app le cuenta la ciudad lugar por lugar, recorre con el dedo la calle de portones y entra a una ruta. Debajo, La Nariz le cuenta un dato verificado.
+STORY: El visitante abre una portada que se lee como la primera página de una revista de Popayán, entiende en una línea qué es, toca una ruta y la foto de la tarjeta crece hasta ser la cabecera de la ruta.
 
-FIRST VIEWPORT: Móvil: nombre arriba; título en Bodoni de dos líneas a la izquierda; la torre viva a gran escala anclada abajo a la derecha, cortada por la línea de la calle; la manecilla barre la esfera, revela la torre y queda en la hora real. La calle de fachadas asoma en el borde inferior con el primer portón y la acción "Empezar una ruta" visible sin scroll. Escritorio: la misma composición a mayor escala, la calle completa al ancho de la pantalla.
+FIRST VIEWPORT: Móvil: foto del Parque Caldas a sangre; título en Ibarra a gran escala, en dos o tres líneas, con una palabra en cursiva; bajada corta; «Empezar una ruta» y el reloj de una manecilla visibles sin desplazarse. Debajo asoma la banda teja de las rutas. Escritorio: la misma composición con el título más grande y el reloj a la derecha.
 
-FORM: Calle de fachadas (candidata 5 de 7 en mi lista ordenada; repartida por la tirada). Seed 0bb85f2c. Aporte de la xilografía por registro: las fachadas se imprimen primero en línea y luego registran sus planos de cal y teja.
+FORM: Extensión del mundo Liquid Glass ya establecido (no hubo ronda de direcciones: el usuario fijó la base). Sin semilla de concept-seed: decisión del usuario.
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
 
 ## Pendiente
 
-- Ilustración de fachadas: se dibujan en código con el mismo trazo; reemplazables por ilustración de artista local.
-- Contenido real de las 4 rutas de la fase 1 (lugares verificados con fuentes) antes de publicar.
+- Prototipo en portada, ficha de lugar e índice de rutas; aprobación del usuario antes de llevarlo a todo el sitio.
+- PRODUCT.md (compromisos de marca) todavía describe la identidad anterior: se reporta, no se repara sin permiso.

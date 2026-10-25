@@ -1,0 +1,158 @@
+---
+/**
+ * En cada ruta: su colección del Pasaporte, como una tira de sellos. Los que ya ganó el visitante se ven
+ * entintados, con su fecha; los que faltan, como el hueco punteado donde irán.
+ */
+import type { CollectionEntry } from 'astro:content';
+import Sello from './Sello.astro';
+import Icono from '../Icono.astro';
+import { CATEGORIAS } from '../../lib/lugares';
+
+interface Props {
+  ruta: string;
+  paradas: CollectionEntry<'lugares'>[];
+}
+
+const { ruta, paradas } = Astro.props;
+---
+
+<section class="coleccion revelar" aria-labelledby="titulo-coleccion" data-coleccion-ruta>
+  <div class="coleccion__cabeza">
+    <h2 id="titulo-coleccion">La colección <em>de esta ruta</em></h2>
+    <p class="coleccion__cuenta">
+      <strong data-coleccion-cuenta>0</strong> de {paradas.length} sellos
+    </p>
+  </div>
+  <ol class="coleccion__tira">
+    {
+      paradas.map((p) => (
+        <li class="coleccion__sello" data-coleccion-sello={p.id} title={p.data.nombre}>
+          <Sello id={p.id} clave={`${ruta}-${p.id}`} tipo={CATEGORIAS[p.data.categoria].singular} icono={CATEGORIAS[p.data.categoria].icono} />
+          <span class="solo-lector">{p.data.nombre}</span>
+        </li>
+      ))
+    }
+  </ol>
+  <p class="coleccion__pie">
+    Sella cada parada estando en ella, desde su ficha. <a href="/pasaporte">Mi pasaporte <Icono nombre="arrow-right" /></a>
+  </p>
+</section>
+
+<script>
+  import { mostrarGanado, sellosGuardados } from '../../lib/sello-cliente';
+
+  const caja = document.querySelector<HTMLElement>('[data-coleccion-ruta]');
+  if (caja) {
+    const sellos = sellosGuardados();
+    let listos = 0;
+    for (const hueco of caja.querySelectorAll<HTMLElement>('[data-coleccion-sello]')) {
+      const sello = sellos[hueco.dataset.coleccionSello!];
+      if (sello) {
+        mostrarGanado(hueco, sello);
+        listos++;
+      }
+    }
+    caja.querySelector('[data-coleccion-cuenta]')!.textContent = String(listos);
+    // Las paradas ya selladas lo dicen también en la lista de la ruta
+    for (const parada of document.querySelectorAll<HTMLElement>('[data-parada-sello]')) {
+      if (!sellos[parada.dataset.paradaSello!]) continue;
+      parada.classList.add('parada--sellada');
+      parada.append(Object.assign(document.createElement('span'), { className: 'solo-lector', textContent: ' (ya sellada)' }));
+    }
+  }
+</script>
+
+<style>
+  /* Una hoja del pasaporte, como en la página del Pasaporte y en las fichas */
+  .coleccion {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+    /* Sin esto, la tira de sellos ensancha la página entera en el celular */
+    min-width: 0;
+    padding: 20px 0 18px;
+    border-radius: 18px;
+    background:
+      repeating-radial-gradient(circle at 100% 0%, transparent 0 22px, color-mix(in srgb, var(--acento) 7%, transparent) 22px 23px),
+      color-mix(in srgb, var(--fondo-elevado) 90%, var(--maiz));
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.4) inset,
+      0 16px 34px -24px rgb(40 20 8 / 0.5);
+  }
+
+  .coleccion__cabeza {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4px 16px;
+    padding-inline: 20px;
+  }
+
+  .coleccion h2 {
+    font-size: clamp(1.5rem, 1.3rem + 0.8vw, 1.9rem);
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .coleccion h2 em {
+    font-weight: 500;
+    color: var(--acento);
+  }
+
+  .coleccion__cuenta {
+    font-size: var(--t-nota);
+    font-weight: 600;
+    color: var(--texto-2);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .coleccion__cuenta strong {
+    font-family: var(--fuente-titulos);
+    font-size: 1.6rem;
+    color: var(--acento);
+  }
+
+  /* La tira se desliza de lado: los sellos se solapan un poco, como puestos uno junto al otro */
+  .coleccion__tira {
+    display: flex;
+    gap: 2px;
+    padding: 4px 20px 6px;
+    list-style: none;
+    overflow-x: auto;
+    scrollbar-width: none;
+    scroll-snap-type: x proximity;
+  }
+
+  .coleccion__tira::-webkit-scrollbar {
+    display: none;
+  }
+
+  .coleccion__sello {
+    /* Contiene el nombre para lectores de pantalla: si no, queda fuera de la tira y ensancha la página */
+    position: relative;
+    flex: none;
+    width: 5.25rem;
+    scroll-snap-align: start;
+  }
+
+  .coleccion__pie {
+    padding-inline: 20px;
+    font-size: var(--t-nota);
+    color: var(--texto-2);
+  }
+
+  .coleccion__pie a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 600;
+    color: var(--acento);
+    text-decoration: none;
+  }
+
+  .coleccion__pie :global(svg) {
+    width: 15px;
+    height: 15px;
+  }
+</style>

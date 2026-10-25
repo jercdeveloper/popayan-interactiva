@@ -27,10 +27,12 @@ const lugares = await Promise.all(
   }),
 );
 const relacionadas = await getEntries(receta.data.relacionadas);
+// La foto del plato, si hay una libre; si no, la cabecera es de color
+const foto = fotoDe(`receta-${receta.id}`);
 ---
 
 <Base titulo={nombre} descripcion={resumen}>
-  <CabeceraFoto foto={null} alt="" titulo={nombre} meta={`Recetario vivo · ${TIPO[tipo]}`} icono={icono}>
+  <CabeceraFoto foto={foto} alt={foto?.credito.alt ?? nombre} titulo={nombre} meta={`Recetario vivo · ${TIPO[tipo]}`} icono={icono}>
     <Fragment slot="controles">
       <Circulo icono="caret-left" etiqueta="Todas las recetas" href="/recetario" />
     </Fragment>

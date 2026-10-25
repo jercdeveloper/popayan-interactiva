@@ -28,6 +28,8 @@ const PAGINAS = [
   { ruta: '/semana-santa/guia', titulo: 'Cómo se hace una procesión' },
   { ruta: '/planificador', titulo: 'Planea tu viaje' },
   { ruta: '/recetario', titulo: 'Recetario vivo' },
+  { ruta: '/personajes', titulo: 'Personajes' },
+  { ruta: '/personajes/quintin-lame', titulo: 'Manuel Quintín Lame' },
   { ruta: '/recetario/empanadas-de-pipian', titulo: 'Empanadas de pipián' },
   { ruta: '/recetario/salpicon-de-baudilia', titulo: 'Salpicón de Baudilia' },
   { ruta: '/excursiones/purace', titulo: 'Parque Nacional Natural Puracé' },
@@ -55,9 +57,9 @@ test('una dirección que no existe responde 404 con su página', async ({ page }
 test('la barra de pestañas lleva a cada sección y marca la activa', async ({ page }) => {
   await page.goto('/');
   const barra = page.getByRole('navigation', { name: /secciones|principal|pestañas/i });
-  await barra.getByRole('link', { name: 'Agenda' }).click();
-  await expect(page).toHaveURL(/\/agenda$/);
-  await expect(barra.getByRole('link', { name: 'Agenda' })).toHaveAttribute('aria-current', 'page');
+  await barra.getByRole('link', { name: /^Pasaporte/ }).click();
+  await expect(page).toHaveURL(/\/pasaporte$/);
+  await expect(barra.getByRole('link', { name: /^Pasaporte/ })).toHaveAttribute('aria-current', 'page');
   await barra.getByRole('link', { name: 'Rutas' }).click();
   await expect(page).toHaveURL(/\/rutas$/);
   await expect(barra.getByRole('link', { name: 'Rutas' })).toHaveAttribute('aria-current', 'page');

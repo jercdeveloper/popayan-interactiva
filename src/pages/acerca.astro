@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Encabezado from '../components/vidrio/Encabezado.astro';
+import { fotoDe } from '../lib/fotos';
 import Icono from '../components/Icono.astro';
 import { CREDITOS } from '../lib/fotos';
 
@@ -14,6 +15,8 @@ const fotos = Object.entries(CREDITOS)
 
 <Base titulo="Acerca del proyecto" descripcion="Quién hace Popayán Interactiva, cómo cuida tus datos y de dónde salen sus textos y fotos.">
   <Encabezado
+    foto={fotoDe('calle-5')}
+    alt="La Calle 5 del Centro Histórico, con sus casas blancas"
     ancho="angosto"
     titulo="Hecha en Popayán, para Popayán"
     bajada="Popayán Interactiva es una guía gratuita del Centro Histórico. Nace para mostrar la otra cara del Cauca: su historia, su gente, su cocina y su memoria."
@@ -103,6 +106,7 @@ const fotos = Object.entries(CREDITOS)
                   {f.nombre}
                   <small>
                     {f.autor} · {f.licencia}
+                    {f.cambios && ` · ${f.cambios}`}
                   </small>
                 </span>
                 <Icono nombre="arrow-up-right" class="celda__flecha" />

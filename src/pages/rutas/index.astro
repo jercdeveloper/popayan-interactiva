@@ -1,7 +1,11 @@
 ---
+/**
+ * Las rutas, como el índice de una revista: una banda de teja con el título y, debajo, cada ruta con su
+ * número, su foto y su nombre en la letra de Ibarra. La primera abre a lo ancho. La foto de cada ruta
+ * viaja hasta la cabecera de la ruta al tocarla (public/js/transicion.js).
+ */
 import { Picture } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
-import Encabezado from '../../components/vidrio/Encabezado.astro';
 import Icono from '../../components/Icono.astro';
 import { rutasOrdenadas, formatearDuracion, formatearDistancia } from '../../lib/rutas';
 import { fotoDe, lineaCredito } from '../../lib/fotos';
@@ -10,35 +14,47 @@ const rutas = (await rutasOrdenadas()).map((r) => ({ ...r, foto: fotoDe(r.ruta.d
 ---
 
 <Base titulo="Rutas" seccion="rutas" descripcion="Rutas por el Centro Histórico de Popayán y sus haciendas, con historias que citan sus fuentes.">
-  <Encabezado
-    titulo="Rutas"
-    bajada="Elige una y la guía te lleva de parada en parada, con la historia de cada lugar. Siete se hacen a pie por el centro; la de las haciendas, en carro."
-  />
+  <header class="cabeza">
+    <h1>Rutas</h1>
+    <p>
+      Elige una y la guía te lleva de parada en parada, con la historia de cada lugar. Siete se hacen a pie por el
+      centro; la de las haciendas, en carro.
+    </p>
+    <a class="cabeza__enlace" href="/planificador">
+      Arma tu plan de 1 a 3 días
+      <Icono nombre="arrow-right" />
+    </a>
+  </header>
 
   <ol class="rutas">
     {
-      rutas.map(({ ruta, paradas, metros, minutos, foto }) => (
+      rutas.map(({ ruta, paradas, metros, minutos, foto }, i) => (
         <li>
-          <a class="ruta" href={`/rutas/${ruta.id}`}>
-            {foto && (
-              <Picture
-                src={foto.src}
-                formats={['avif', 'webp']}
-                widths={[480, 800, 1200]}
-                sizes="(min-width: 64rem) 36rem, (min-width: 48rem) 46vw, 92vw"
-                alt=""
-                class="ruta__foto"
-              />
-            )}
-            <span class="ruta__texto vidrio">
-              <span class="ruta__modo">
-                <Icono nombre={ruta.data.modo === 'carro' ? 'car-simple' : 'footprints'} peso="fill" />
-                {ruta.data.modo === 'carro' ? 'En carro' : 'A pie'}
+          <a class="ruta revelar" href={`/rutas/${ruta.id}`}>
+            <span class="ruta__marco">
+              {foto && (
+                <Picture
+                  src={foto.src}
+                  formats={['avif', 'webp']}
+                  widths={[480, 800, 1200]}
+                  sizes={i === 0 ? '(min-width: 64rem) 40rem, (min-width: 48rem) 56vw, 92vw' : '(min-width: 64rem) 36rem, (min-width: 48rem) 46vw, 92vw'}
+                  alt=""
+                  class="ruta__foto"
+                  loading={i < 2 ? 'eager' : 'lazy'}
+                  data-transicion={`foto-ruta-${ruta.id}`}
+                />
+              )}
+            </span>
+            <span class="ruta__texto">
+              <span class="ruta__numero" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
               </span>
               <span class="ruta__nombre">{ruta.data.nombre}</span>
               <span class="ruta__lema">{ruta.data.lema}</span>
               <span class="ruta__datos">
-                {paradas.length} paradas · {formatearDistancia(metros)} · {formatearDuracion(minutos)}
+                <Icono nombre={ruta.data.modo === 'carro' ? 'car-simple' : 'footprints'} peso="fill" />
+                {ruta.data.modo === 'carro' ? 'En carro' : 'A pie'} · {paradas.length} paradas · {formatearDistancia(metros)} ·{' '}
+                {formatearDuracion(minutos)}
               </span>
             </span>
             {foto && <span class="solo-lector">Foto: {lineaCredito(foto.credito)}</span>}
@@ -50,38 +66,84 @@ const rutas = (await rutasOrdenadas()).map((r) => ({ ...r, foto: fotoDe(r.ruta.d
 </Base>
 
 <style>
+  /* ---------- La banda de teja ---------- */
+  .cabeza {
+    display: grid;
+    gap: 0.9rem;
+    padding: calc(4.5rem + env(safe-area-inset-top)) max(var(--margen), calc((100vw - var(--ancho-max)) / 2 + var(--margen))) 3rem;
+    background:
+      radial-gradient(120% 90% at 90% 0%, rgb(255 255 255 / 0.13), transparent 60%),
+      var(--teja);
+    color: #fff;
+  }
+
+  .cabeza h1 {
+    font-size: clamp(4rem, 2.4rem + 8vw, 8.5rem);
+    line-height: 0.86;
+    letter-spacing: -0.03em;
+  }
+
+  .cabeza p {
+    max-width: 34rem;
+    font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+    line-height: 1.45;
+    color: rgb(255 255 255 / 0.86);
+  }
+
+  .cabeza__enlace {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    justify-self: start;
+    min-height: var(--tactil);
+    font-weight: 600;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .cabeza__enlace :global(svg) {
+    width: 18px;
+    height: 18px;
+    transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .cabeza__enlace:hover :global(svg) {
+    transform: translateX(4px);
+  }
+
+  /* ---------- El índice ---------- */
   .rutas {
     display: grid;
-    gap: 16px;
+    gap: 2.75rem;
     max-width: var(--ancho-max);
     margin-inline: auto;
-    padding: 0.5rem var(--margen) 0;
+    padding: 2.5rem var(--margen) 0;
     list-style: none;
   }
 
   .ruta {
-    position: relative;
-    display: block;
-    aspect-ratio: 4 / 5;
-    border-radius: var(--radio-l);
-    overflow: hidden;
-    isolation: isolate;
-    background: var(--acento);
+    display: grid;
+    gap: 1.1rem;
     color: var(--texto);
     text-decoration: none;
-    box-shadow: 0 18px 40px -24px rgb(0 0 0 / 0.5);
-    transition: transform 160ms ease-out;
     -webkit-tap-highlight-color: transparent;
   }
 
-  .ruta:active {
+  .ruta__marco {
+    display: block;
+    aspect-ratio: 3 / 2;
+    border-radius: var(--radio-l);
+    overflow: hidden;
+    background: var(--teja-hondo);
+    transition: transform 160ms ease-out;
+  }
+
+  .ruta:active .ruta__marco {
     transform: scale(0.985);
   }
 
   .ruta :global(.ruta__foto) {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -95,59 +157,92 @@ const rutas = (await rutasOrdenadas()).map((r) => ({ ...r, foto: fotoDe(r.ruta.d
   }
 
   .ruta__texto {
-    position: absolute;
-    left: 10px;
-    right: 10px;
-    bottom: 10px;
     display: grid;
-    gap: 4px;
-    padding: 16px 18px 18px;
-    border-radius: var(--radio-m);
+    grid-template-columns: auto 1fr;
+    column-gap: 14px;
+    row-gap: 6px;
+    align-items: baseline;
   }
 
-  .ruta__modo {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: var(--t-mini);
-    font-weight: 600;
+  .ruta__numero {
+    grid-row: 1;
+    font-family: var(--fuente-titulos);
+    font-size: 2.1rem;
+    font-weight: 500;
+    font-style: italic;
+    line-height: 1;
     color: var(--acento);
+    font-variant-numeric: lining-nums;
   }
 
   .ruta__nombre {
+    grid-row: 1;
     font-family: var(--fuente-titulos);
-    font-size: var(--t-titulo);
-    font-weight: 700;
-    line-height: 1.12;
-    letter-spacing: -0.022em;
+    font-size: clamp(1.9rem, 1.6rem + 1.2vw, 2.4rem);
+    font-weight: 600;
+    line-height: 1.02;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+  }
+
+  .ruta__lema,
+  .ruta__datos {
+    grid-column: 2;
   }
 
   .ruta__lema {
-    font-size: var(--t-nota);
-    line-height: 1.35;
+    font-size: 1.0625rem;
+    line-height: 1.4;
     color: var(--texto-2);
+    text-wrap: pretty;
   }
 
   .ruta__datos {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
     margin-top: 4px;
+    padding-top: 10px;
+    border-top: 1px solid var(--separador);
     font-size: var(--t-mini);
     font-weight: 600;
     font-variant-numeric: tabular-nums;
   }
 
-  @media (min-width: 30rem) {
-    .ruta {
-      aspect-ratio: 4 / 3;
-    }
+  .ruta__datos :global(svg) {
+    width: 15px;
+    height: 15px;
+    color: var(--acento);
   }
 
   @media (min-width: 48rem) {
+    .cabeza {
+      padding-top: calc(8rem + env(safe-area-inset-top));
+      padding-bottom: 4rem;
+    }
     .rutas {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 20px;
+      gap: 3.5rem 2rem;
+      padding-top: 3.5rem;
     }
-    .ruta {
-      aspect-ratio: 5 / 4;
+    /* La primera ruta abre a lo ancho, con la foto a la izquierda */
+    .rutas > li:first-child {
+      grid-column: 1 / -1;
+    }
+    .rutas > li:first-child .ruta {
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 2.25rem;
+      align-items: end;
+    }
+    .rutas > li:first-child .ruta__marco {
+      aspect-ratio: 4 / 3;
+    }
+    .rutas > li:first-child .ruta__nombre {
+      font-size: clamp(2.6rem, 1.6rem + 2.4vw, 3.6rem);
+    }
+    .rutas > li:first-child .ruta__numero {
+      font-size: 3rem;
     }
   }
 </style>

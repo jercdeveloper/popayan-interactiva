@@ -3,10 +3,19 @@
  * Layout del sitio. El contenido es sólido (fotos, mapa, texto); el vidrio es solo la capa que flota:
  * la barra de pestañas, la marca y los controles de cada página.
  */
+import '@fontsource/ibarra-real-nova/500.css';
+import '@fontsource/ibarra-real-nova/600.css';
+import '@fontsource/ibarra-real-nova/700.css';
+import '@fontsource/ibarra-real-nova/500-italic.css';
 import '../styles/vidrio.css';
+// Las dos variantes de Ibarra que van en los títulos grandes se piden de primeras: son lo más grande de cada
+// pantalla y, sin esto, el título espera a que la hoja de estilos descubra la fuente
+import ibarraTitulos from '@fontsource/ibarra-real-nova/files/ibarra-real-nova-latin-600-normal.woff2?url';
+import ibarraCursiva from '@fontsource/ibarra-real-nova/files/ibarra-real-nova-latin-500-italic.woff2?url';
 import BarraPestanas, { type Pestana } from '../components/vidrio/BarraPestanas.astro';
 import Pie from '../components/Pie.astro';
 import RegistroSW from '../components/RegistroSW.astro';
+import BotonTema from '../components/vidrio/BotonTema.astro';
 
 interface Props {
   titulo?: string;
@@ -45,6 +54,8 @@ const vistaPrevia = new URL(imagen, Astro.site);
     <title>{tituloCompleto}</title>
     <meta name="description" content={descripcion} />
     <link rel="canonical" href={canonica} />
+    <link rel="preload" href={ibarraTitulos} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={ibarraCursiva} as="font" type="font/woff2" crossorigin />
     {!indexar && <meta name="robots" content="noindex" />}
     {
       noche ? (
@@ -56,6 +67,9 @@ const vistaPrevia = new URL(imagen, Astro.site);
         </>
       )
     }
+    <!-- Sin defer: aplica el tema elegido antes de pintar -->
+    <script is:inline src="/js/tema.js"></script>
+    <script is:inline src="/js/transicion.js"></script>
     <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/iconos/apple-touch-icon.png" />
@@ -85,6 +99,7 @@ const vistaPrevia = new URL(imagen, Astro.site);
     </main>
     {!pantallaCompleta && <Pie />}
     <BarraPestanas activa={seccion} />
+    {!noche && <BotonTema />}
     <RegistroSW />
   </body>
 </html>

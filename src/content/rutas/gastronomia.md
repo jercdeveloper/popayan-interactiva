@@ -2,7 +2,7 @@
 nombre: "Ruta gastronómica"
 lema: "Pipián, salpicón y aplanchados en la Ciudad de la Gastronomía de la UNESCO."
 orden: 5
-foto: dona-chepa
+foto: carantantas
 paradas:
   - parque-caldas
   - la-cosecha

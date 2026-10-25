@@ -1,12 +1,22 @@
 ---
 import { getCollection, getEntries } from 'astro:content';
+import { getImage } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Encabezado from '../../components/vidrio/Encabezado.astro';
+import { fotoDe } from '../../lib/fotos';
 import Icono from '../../components/Icono.astro';
 
 const recetas = (await getCollection('recetas')).sort((a, b) => a.data.orden - b.data.orden);
 const conLugares = await Promise.all(
-  recetas.map(async (r) => ({ receta: r, lugares: await getEntries(r.data.dondeProbar) })),
+  recetas.map(async (r) => {
+    // Donde hay foto libre del plato, se ve el plato; si no, su ícono
+    const foto = fotoDe(`receta-${r.id}`);
+    return {
+      receta: r,
+      lugares: await getEntries(r.data.dondeProbar),
+      miniatura: foto ? (await getImage({ src: foto.src, width: 112, height: 112, fit: 'cover', format: 'webp' })).src : null,
+    };
+  }),
 );
 const GRUPOS = [
   { tipos: ['base', 'acompanamiento'], titulo: 'Lo básico' },
@@ -21,6 +31,8 @@ const GRUPOS = [
   descripcion="Las recetas de la cocina de Popayán, con el nombre de quien las cocina y de quien las recogió: pipián, empanadas, tamales, carantanta, salpicón, champús y aplanchados."
 >
   <Encabezado
+    foto={fotoDe('carantantas')}
+    alt="Carantantas de Popayán sobre una hoja de plátano"
     ancho="medio"
     titulo="Recetario vivo"
     bajada="La cocina de Popayán, receta por receta: con el nombre de quien la cocina, de quien la recogió y del lugar donde se puede probar."
@@ -37,12 +49,16 @@ const GRUPOS = [
                 {g.titulo}
               </h2>
               <ul class="recetas">
-                {lista.map(({ receta, lugares }) => (
+                {lista.map(({ receta, lugares, miniatura }) => (
                   <li>
                     <a class="receta" href={`/recetario/${receta.id}`}>
-                      <span class="receta__icono" aria-hidden="true">
-                        <Icono nombre={receta.data.icono} peso="fill" />
-                      </span>
+                      {miniatura ? (
+                        <img class="receta__foto" src={miniatura} alt="" width="56" height="56" loading="lazy" decoding="async" />
+                      ) : (
+                        <span class="receta__icono" aria-hidden="true">
+                          <Icono nombre={receta.data.icono} peso="fill" />
+                        </span>
+                      )}
                       <span class="receta__texto">
                         <span class="receta__nombre">{receta.data.nombre}</span>
                         <span class="receta__resumen">{receta.data.resumen}</span>
@@ -104,15 +120,24 @@ const GRUPOS = [
     transform: scale(0.985);
   }
 
-  .receta__icono {
-    display: grid;
-    place-items: center;
+  .receta__icono,
+  .receta__foto {
+    flex: none;
     width: 64px;
     height: 64px;
     border-radius: 16px;
-    background: radial-gradient(120% 90% at 20% 0%, #c4532c, #9c3d1c);
+  }
+
+  .receta__icono {
+    display: grid;
+    place-items: center;
+    background: radial-gradient(120% 90% at 20% 0%, rgb(255 255 255 / 0.14), transparent 60%), var(--teja);
     color: #ffffff;
     font-size: 2rem;
+  }
+
+  .receta__foto {
+    object-fit: cover;
   }
 
   .receta__texto {

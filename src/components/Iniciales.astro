@@ -1,0 +1,48 @@
+---
+/**
+ * Las iniciales de una persona en un círculo, como en Contactos. Mientras no haya retratos con licencia,
+ * es lo que la representa: nunca un retrato inventado.
+ */
+interface Props {
+  iniciales: string;
+  tamano?: 'chico' | 'mediano' | 'grande';
+}
+
+const { iniciales, tamano = 'mediano' } = Astro.props;
+---
+
+<span class:list={['iniciales', `iniciales--${tamano}`]} aria-hidden="true">{iniciales}</span>
+
+<style>
+  .iniciales {
+    display: grid;
+    place-items: center;
+    flex: none;
+    border-radius: 50%;
+    background: radial-gradient(120% 90% at 30% 10%, #c4532c, #9c3d1c);
+    color: #ffffff;
+    font-family: var(--fuente-titulos);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .iniciales--chico {
+    width: 40px;
+    height: 40px;
+    font-size: 0.9375rem;
+  }
+
+  .iniciales--mediano {
+    width: 60px;
+    height: 60px;
+    font-size: 1.375rem;
+  }
+
+  .iniciales--grande {
+    width: 104px;
+    height: 104px;
+    font-size: 2.5rem;
+    box-shadow: 0 12px 30px -14px rgb(156 61 28 / 0.6);
+  }
+</style>

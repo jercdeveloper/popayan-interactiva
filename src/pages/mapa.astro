@@ -93,6 +93,7 @@ const categorias = (Object.keys(CATEGORIAS) as (keyof typeof CATEGORIAS)[]).filt
           <p class="detalle__meta" data-detalle-meta></p>
           <h2 data-detalle-nombre></h2>
           <p data-detalle-resumen></p>
+          <p class="detalle__sello" data-detalle-sello></p>
           <div class="detalle__acciones">
             <a class="boton boton--lleno" href="/" data-detalle-ficha>Ver la ficha</a>
             <button type="button" class="boton boton--tinte" data-volver>Todos los lugares</button>
@@ -111,6 +112,8 @@ const categorias = (Object.keys(CATEGORIAS) as (keyof typeof CATEGORIAS)[]).filt
   import { animate } from 'motion';
   import { estiloMapa, PALETA_VIDRIO } from '../lib/estilo-mapa';
   import fuente from '../lib/mapa-fuente.json';
+  import { alCambiarTema, temaEfectivo } from '../lib/tema';
+  import { fechaEnTexto, sellosGuardados } from '../lib/sello-cliente';
 
   interface Lugar {
     id: string;
@@ -126,7 +129,6 @@ const categorias = (Object.keys(CATEGORIAS) as (keyof typeof CATEGORIAS)[]).filt
 
   if (import.meta.env.PROD) maplibregl.setWorkerUrl(urlWorker);
   const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const oscuro = matchMedia('(prefers-color-scheme: dark)');
   const color = (v: string) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 
   const lienzo = document.querySelector<HTMLElement>('[data-lienzo]')!;
@@ -141,7 +143,7 @@ const categorias = (Object.keys(CATEGORIAS) as (keyof typeof CATEGORIAS)[]).filt
 
   const mapa = new maplibregl.Map({
     container: lienzo,
-    style: estiloMapa(oscuro.matches ? 'oscuro' : 'claro', location.origin, PALETA_VIDRIO),
+    style: estiloMapa(temaEfectivo(), location.origin, PALETA_VIDRIO),
     bounds: encuadre,
     fitBoundsOptions: { padding: { top: 90, bottom: 260, left: 30, right: 30 }, maxZoom: 16.5 },
     maxBounds: [
@@ -196,8 +198,9 @@ const categorias = (Object.keys(CATEGORIAS) as (keyof typeof CATEGORIAS)[]).filt
     });
   }
   mapa.on('load', capas);
-  oscuro.addEventListener('change', () => {
-    mapa.setStyle(estiloMapa(oscuro.matches ? 'oscuro' : 'claro', location.origin, PALETA_VIDRIO));
+  // Con el botón de tema o con el del teléfono, el mapa cambia de paleta
+  alCambiarTema((tema) => {
+    mapa.setStyle(estiloMapa(tema, location.origin, PALETA_VIDRIO));
     mapa.once('style.load', capas);
   });
   mapa.on('click', 'lugares-punto', (e) => {
@@ -358,6 +361,14 @@ const categorias = (Object.keys(CATEGORIAS) as (keyof typeof CATEGORIAS)[]).filt
     detalle.querySelector('[data-detalle-meta]')!.textContent = `${l.etiqueta} · ${l.epoca}`;
     detalle.querySelector('[data-detalle-resumen]')!.textContent = l.resumen;
     detalle.querySelector<HTMLAnchorElement>('[data-detalle-ficha]')!.href = `/lugares/${l.id}`;
+    // El Pasaporte también aquí: si ya lo selló, cuándo; si no, dónde se sella
+    const sello = sellosGuardados()[l.id];
+    const lineaSello = detalle.querySelector<HTMLElement>('[data-detalle-sello]')!;
+    lineaSello.textContent = sello
+      ? `Sellado en tu pasaporte el ${fechaEnTexto(sello.fecha)}`
+      : 'Sin sellar todavía: se sella desde la ficha, estando aquí';
+    lineaSello.classList.toggle('detalle__sello--ganado', Boolean(sello));
+    detalle.querySelector('[data-detalle-ficha]')!.textContent = sello ? 'Ver la ficha' : 'Ver la ficha y sellar';
     // La foto se crea solo si el lugar la tiene: nunca una imagen vacía
     cajaFoto.replaceChildren();
     cajaFoto.hidden = !l.foto;
@@ -709,6 +720,34 @@ const categorias = (Object.keys(CATEGORIAS) as (keyof typeof CATEGORIAS)[]).filt
   .detalle__texto {
     display: grid;
     gap: 8px;
+  }
+
+  .detalle__sello {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--t-nota);
+    font-weight: 600;
+    color: var(--texto-2);
+  }
+
+  /* Un sello pequeño, punteado si falta y entintado si ya está */
+  .detalle__sello::before {
+    content: '';
+    flex: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px dashed currentColor;
+  }
+
+  .detalle__sello--ganado {
+    color: var(--acento);
+  }
+
+  .detalle__sello--ganado::before {
+    border-style: solid;
+    background: radial-gradient(circle, currentColor 0 35%, transparent 38%);
   }
 
   .detalle__meta {

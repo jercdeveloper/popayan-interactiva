@@ -1,0 +1,101 @@
+---
+/**
+ * El botón de tema: arriba a la derecha en todas las páginas. Muestra la luna en el tema claro y el sol
+ * en el oscuro; cuál se ve lo decide el CSS, así que no parpadea al cargar.
+ */
+import Icono from '../Icono.astro';
+---
+
+<button type="button" class="tema vidrio" data-boton-tema aria-label="Cambiar a modo oscuro">
+  <Icono nombre="moon-stars" peso="fill" class="tema__luna" />
+  <Icono nombre="sun" peso="fill" class="tema__sol" />
+</button>
+
+<script>
+  import { alCambiarTema, cambiarTema, temaEfectivo } from '../../lib/tema';
+
+  const boton = document.querySelector<HTMLButtonElement>('[data-boton-tema]');
+  if (boton) {
+    const rotular = () =>
+      boton.setAttribute('aria-label', temaEfectivo() === 'oscuro' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+    rotular();
+    alCambiarTema(rotular);
+    boton.addEventListener('click', () => {
+      const caja = boton.getBoundingClientRect();
+      cambiarTema({ x: caja.left + caja.width / 2, y: caja.top + caja.height / 2 });
+    });
+  }
+</script>
+
+<style>
+  .tema {
+    position: fixed;
+    z-index: 31;
+    top: calc(12px + env(safe-area-inset-top));
+    right: var(--margen);
+    display: grid;
+    place-items: center;
+    width: var(--tactil);
+    height: var(--tactil);
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    color: var(--texto);
+    cursor: pointer;
+    transition: transform 120ms ease-out;
+    -webkit-tap-highlight-color: transparent;
+    view-transition-name: boton-tema;
+  }
+
+  .tema:active {
+    transform: scale(0.92);
+  }
+
+  .tema :global(svg) {
+    grid-area: 1 / 1;
+    width: 21px;
+    height: 21px;
+    transition:
+      transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 220ms ease-out;
+  }
+
+  /* Claro: se ve la luna (lo que hace el botón); oscuro: el sol */
+  .tema :global(.tema__sol) {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.6);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-tema='claro'])) .tema :global(.tema__sol) {
+      opacity: 1;
+      transform: none;
+    }
+    :global(:root:not([data-tema='claro'])) .tema :global(.tema__luna) {
+      opacity: 0;
+      transform: rotate(90deg) scale(0.6);
+    }
+  }
+
+  :global(:root[data-tema='oscuro']) .tema :global(.tema__sol) {
+    opacity: 1;
+    transform: none;
+  }
+
+  :global(:root[data-tema='oscuro']) .tema :global(.tema__luna) {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.6);
+  }
+
+  @media (min-width: 48rem) {
+    .tema {
+      top: calc(14px + env(safe-area-inset-top));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tema :global(svg) {
+      transition: opacity 150ms ease-out;
+    }
+  }
+</style>
