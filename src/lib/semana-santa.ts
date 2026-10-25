@@ -44,6 +44,14 @@ export function momento(hoy: string): Momento {
   return dias > 0 ? { tipo: 'antes', anio, dias } : { tipo: 'durante', anio, desdePascua: -7 - dias };
 }
 
+/** En qué parte del día cae una hora: "Mañana", "Tarde" o "Noche" */
+export function parteDelDia(hora: string) {
+  const m = hora.match(/^(\d{1,2}):/);
+  if (!m) return /tarde/i.test(hora) ? 'Tarde' : /mañana/i.test(hora) ? 'Mañana' : 'Noche';
+  const h = Number(m[1]);
+  return h < 12 ? 'Mañana' : h < 18 ? 'Tarde' : 'Noche';
+}
+
 /** "20:00" → "8:00 p. m.", sin saltos de línea; un texto ("Por la tarde") queda en minúscula */
 export function horaLegible(hora: string) {
   const m = hora.match(/^(\d{1,2}):(\d{2})$/);

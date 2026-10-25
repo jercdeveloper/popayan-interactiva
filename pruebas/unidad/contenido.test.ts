@@ -1,6 +1,8 @@
 // Reglas del contenido que Zod no puede revisar porque cruzan colecciones o archivos.
 // El esquema (campos, tipos, límites) ya lo valida src/content.config.ts en cada compilación.
 import { describe, expect, it } from 'vitest';
+import { readdirSync, readFileSync } from 'node:fs';
+import { parse } from 'yaml';
 import { archivosDeFotos, creditos, eventos, hitos, lugares, rutas } from './contenido';
 
 const idsLugares = new Set(lugares.map((l) => l.id));
@@ -99,5 +101,21 @@ describe('historia', () => {
     const anios = hitos.map((h) => h.anio);
     expect([...anios].sort((a, b) => a - b)).toEqual(anios);
     for (const h of hitos) if (h.lugar) expect(idsLugares.has(h.lugar), h.id).toBe(true);
+  });
+});
+
+describe('excursiones', () => {
+  const excursiones = readdirSync('src/content/excursiones').map((f) => {
+    const [, frente] = readFileSync(`src/content/excursiones/${f}`, 'utf8').split('---');
+    return { id: f.replace(/\.md$/, ''), ...(parse(frente) as { aviso?: { fecha: string | Date } }) };
+  });
+
+  it('los avisos (volcán, vías) se revisaron hace menos de 60 días', () => {
+    // Si esta prueba falla, hay que volver a revisar la fuente oficial y actualizar el aviso y su fecha
+    const limite = Date.now() - 60 * 86_400_000;
+    for (const e of excursiones) {
+      if (!e.aviso) continue;
+      expect(new Date(e.aviso.fecha).getTime(), `${e.id}: aviso revisado el ${e.aviso.fecha}`).toBeGreaterThan(limite);
+    }
   });
 });

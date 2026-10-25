@@ -86,8 +86,9 @@ const semanaSanta = momento(new Intl.DateTimeFormat('en-CA', { timeZone: 'Americ
   </header>
 
   <section class="seccion" id="rutas" aria-labelledby="titulo-rutas">
-    <div class="seccion__cabeza">
+    <div class="seccion__cabeza seccion__cabeza--enlace">
       <h2 id="titulo-rutas">Rutas</h2>
+      <a href="/planificador">Arma tu plan de 1 a 3 días</a>
       <p>Ocho recorridos con historia. Siete a pie por el centro y uno en carro por las haciendas.</p>
     </div>
     <ol class="carrusel" aria-label="Rutas">
@@ -483,6 +484,10 @@ const semanaSanta = momento(new Intl.DateTimeFormat('en-CA', { timeZone: 'Americ
   .seccion__cabeza--enlace {
     grid-template-columns: 1fr auto;
     align-items: end;
+  }
+
+  .seccion__cabeza--enlace p {
+    grid-column: 1 / -1;
   }
 
   .seccion__cabeza--enlace a {

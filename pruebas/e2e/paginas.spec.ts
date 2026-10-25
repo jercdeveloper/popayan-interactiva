@@ -26,6 +26,9 @@ const PAGINAS = [
   { ruta: '/semana-santa/viernes-santo', titulo: 'Procesión del Santo Entierro' },
   { ruta: '/semana-santa/domingo-de-ramos', titulo: 'Procesión del Señor del Triunfo' },
   { ruta: '/semana-santa/guia', titulo: 'Cómo se hace una procesión' },
+  { ruta: '/planificador', titulo: 'Planea tu viaje' },
+  { ruta: '/excursiones/purace', titulo: 'Parque Nacional Natural Puracé' },
+  { ruta: '/excursiones/tierradentro', titulo: 'Tierradentro' },
 ];
 
 for (const { ruta, titulo } of PAGINAS) {

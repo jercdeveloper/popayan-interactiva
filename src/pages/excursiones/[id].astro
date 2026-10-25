@@ -1,0 +1,185 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Icono from '../../components/Icono.astro';
+import CabeceraFoto from '../../components/vidrio/CabeceraFoto.astro';
+import Circulo from '../../components/vidrio/Circulo.astro';
+
+export async function getStaticPaths() {
+  const excursiones = await getCollection('excursiones');
+  return excursiones.map((excursion) => ({ params: { id: excursion.id }, props: { excursion } }));
+}
+
+const { excursion } = Astro.props;
+const { Content } = await render(excursion);
+const { nombre, resumen, icono, distanciaKm, tiempo, duracion, mejorDia, aviso, fuentes } = excursion.data;
+const DURACION = { 'medio-dia': 'Medio día', dia: 'Día completo', 'dos-dias': 'Dos días, con una noche allá' } as const;
+const DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+const revisado = aviso
+  ? new Intl.DateTimeFormat('es-CO', { timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric' }).format(aviso.fecha)
+  : null;
+---
+
+<Base titulo={nombre} descripcion={resumen}>
+  <CabeceraFoto foto={null} alt="" titulo={nombre} meta={`Excursión · a ${distanciaKm} km de Popayán`} icono={icono}>
+    <Fragment slot="controles">
+      <Circulo icono="caret-left" etiqueta="Planea tu viaje" href="/planificador" />
+    </Fragment>
+  </CabeceraFoto>
+
+  <article class="hoja">
+    <p class="resumen">{resumen}</p>
+
+    {
+      aviso && (
+        <aside class="aviso" aria-labelledby="titulo-aviso">
+          <Icono nombre="warning" peso="fill" class="aviso__icono" />
+          <div>
+            <h2 id="titulo-aviso">Aviso</h2>
+            <p>{aviso.texto}</p>
+            <p class="aviso__pie">
+              Revisado el {revisado}. <a href={aviso.enlace} rel="noopener noreferrer">Ver la fuente oficial</a>
+            </p>
+          </div>
+        </aside>
+      )
+    }
+
+    <ul class="celdas">
+      <li>
+        <span class="celda">
+          <Icono nombre="map-pin-line" class="celda__icono" />
+          <span class="celda__texto">
+            A {distanciaKm} km de Popayán
+            {tiempo && <small>{tiempo}</small>}
+          </span>
+        </span>
+      </li>
+      <li>
+        <span class="celda">
+          <Icono nombre="clock" class="celda__icono" />
+          <span class="celda__texto">{DURACION[duracion]}</span>
+        </span>
+      </li>
+      {
+        mejorDia !== undefined && (
+          <li>
+            <span class="celda">
+              <Icono nombre="calendar-check" class="celda__icono" />
+              <span class="celda__texto">Mejor día: el {DIAS[mejorDia]}</span>
+            </span>
+          </li>
+        )
+      }
+    </ul>
+
+    <div class="cuerpo">
+      <Content />
+    </div>
+
+    <section class="grupo" aria-labelledby="titulo-fuentes">
+      <h2 class="grupo__titulo" id="titulo-fuentes">Fuentes</h2>
+      <ul class="celdas">
+        {
+          fuentes.map((f) => (
+            <li>
+              <a class="celda" href={f.url} rel="noopener noreferrer">
+                <Icono nombre="link-simple" class="celda__icono" />
+                <span class="celda__texto">{f.titulo}</span>
+                <Icono nombre="arrow-up-right" class="celda__flecha" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="nota">Las vías, los horarios y el estado de los parques cambian. Confírmalos antes de salir.</p>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .hoja {
+    position: relative;
+    display: grid;
+    gap: 2rem;
+    margin-top: -1.75rem;
+    padding: 2rem var(--margen) 0;
+    border-radius: var(--radio-l) var(--radio-l) 0 0;
+    background: var(--fondo);
+  }
+
+  .hoja > * {
+    width: 100%;
+    max-width: 42rem;
+    margin-inline: auto;
+  }
+
+  .resumen {
+    font-family: var(--fuente-titulos);
+    font-size: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.022em;
+  }
+
+  /* El aviso: lo primero que se lee, sin alarmar */
+  .aviso {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 14px;
+    padding: 18px;
+    border-radius: var(--radio-l);
+    background: color-mix(in srgb, #e8a33d 14%, var(--fondo-elevado));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, #e8a33d 40%, transparent);
+  }
+
+  .aviso :global(.aviso__icono) {
+    width: 26px;
+    height: 26px;
+    color: #c98512;
+  }
+
+  .aviso h2 {
+    font-family: var(--fuente);
+    font-size: var(--t-nota);
+    font-weight: 700;
+  }
+
+  .aviso p {
+    margin-top: 4px;
+    line-height: 1.45;
+  }
+
+  .aviso__pie {
+    font-size: var(--t-mini);
+    color: var(--texto-2);
+  }
+
+  .aviso__pie a {
+    color: var(--texto);
+    font-weight: 600;
+  }
+
+  .celdas .celda__texto small {
+    font-size: var(--t-nota);
+  }
+
+  .cuerpo {
+    display: grid;
+    gap: 1rem;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    letter-spacing: -0.012em;
+  }
+
+  .cuerpo :global(h2) {
+    margin-top: 0.75rem;
+    font-size: var(--t-titulo);
+  }
+
+  .cuerpo :global(ul) {
+    display: grid;
+    gap: 0.5rem;
+    padding-left: 1.2em;
+  }
+</style>

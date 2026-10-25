@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Encabezado from '../components/vidrio/Encabezado.astro';
 import Icono from '../components/Icono.astro';
+import { getCollection } from 'astro:content';
 
 /** Lluvia media por mes en milímetros (IDEAM, tabla de parámetros climáticos de Popayán en Wikipedia) */
 const LLUVIA = [
@@ -42,6 +43,7 @@ const fuente = {
   clima: { titulo: 'Wikipedia: Popayán (parámetros climáticos del IDEAM)', url: 'https://es.wikipedia.org/wiki/Popay%C3%A1n' },
   centro: { titulo: 'Wikipedia: Centro histórico de Popayán', url: 'https://es.wikipedia.org/wiki/Centro_hist%C3%B3rico_de_Popay%C3%A1n' },
 };
+const excursiones = (await getCollection('excursiones')).sort((a, b) => a.data.distanciaKm - b.data.distanciaKm);
 ---
 
 <Base
@@ -111,6 +113,36 @@ const fuente = {
         Fuentes: <a href={fuente.aerocivil.url} rel="noopener noreferrer">{fuente.aerocivil.titulo}</a> ·{' '}
         <a href={fuente.terminal.url} rel="noopener noreferrer">{fuente.terminal.titulo}</a>
       </p>
+    </section>
+
+    <section class="grupo" aria-labelledby="titulo-excursiones">
+      <h2 class="grupo__titulo" id="titulo-excursiones">Tu viaje</h2>
+      <ul class="celdas">
+        <li>
+          <a class="celda" href="/planificador">
+            <Icono nombre="calendar-check" class="celda__icono" />
+            <span class="celda__texto">
+              Planea tu viaje
+              <small>Un plan de 1 a 3 días con las rutas, la agenda y las excursiones.</small>
+            </span>
+            <Icono nombre="caret-right" class="celda__flecha" />
+          </a>
+        </li>
+        {
+          excursiones.map((e) => (
+            <li>
+              <a class="celda" href={`/excursiones/${e.id}`}>
+                <Icono nombre={e.data.icono} class="celda__icono" />
+                <span class="celda__texto">
+                  {e.data.nombre}
+                  <small>A {e.data.distanciaKm} km de Popayán{e.data.aviso ? '. Revisa el aviso antes de ir.' : ''}</small>
+                </span>
+                <Icono nombre="caret-right" class="celda__flecha" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
     </section>
 
     <section class="grupo" aria-labelledby="titulo-clima">

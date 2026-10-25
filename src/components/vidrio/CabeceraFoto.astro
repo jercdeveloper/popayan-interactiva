@@ -100,9 +100,14 @@ const { foto, alt, titulo, meta, icono = 'map-pin', alto = 'media' } = Astro.pro
   }
 
   /* Sin foto: superficie de terracota, con el ícono del tipo de lugar grande y en relieve */
+  /* Sin foto: terracota profunda en los dos temas (el acento del modo oscuro es claro y el texto blanco no se leería) */
   .cabecera--sin-foto {
     min-height: min(52svh, 480px);
-    background: var(--acento);
+    background: radial-gradient(120% 90% at 20% 0%, #c4532c, #9c3d1c);
+  }
+
+  .cabecera--sin-foto .cabecera__meta {
+    color: #ffffff;
   }
 
   .cabecera__icono {

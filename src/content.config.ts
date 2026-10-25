@@ -140,4 +140,34 @@ const procesiones = defineCollection({
   }),
 });
 
-export const collections = { lugares, rutas, hitos, eventos, procesiones };
+/**
+ * Excursiones de un día (o dos) desde Popayán, para el Planificador. Las condiciones cambian (vías,
+ * volcanes, horarios): el aviso lleva la fecha en que se revisó y un enlace a la fuente oficial.
+ */
+const excursiones = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/excursiones' }),
+  schema: z.object({
+    nombre: z.string(),
+    resumen: z.string().max(220),
+    /** Ícono de Phosphor para la cabecera, que va sin foto */
+    icono: z.string(),
+    distanciaKm: z.number().positive(),
+    tiempo: z.string().optional(),
+    /** Cuánto ocupa en el plan: medio día, el día entero o dos días (con noche fuera) */
+    duracion: z.enum(['medio-dia', 'dia', 'dos-dias']),
+    /** Día de la semana en que más vale la pena (0 domingo … 6 sábado): el mercado de Silvia es el martes */
+    mejorDia: z.number().int().min(0).max(6).optional(),
+    gustos: z.array(z.enum(['historia', 'templos', 'comida', 'naturaleza', 'cultura'])).min(1),
+    aviso: z
+      .object({
+        texto: z.string(),
+        /** Cuándo se revisó por última vez */
+        fecha: z.coerce.date(),
+        enlace: z.url(),
+      })
+      .optional(),
+    fuentes: z.array(fuente).min(1),
+  }),
+});
+
+export const collections = { lugares, rutas, hitos, eventos, procesiones, excursiones };

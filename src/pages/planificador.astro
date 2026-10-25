@@ -1,0 +1,683 @@
+---
+import { getCollection } from 'astro:content';
+import { getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Encabezado from '../components/vidrio/Encabezado.astro';
+import Icono from '../components/Icono.astro';
+import { rutasOrdenadas, formatearDuracion } from '../lib/rutas';
+import { fotoDe } from '../lib/fotos';
+import { planear, GUSTOS, type Gusto, type Opcion } from '../lib/planificador';
+import { horaLegible, parteDelDia } from '../lib/semana-santa';
+
+/** Qué gusto toca cada ruta, y su peso propio: las del centro van primero */
+const PERFIL: Record<string, { gustos: Gusto[]; base: number; centro?: boolean }> = {
+  proceres: { gustos: ['historia', 'cultura'], base: 3, centro: true },
+  templos: { gustos: ['templos', 'historia'], base: 3, centro: true },
+  gastronomia: { gustos: ['comida', 'cultura'], base: 2 },
+  'puentes-y-morro': { gustos: ['naturaleza', 'historia'], base: 2 },
+  'arte-sagrado': { gustos: ['templos', 'cultura'], base: 1 },
+  gobierno: { gustos: ['historia'], base: 1 },
+  'semana-santa': { gustos: ['templos', 'cultura'], base: 1 },
+  haciendas: { gustos: ['historia', 'naturaleza'], base: 1 },
+};
+const BASE_EXCURSION: Record<string, number> = { silvia: 2, coconuco: 1, purace: 0, tierradentro: 0 };
+const NOMBRE_GUSTO: Record<Gusto, string> = {
+  historia: 'Historia',
+  templos: 'Templos',
+  comida: 'Comida',
+  naturaleza: 'Naturaleza',
+  cultura: 'Cultura',
+};
+const DURACION = { 'medio-dia': 'Medio día', dia: 'Día completo', 'dos-dias': 'Dos días' } as const;
+
+const rutas = await Promise.all(
+  (await rutasOrdenadas()).map(async ({ ruta, minutos }): Promise<Opcion> => {
+    const foto = fotoDe(ruta.data.foto);
+    const perfil = PERFIL[ruta.id] ?? { gustos: ['historia'], base: 0 };
+    return {
+      id: ruta.id,
+      tipo: 'ruta',
+      nombre: ruta.data.nombre,
+      href: `/rutas/${ruta.id}`,
+      bloques: minutos > 240 ? 2 : 1,
+      gustos: perfil.gustos,
+      base: perfil.base,
+      centro: perfil.centro,
+      carro: ruta.data.modo === 'carro',
+      detalle: `${formatearDuracion(minutos)} ${ruta.data.modo === 'carro' ? 'en carro' : 'a pie'}`,
+      miniatura: foto ? (await getImage({ src: foto.src, width: 112, height: 112, fit: 'cover', format: 'webp' })).src : null,
+    };
+  }),
+);
+const excursiones = (await getCollection('excursiones')).map(
+  (e): Opcion => ({
+    id: e.id,
+    tipo: 'excursion',
+    nombre: e.data.nombre,
+    href: `/excursiones/${e.id}`,
+    bloques: e.data.duracion === 'medio-dia' ? 1 : e.data.duracion === 'dia' ? 2 : 4,
+    gustos: e.data.gustos,
+    base: BASE_EXCURSION[e.id] ?? 0,
+    carro: false,
+    mejorDia: e.data.mejorDia,
+    detalle: `${DURACION[e.data.duracion]} · a ${e.data.distanciaKm} km`,
+    icono: e.data.icono,
+  }),
+);
+const opciones = [...rutas, ...excursiones];
+
+// Lo que puede llenar una noche: las procesiones (por su distancia a la Pascua) y la agenda
+const procesiones = (await getCollection('procesiones')).map((p) => ({
+  titulo: `${p.data.nombre}`,
+  href: `/semana-santa/${p.id}`,
+  detalle: `${p.data.dia} · ${horaLegible(p.data.hora)}`,
+  cuando: parteDelDia(p.data.hora),
+  desdePascua: p.data.desdePascua,
+}));
+const eventos = (await getCollection('eventos'))
+  .filter((e) => !e.data.jornadas)
+  .map((e) => ({ titulo: e.data.nombre, href: '/agenda', detalle: e.data.cuando, cuando: 'En la agenda', inicio: e.data.inicio, fin: e.data.fin ?? e.data.inicio }));
+
+// El plan que se ve antes de elegir nada: dos días, sin fecha
+const ejemplo = planear({ dias: 2, carro: false, gustos: [] }, opciones);
+const iconos = Object.fromEntries(excursiones.map((e) => [e.id, e.icono]));
+---
+
+<Base
+  titulo="Planea tu viaje"
+  descripcion="Un plan de 1 a 3 días en Popayán con sus rutas, la agenda y excursiones a Silvia, Coconuco, Puracé y Tierradentro. Funciona sin señal."
+>
+  <Encabezado
+    ancho="medio"
+    titulo="Planea tu viaje"
+    bajada="Cuéntanos cuántos días tienes y qué te gusta. El plan sale de las rutas, la agenda y las excursiones de la guía."
+  />
+
+  <div class="pagina">
+    <form class="preguntas" data-preguntas aria-label="Tu viaje">
+      <fieldset class="pregunta">
+        <legend>¿Cuántos días tienes?</legend>
+        <div class="segmentos">
+          {
+            [1, 2, 3].map((n) => (
+              <label class="segmento">
+                <input type="radio" name="dias" value={n} checked={n === 2} />
+                <span>{n === 1 ? '1 día' : `${n} días`}</span>
+              </label>
+            ))
+          }
+        </div>
+      </fieldset>
+
+      <div class="pregunta">
+        <label for="desde">¿Qué día llegas?</label>
+        <input id="desde" name="desde" type="date" class="fecha" />
+        <p class="pregunta__ayuda">Con la fecha, el plan suma lo que haya en la agenda esas noches.</p>
+      </div>
+
+      <fieldset class="pregunta">
+        <legend>¿Qué te gusta?</legend>
+        <div class="fichas">
+          {
+            GUSTOS.map((g) => (
+              <label class="ficha">
+                <input type="checkbox" name="gustos" value={g} />
+                <span>{NOMBRE_GUSTO[g]}</span>
+              </label>
+            ))
+          }
+        </div>
+      </fieldset>
+
+      <label class="interruptor">
+        <span>
+          Tengo carro
+          <small>Para la Ruta de las haciendas</small>
+        </span>
+        <input type="checkbox" name="carro" role="switch" />
+      </label>
+    </form>
+
+    <section class="plan" aria-labelledby="titulo-plan" aria-live="polite">
+      <div class="plan__cabeza">
+        <h2 id="titulo-plan">Tu plan</h2>
+        <button type="button" class="boton boton--tinte plan__compartir" data-compartir-plan>
+          <Icono nombre="share-network" />
+          Compartir
+        </button>
+      </div>
+      <ol class="dias" data-dias>
+        {
+          ejemplo.map((d) => (
+            <li class="dia">
+              <h3 class="dia__titulo">Día {d.numero}</h3>
+              <ul class="momentos">
+                {(d.diaEntero ? [['Todo el día', d.diaEntero] as const] : ([['Mañana', d.manana], ['Tarde', d.tarde]] as const)).map(
+                  ([momento, o]) => (
+                    <li>
+                      {o ? (
+                        <a class="momento" href={o.href}>
+                          {o.miniatura ? (
+                            <img class="momento__foto" src={o.miniatura} alt="" width="56" height="56" loading="lazy" decoding="async" />
+                          ) : (
+                            <span class="momento__foto momento__foto--icono" aria-hidden="true">
+                              <Icono nombre={o.icono ?? 'compass'} />
+                            </span>
+                          )}
+                          <span class="momento__texto">
+                            <small>{momento}</small>
+                            <span>{o.nombre}</span>
+                            <small>{o.detalle}</small>
+                          </span>
+                          <Icono nombre="caret-right" class="momento__flecha" />
+                        </a>
+                      ) : (
+                        <span class="momento momento--libre">
+                          <span class="momento__texto">
+                            <small>{momento}</small>
+                            <span>Libre: camina el centro a tu ritmo</span>
+                          </span>
+                        </span>
+                      )}
+                    </li>
+                  ),
+                )}
+              </ul>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="nota" data-plan-nota>Los tiempos son aproximados. Confirma horarios y el estado de las vías antes de salir.</p>
+      <p class="plan__aviso" role="status" aria-live="polite" data-plan-aviso></p>
+    </section>
+
+    <section class="grupo" aria-labelledby="titulo-mas">
+      <h2 class="grupo__titulo" id="titulo-mas">Más lejos de Popayán</h2>
+      <ul class="celdas">
+        {
+          excursiones.map((e) => (
+            <li>
+              <a class="celda" href={e.href}>
+                <Icono nombre={e.icono ?? 'compass'} class="celda__icono" />
+                <span class="celda__texto">
+                  {e.nombre}
+                  <small>{e.detalle}</small>
+                </span>
+                <Icono nombre="caret-right" class="celda__flecha" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+
+  <!-- Moldes para dibujar el plan en el navegador -->
+  <template data-molde-dia>
+    <li class="dia">
+      <h3 class="dia__titulo"></h3>
+      <ul class="momentos"></ul>
+    </li>
+  </template>
+  <template data-molde-momento>
+    <li>
+      <a class="momento">
+        <span class="momento__texto"><small data-cuando></small><span data-nombre></span><small data-detalle></small></span>
+      </a>
+    </li>
+  </template>
+  <template data-icono-flecha><Icono nombre="caret-right" class="momento__flecha" /></template>
+  <template data-icono-noche><Icono nombre="moon-stars" /></template>
+  {Object.entries(iconos).map(([id, icono]) => <template data-icono-excursion={id}><Icono nombre={icono ?? 'compass'} /></template>)}
+
+  <script is:inline type="application/json" data-datos-plan set:html={JSON.stringify({ opciones, procesiones, eventos })} />
+</Base>
+
+<script>
+  import { planear, aParametros, deParametros, GUSTOS, type Gusto, type Noche, type Opcion, type Preferencias } from '../lib/planificador';
+  import { desdePascua } from '../lib/pascua';
+  import { fechaLarga } from '../lib/fechas';
+
+  interface Datos {
+    opciones: Opcion[];
+    procesiones: (Noche & { desdePascua: number })[];
+    eventos: (Noche & { inicio: string; fin: string })[];
+  }
+  const datos: Datos = JSON.parse(document.querySelector('[data-datos-plan]')!.textContent!);
+  const form = document.querySelector<HTMLFormElement>('[data-preguntas]')!;
+  const lista = document.querySelector<HTMLElement>('[data-dias]')!;
+  const aviso = document.querySelector<HTMLElement>('[data-plan-aviso]')!;
+  const CLAVE = 'planificador-v1';
+
+  function nochesDe(fecha: string): Noche[] {
+    const anio = Number(fecha.slice(0, 4));
+    const noches: Noche[] = datos.procesiones.filter((p) => desdePascua(anio, p.desdePascua) === fecha);
+    for (const e of datos.eventos) if (e.inicio <= fecha && fecha <= e.fin) noches.push(e);
+    return noches;
+  }
+
+  function leerFormulario(): Preferencias {
+    const f = new FormData(form);
+    const dias = Number(f.get('dias'));
+    return {
+      dias: dias === 1 || dias === 3 ? dias : 2,
+      desde: (f.get('desde') as string) || undefined,
+      carro: f.get('carro') === 'on',
+      gustos: f.getAll('gustos').filter((g): g is Gusto => (GUSTOS as readonly string[]).includes(g as string)),
+    };
+  }
+
+  function ponerFormulario(p: Preferencias) {
+    form.querySelector<HTMLInputElement>(`input[name="dias"][value="${p.dias}"]`)!.checked = true;
+    form.querySelector<HTMLInputElement>('input[name="desde"]')!.value = p.desde ?? '';
+    form.querySelector<HTMLInputElement>('input[name="carro"]')!.checked = p.carro;
+    for (const c of form.querySelectorAll<HTMLInputElement>('input[name="gustos"]')) c.checked = p.gustos.includes(c.value as Gusto);
+  }
+
+  const molde = (sel: string) => document.querySelector<HTMLTemplateElement>(sel)!.content.firstElementChild!.cloneNode(true) as HTMLElement;
+
+  function fila(cuando: string, o: Opcion | null, noche?: Noche) {
+    const li = molde('[data-molde-momento]');
+    const a = li.querySelector<HTMLAnchorElement>('.momento')!;
+    li.querySelector('[data-cuando]')!.textContent = cuando;
+    if (noche) {
+      a.href = noche.href;
+      a.classList.add('momento--noche');
+      li.querySelector('[data-nombre]')!.textContent = noche.titulo;
+      li.querySelector('[data-detalle]')!.textContent = noche.detalle ?? '';
+      const icono = document.createElement('span');
+      icono.className = 'momento__foto momento__foto--icono';
+      icono.append(molde('[data-icono-noche]'));
+      a.prepend(icono);
+    } else if (o) {
+      a.href = o.href;
+      li.querySelector('[data-nombre]')!.textContent = o.nombre;
+      li.querySelector('[data-detalle]')!.textContent = o.detalle;
+      if (o.miniatura) {
+        const img = Object.assign(document.createElement('img'), { className: 'momento__foto', src: o.miniatura, alt: '', width: 56, height: 56 });
+        a.prepend(img);
+      } else {
+        const icono = document.createElement('span');
+        icono.className = 'momento__foto momento__foto--icono';
+        const t = document.querySelector<HTMLTemplateElement>(`[data-icono-excursion="${o.id}"]`);
+        if (t) icono.append(t.content.firstElementChild!.cloneNode(true));
+        a.prepend(icono);
+      }
+    } else {
+      const span = document.createElement('span');
+      span.className = 'momento momento--libre';
+      span.append(...a.childNodes);
+      li.querySelector('[data-nombre]')!.textContent = 'Libre: camina el centro a tu ritmo';
+      li.querySelector('[data-detalle]')!.remove();
+      a.replaceWith(span);
+      return li;
+    }
+    a.append(molde('[data-icono-flecha]'));
+    return li;
+  }
+
+  function dibujar(p: Preferencias) {
+    const dias = planear(p, datos.opciones, nochesDe);
+    lista.replaceChildren(
+      ...dias.map((d) => {
+        const li = molde('[data-molde-dia]');
+        li.querySelector('.dia__titulo')!.textContent = d.fecha ? `Día ${d.numero} · ${fechaLarga(d.fecha)}` : `Día ${d.numero}`;
+        const momentos = li.querySelector('.momentos')!;
+        if (d.diaEntero) momentos.append(fila('Todo el día', d.diaEntero));
+        else momentos.append(fila('Mañana', d.manana), fila('Tarde', d.tarde));
+        for (const n of d.noche) momentos.append(fila(n.cuando ?? 'Noche', null, n));
+        return li;
+      }),
+    );
+  }
+
+  function actualizar() {
+    const p = leerFormulario();
+    dibujar(p);
+    const q = aParametros(p);
+    history.replaceState(null, '', `${location.pathname}?${q}`);
+    try {
+      localStorage.setItem(CLAVE, q);
+    } catch {}
+  }
+
+  // Al abrir: lo que diga el enlace compartido; si no, lo último que eligió en este teléfono
+  let inicial = deParametros(new URLSearchParams(location.search));
+  if (!inicial) {
+    try {
+      inicial = deParametros(new URLSearchParams(localStorage.getItem(CLAVE) ?? ''));
+    } catch {}
+  }
+  if (inicial) {
+    ponerFormulario(inicial);
+    dibujar(inicial);
+  }
+  form.addEventListener('change', actualizar);
+  form.addEventListener('submit', (e) => e.preventDefault());
+
+  document.querySelector('[data-compartir-plan]')!.addEventListener('click', async () => {
+    const url = `${location.origin}${location.pathname}?${aParametros(leerFormulario())}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: 'Mi plan en Popayán', url });
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      aviso.textContent = 'Enlace del plan copiado.';
+    } catch (error) {
+      if ((error as DOMException)?.name !== 'AbortError') aviso.textContent = 'No se pudo compartir. Copia la dirección de la página.';
+    }
+  });
+</script>
+
+<style>
+  .pagina {
+    display: grid;
+    gap: 2.25rem;
+    max-width: 46rem;
+    margin-inline: auto;
+    padding: 0.25rem var(--margen) 0;
+  }
+
+  /* ---------- Las preguntas ---------- */
+  .preguntas {
+    display: grid;
+    gap: 22px;
+    padding: 20px;
+    border-radius: var(--radio-l);
+    background: var(--fondo-elevado);
+  }
+
+  .pregunta {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+
+  .pregunta legend,
+  .pregunta > label {
+    padding: 0;
+    margin-bottom: 10px;
+    font-weight: 650;
+    letter-spacing: -0.012em;
+  }
+
+  .pregunta > label {
+    margin-bottom: 0;
+  }
+
+  .pregunta__ayuda {
+    font-size: var(--t-mini);
+    color: var(--texto-2);
+  }
+
+  /* Control segmentado, como en iOS */
+  .segmentos {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 3px;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--texto) 8%, transparent);
+  }
+
+  .segmento {
+    position: relative;
+  }
+
+  .segmento input,
+  .ficha input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .segmento span {
+    display: grid;
+    place-items: center;
+    min-height: 40px;
+    border-radius: 9px;
+    font-size: var(--t-nota);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 160ms ease-out, box-shadow 160ms ease-out;
+  }
+
+  .segmento input:checked + span {
+    background: var(--fondo-elevado);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.12), 0 0 0 0.5px rgb(0 0 0 / 0.04);
+  }
+
+  .segmento input:focus-visible + span,
+  .ficha input:focus-visible + span {
+    outline: 3px solid color-mix(in srgb, var(--acento) 70%, transparent);
+    outline-offset: 2px;
+  }
+
+  .fecha {
+    min-height: 44px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--texto) 8%, transparent);
+    color: var(--texto);
+    font: inherit;
+    color-scheme: inherit;
+  }
+
+  .fichas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .ficha {
+    position: relative;
+  }
+
+  .ficha span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 16px;
+    border-radius: var(--radio-capsula);
+    background: color-mix(in srgb, var(--texto) 8%, transparent);
+    font-size: var(--t-nota);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 160ms ease-out, color 160ms ease-out;
+  }
+
+  .ficha input:checked + span {
+    background: var(--acento);
+    color: var(--sobre-acento);
+  }
+
+  .interruptor {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    font-weight: 650;
+    cursor: pointer;
+  }
+
+  .interruptor > span {
+    display: grid;
+    gap: 2px;
+  }
+
+  .interruptor small {
+    font-size: var(--t-mini);
+    font-weight: 400;
+    color: var(--texto-2);
+  }
+
+  /* Interruptor como el de Ajustes */
+  .interruptor input {
+    appearance: none;
+    position: relative;
+    flex: none;
+    width: 51px;
+    height: 31px;
+    margin: 0;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--texto) 16%, transparent);
+    cursor: pointer;
+    transition: background-color 200ms ease-out;
+  }
+
+  .interruptor input::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 27px;
+    height: 27px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 0.2);
+    transition: transform 240ms cubic-bezier(0.3, 1.3, 0.5, 1);
+  }
+
+  .interruptor input:checked {
+    background: var(--acento);
+  }
+
+  .interruptor input:checked::after {
+    transform: translateX(20px);
+  }
+
+  /* ---------- El plan ---------- */
+  .plan {
+    display: grid;
+    gap: 14px;
+  }
+
+  .plan__cabeza {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-inline: 4px;
+  }
+
+  .plan__cabeza h2 {
+    font-size: var(--t-titulo);
+  }
+
+  .plan__compartir {
+    min-height: 40px;
+    padding: 0 16px;
+    font-size: var(--t-nota);
+  }
+
+  .dias {
+    display: grid;
+    gap: 14px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .dias :global(.dia) {
+    display: grid;
+    gap: 8px;
+  }
+
+  .dias :global(.dia__titulo) {
+    padding-inline: 16px;
+    font-family: var(--fuente);
+    font-size: var(--t-nota);
+    font-weight: 700;
+    color: var(--acento);
+  }
+
+  .dias :global(.momentos) {
+    padding: 0;
+    list-style: none;
+    border-radius: var(--radio-m);
+    background: var(--fondo-elevado);
+    overflow: hidden;
+  }
+
+  .dias :global(.momentos > li + li) {
+    box-shadow: inset 0 0.5px 0 var(--separador);
+  }
+
+  .dias :global(.momento) {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr) auto;
+    gap: 14px;
+    align-items: center;
+    padding: 12px 14px;
+    color: var(--texto);
+    text-decoration: none;
+  }
+
+  .dias :global(.momento:active) {
+    background: color-mix(in srgb, var(--texto) 6%, transparent);
+  }
+
+  .dias :global(.momento--libre) {
+    grid-template-columns: 1fr;
+    padding-block: 16px;
+    color: var(--texto-2);
+  }
+
+  .dias :global(.momento__foto) {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    object-fit: cover;
+  }
+
+  .dias :global(.momento__foto--icono) {
+    display: grid;
+    place-items: center;
+    background: color-mix(in srgb, var(--acento) 14%, var(--fondo-elevado));
+    color: var(--acento);
+    font-size: 1.6rem;
+  }
+
+  .dias :global(.momento--noche .momento__foto--icono) {
+    background: #1f1828;
+    color: #ff8a5c;
+  }
+
+  .dias :global(.momento__texto) {
+    display: grid;
+    gap: 1px;
+    min-width: 0;
+    font-weight: 650;
+    line-height: 1.25;
+    letter-spacing: -0.012em;
+  }
+
+  .dias :global(.momento__texto small) {
+    font-size: var(--t-mini);
+    font-weight: 500;
+    letter-spacing: 0;
+    color: var(--texto-2);
+  }
+
+  .dias :global(.momento__texto small:first-child) {
+    font-weight: 700;
+    color: var(--acento);
+  }
+
+  .dias :global(.momento .momento__flecha) {
+    color: var(--texto-3);
+  }
+
+  .plan__aviso {
+    font-size: var(--t-nota);
+    font-weight: 600;
+    color: var(--acento);
+  }
+
+  .plan__aviso:empty {
+    display: none;
+  }
+</style>
