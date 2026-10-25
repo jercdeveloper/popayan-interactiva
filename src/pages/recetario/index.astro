@@ -1,0 +1,147 @@
+---
+import { getCollection, getEntries } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Encabezado from '../../components/vidrio/Encabezado.astro';
+import Icono from '../../components/Icono.astro';
+
+const recetas = (await getCollection('recetas')).sort((a, b) => a.data.orden - b.data.orden);
+const conLugares = await Promise.all(
+  recetas.map(async (r) => ({ receta: r, lugares: await getEntries(r.data.dondeProbar) })),
+);
+const GRUPOS = [
+  { tipos: ['base', 'acompanamiento'], titulo: 'Lo básico' },
+  { tipos: ['plato'], titulo: 'Platos' },
+  { tipos: ['bebida'], titulo: 'Bebidas' },
+  { tipos: ['dulce'], titulo: 'Dulces' },
+];
+---
+
+<Base
+  titulo="Recetario vivo"
+  descripcion="Las recetas de la cocina de Popayán, con el nombre de quien las cocina y de quien las recogió: pipián, empanadas, tamales, carantanta, salpicón, champús y aplanchados."
+>
+  <Encabezado
+    ancho="medio"
+    titulo="Recetario vivo"
+    bajada="La cocina de Popayán, receta por receta: con el nombre de quien la cocina, de quien la recogió y del lugar donde se puede probar."
+  />
+
+  <div class="pagina">
+    {
+      GRUPOS.map((g) => {
+        const lista = conLugares.filter(({ receta }) => g.tipos.includes(receta.data.tipo));
+        return (
+          lista.length > 0 && (
+            <section class="grupo" aria-labelledby={`grupo-${g.titulo}`}>
+              <h2 class="grupo__titulo" id={`grupo-${g.titulo}`}>
+                {g.titulo}
+              </h2>
+              <ul class="recetas">
+                {lista.map(({ receta, lugares }) => (
+                  <li>
+                    <a class="receta" href={`/recetario/${receta.id}`}>
+                      <span class="receta__icono" aria-hidden="true">
+                        <Icono nombre={receta.data.icono} peso="fill" />
+                      </span>
+                      <span class="receta__texto">
+                        <span class="receta__nombre">{receta.data.nombre}</span>
+                        <span class="receta__resumen">{receta.data.resumen}</span>
+                        {lugares.length > 0 && (
+                          <span class="receta__donde">
+                            <Icono nombre="map-pin" peso="fill" />
+                            {lugares.map((l) => l.data.nombre).join(' · ')}
+                          </span>
+                        )}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        );
+      })
+    }
+
+    <p class="nota">
+      Las recetas están escritas con nuestras palabras, con las cantidades y los pasos de quien las recogió. La mayoría
+      salen de los libros del antropólogo Carlos Humberto Illera Montoya sobre las cocinas tradicionales de Popayán.
+    </p>
+  </div>
+</Base>
+
+<style>
+  .pagina {
+    display: grid;
+    gap: 2.25rem;
+    max-width: 46rem;
+    margin-inline: auto;
+    padding: 0.25rem var(--margen) 0;
+  }
+
+  .recetas {
+    display: grid;
+    gap: 10px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .receta {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+    padding: 16px;
+    border-radius: var(--radio-m);
+    background: var(--fondo-elevado);
+    color: var(--texto);
+    text-decoration: none;
+    transition: transform 160ms ease-out;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .receta:active {
+    transform: scale(0.985);
+  }
+
+  .receta__icono {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: radial-gradient(120% 90% at 20% 0%, #c4532c, #9c3d1c);
+    color: #ffffff;
+    font-size: 2rem;
+  }
+
+  .receta__texto {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .receta__nombre {
+    font-family: var(--fuente-titulos);
+    font-size: 1.1875rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .receta__resumen {
+    font-size: var(--t-nota);
+    line-height: 1.4;
+    color: var(--texto-2);
+  }
+
+  .receta__donde {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 4px;
+    font-size: var(--t-mini);
+    font-weight: 600;
+    color: var(--acento);
+  }
+</style>

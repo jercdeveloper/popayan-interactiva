@@ -119,3 +119,35 @@ describe('excursiones', () => {
     }
   });
 });
+
+describe('recetario', () => {
+  const recetas = readdirSync('src/content/recetas').map((f) => {
+    const [, frente] = readFileSync(`src/content/recetas/${f}`, 'utf8').split('---');
+    return {
+      id: f.replace(/\.md$/, ''),
+      ...(parse(frente) as { orden: number; credito: string; dondeProbar?: string[]; relacionadas?: string[]; pasos?: string[] }),
+    };
+  });
+  const ids = new Set(recetas.map((r) => r.id));
+
+  it('los lugares donde se prueban existen', () => {
+    for (const r of recetas) for (const l of r.dondeProbar ?? []) expect(idsLugares.has(l), `${r.id} → ${l}`).toBe(true);
+  });
+
+  it('las recetas relacionadas existen y no se nombran a sí mismas', () => {
+    for (const r of recetas) {
+      for (const x of r.relacionadas ?? []) {
+        expect(ids.has(x), `${r.id} → ${x}`).toBe(true);
+        expect(x, r.id).not.toBe(r.id);
+      }
+    }
+  });
+
+  it('cada receta dice de quién es', () => {
+    for (const r of recetas) expect(r.credito.length, r.id).toBeGreaterThan(30);
+  });
+
+  it('el orden no se repite', () => {
+    expect(new Set(recetas.map((r) => r.orden)).size).toBe(recetas.length);
+  });
+});

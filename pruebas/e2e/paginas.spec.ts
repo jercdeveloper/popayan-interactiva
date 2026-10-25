@@ -27,6 +27,9 @@ const PAGINAS = [
   { ruta: '/semana-santa/domingo-de-ramos', titulo: 'Procesión del Señor del Triunfo' },
   { ruta: '/semana-santa/guia', titulo: 'Cómo se hace una procesión' },
   { ruta: '/planificador', titulo: 'Planea tu viaje' },
+  { ruta: '/recetario', titulo: 'Recetario vivo' },
+  { ruta: '/recetario/empanadas-de-pipian', titulo: 'Empanadas de pipián' },
+  { ruta: '/recetario/salpicon-de-baudilia', titulo: 'Salpicón de Baudilia' },
   { ruta: '/excursiones/purace', titulo: 'Parque Nacional Natural Puracé' },
   { ruta: '/excursiones/tierradentro', titulo: 'Tierradentro' },
 ];

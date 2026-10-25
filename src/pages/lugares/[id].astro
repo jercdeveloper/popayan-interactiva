@@ -21,6 +21,10 @@ const rutas = (await getCollection('rutas'))
   .sort((a, b) => a.data.orden - b.data.orden);
 const { nombre, categoria, epoca, resumen, dato, fuentes, revision, direccion, negocio } = lugar.data;
 const foto = fotoDe(lugar.id);
+// Las recetas que se pueden probar aquí
+const recetas = (await getCollection('recetas'))
+  .filter((r) => r.data.dondeProbar.some((l) => l.id === lugar.id))
+  .sort((a, b) => a.data.orden - b.data.orden);
 const tipo = CATEGORIAS[categoria];
 ---
 
@@ -101,6 +105,30 @@ const tipo = CATEGORIAS[categoria];
                 <a class="celda" href={`/rutas/${r.id}`}>
                   <Icono nombre={r.data.modo === 'carro' ? 'car-simple' : 'footprints'} class="celda__icono" />
                   <span class="celda__texto">{r.data.nombre}</span>
+                  <Icono nombre="caret-right" class="celda__flecha" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      recetas.length > 0 && (
+        <section class="grupo" aria-labelledby="titulo-recetas">
+          <h2 class="grupo__titulo" id="titulo-recetas">
+            Aquí se prueba
+          </h2>
+          <ul class="celdas">
+            {recetas.map((r) => (
+              <li>
+                <a class="celda" href={`/recetario/${r.id}`}>
+                  <Icono nombre={r.data.icono} class="celda__icono" />
+                  <span class="celda__texto">
+                    {r.data.nombre}
+                    <small>Cómo se prepara, en el Recetario vivo</small>
+                  </span>
                   <Icono nombre="caret-right" class="celda__flecha" />
                 </a>
               </li>

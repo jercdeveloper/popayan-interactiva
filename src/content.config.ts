@@ -170,4 +170,28 @@ const excursiones = defineCollection({
   }),
 });
 
-export const collections = { lugares, rutas, hitos, eventos, procesiones, excursiones };
+/**
+ * El Recetario vivo. Las recetas van con las palabras de la guía y el crédito de quien las cocina y de
+ * quien las recogió. Lo que no está documentado (cantidades, pasos) no se inventa: la receta queda sin
+ * ese dato.
+ */
+const recetas = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/recetas' }),
+  schema: z.object({
+    nombre: z.string(),
+    resumen: z.string().max(220),
+    tipo: z.enum(['base', 'plato', 'acompanamiento', 'bebida', 'dulce']),
+    orden: z.number().int(),
+    icono: z.string(),
+    /** De quién es la receta y quién la recogió */
+    credito: z.string(),
+    ingredientes: z.array(z.object({ grupo: z.string().optional(), items: z.array(z.string()).min(1) })).min(1),
+    /** Algunas recetas solo se conocen por sus ingredientes: entonces no llevan pasos */
+    pasos: z.array(z.string()).optional(),
+    dondeProbar: z.array(reference('lugares')).default([]),
+    relacionadas: z.array(reference('recetas')).default([]),
+    fuentes: z.array(fuente).min(1),
+  }),
+});
+
+export const collections = { lugares, rutas, hitos, eventos, procesiones, excursiones, recetas };

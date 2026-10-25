@@ -139,6 +139,19 @@ const lista = await Promise.all(
       }
     </ol>
 
+    {
+      ruta.id === 'gastronomia' && (
+        <a class="recetario" href="/recetario">
+          <Icono nombre="cooking-pot" peso="fill" class="recetario__icono" />
+          <span>
+            <strong>Recetario vivo</strong>
+            Cómo se preparan el pipián, las empanadas, el salpicón y los aplanchados de esta ruta
+          </span>
+          <Icono nombre="caret-right" class="recetario__flecha" />
+        </a>
+      )
+    }
+
     <nav class="otras" aria-labelledby="titulo-otras">
       <h2 class="grupo__titulo" id="titulo-otras">Otras rutas</h2>
       <ul class="otras__carrusel">
@@ -360,6 +373,41 @@ const lista = await Promise.all(
   }
 
   .parada__tarjeta :global(.parada__flecha) {
+    color: var(--texto-3);
+  }
+
+  .recetario {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 14px;
+    align-items: center;
+    padding: 16px;
+    border-radius: var(--radio-m);
+    background: var(--fondo-elevado);
+    color: var(--texto);
+    font-size: var(--t-nota);
+    line-height: 1.4;
+    text-decoration: none;
+  }
+
+  .recetario span {
+    display: grid;
+    gap: 2px;
+    color: var(--texto-2);
+  }
+
+  .recetario strong {
+    font-size: 1.0625rem;
+    color: var(--texto);
+  }
+
+  .recetario :global(.recetario__icono) {
+    width: 32px;
+    height: 32px;
+    color: var(--acento);
+  }
+
+  .recetario :global(.recetario__flecha) {
     color: var(--texto-3);
   }
 

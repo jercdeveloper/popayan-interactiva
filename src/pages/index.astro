@@ -18,6 +18,7 @@ const eventos = (await getCollection('eventos')).sort((a, b) => a.data.inicio.lo
 const hitos = (await getCollection('hitos')).sort((a, b) => a.data.anio - b.data.anio);
 const lugares = await getCollection('lugares');
 const datos = lugares.filter((l) => l.data.dato).map((l) => ({ id: l.id, nombre: l.data.nombre, dato: l.data.dato! }));
+const recetas = (await getCollection('recetas')).sort((a, b) => a.data.orden - b.data.orden);
 const semanaSanta = momento(new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Bogota' }).format(new Date()));
 ---
 
@@ -194,6 +195,27 @@ const semanaSanta = momento(new Intl.DateTimeFormat('en-CA', { timeZone: 'Americ
         <span class="widget__mas">Ver mi pasaporte</span>
       </a>
     </div>
+  </section>
+
+  <section class="seccion" aria-labelledby="titulo-cocina">
+    <div class="seccion__cabeza seccion__cabeza--enlace">
+      <h2 id="titulo-cocina">La cocina de Popayán</h2>
+      <a href="/recetario">Ver el recetario</a>
+    </div>
+    <ul class="tiempo cocina" aria-label="Recetas">
+      {
+        recetas.map((r) => (
+          <li class="tiempo__hito">
+            <a class="plato" href={`/recetario/${r.id}`}>
+              <span class="plato__icono" aria-hidden="true">
+                <Icono nombre={r.data.icono} peso="fill" />
+              </span>
+              <span class="tiempo__titulo">{r.data.nombre}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
   </section>
 
   <section class="seccion" aria-labelledby="titulo-tiempo">
@@ -759,6 +781,25 @@ const semanaSanta = momento(new Intl.DateTimeFormat('en-CA', { timeZone: 'Americ
     .widget--noche {
       grid-column: span 2;
     }
+  }
+
+  /* ---------- La cocina, en el mismo carrusel que la historia ---------- */
+  .plato {
+    display: grid;
+    gap: 12px;
+    color: var(--texto);
+    text-decoration: none;
+  }
+
+  .plato__icono {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: radial-gradient(120% 90% at 20% 0%, #c4532c, #9c3d1c);
+    color: #ffffff;
+    font-size: 1.6rem;
   }
 
   /* ---------- Línea de tiempo en miniatura ---------- */
