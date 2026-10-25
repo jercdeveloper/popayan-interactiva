@@ -1,0 +1,109 @@
+---
+/**
+ * La página que abre el código QR de un lugar: /sello/<lugar>?c=<código>.
+ * Si el código es el de este lugar, sella el pasaporte; si no, lo dice. Funciona sin señal.
+ */
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Sello from '../../components/pasaporte/Sello.astro';
+import { CATEGORIAS } from '../../lib/lugares';
+import { codigoDeSello } from '../../lib/codigo-sello';
+
+export async function getStaticPaths() {
+  const lugares = await getCollection('lugares');
+  return lugares.map((lugar) => ({ params: { id: lugar.id }, props: { lugar } }));
+}
+
+const { lugar } = Astro.props;
+const { nombre, categoria } = lugar.data;
+const tipo = CATEGORIAS[categoria];
+---
+
+<Base titulo={`Sello de ${nombre}`} indexar={false} descripcion={`Sella ${nombre} en tu Pasaporte de Popayán.`}>
+  <section class="sello-qr" data-sello-qr={lugar.id} data-codigo={codigoDeSello(lugar.id)}>
+    <div class="sello-qr__dibujo">
+      <Sello id={lugar.id} tipo={tipo.singular} icono={tipo.icono} />
+    </div>
+    <p class="sello-qr__pasaporte">Pasaporte de Popayán</p>
+    <h1>{nombre}</h1>
+    <p class="sello-qr__estado" data-sello-estado aria-live="polite">Revisando el código…</p>
+    <div class="sello-qr__acciones">
+      <a class="boton boton--lleno" href="/pasaporte">Ver mi pasaporte</a>
+      <a class="boton boton--tinte" href={`/lugares/${lugar.id}`}>Leer sobre este lugar</a>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { guardar, hoyLocal, sellar } from '../../lib/pasaporte';
+  import { animarSello, fechaEnTexto, mostrarGanado, sellosGuardados } from '../../lib/sello-cliente';
+
+  const caja = document.querySelector<HTMLElement>('[data-sello-qr]')!;
+  const id = caja.dataset.selloQr!;
+  const estado = caja.querySelector<HTMLElement>('[data-sello-estado]')!;
+  const dibujo = caja.querySelector<SVGElement>('.sello')!;
+  const codigo = new URLSearchParams(location.search).get('c');
+  const previo = sellosGuardados()[id];
+
+  if (previo) {
+    mostrarGanado(caja, previo);
+    estado.textContent = `Ya tenías este sello desde el ${fechaEnTexto(previo.fecha)}.`;
+  } else if (codigo !== caja.dataset.codigo) {
+    estado.textContent = 'Este código no corresponde a este lugar. Escanea el código QR del Pasaporte que hay en él.';
+  } else {
+    const sellos = sellar(sellosGuardados(), id, 'qr', hoyLocal());
+    if (guardar(localStorage, sellos)) {
+      mostrarGanado(caja, sellos[id]);
+      animarSello(dibujo);
+      estado.textContent = '¡Sellado! Ya está en tu pasaporte.';
+    } else {
+      estado.textContent = 'Este navegador no deja guardar el sello (¿estás en modo privado?).';
+    }
+  }
+</script>
+
+<style>
+  .sello-qr {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    max-width: 30rem;
+    min-height: 80svh;
+    margin-inline: auto;
+    padding: calc(4rem + env(safe-area-inset-top)) var(--margen) 2rem;
+    align-content: center;
+    text-align: center;
+  }
+
+  .sello-qr__dibujo {
+    width: min(14rem, 60vw);
+    margin-bottom: 1rem;
+  }
+
+  .sello-qr__pasaporte {
+    font-size: var(--t-nota);
+    font-weight: 600;
+    color: var(--acento);
+  }
+
+  .sello-qr h1 {
+    font-size: var(--t-grande);
+    line-height: 1.08;
+  }
+
+  .sello-qr__estado {
+    /* Tres líneas reservadas: el mensaje cambia sin mover lo demás */
+    min-height: calc(3 * 1.35em);
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  .sello-qr__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 0.5rem;
+  }
+</style>

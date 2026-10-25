@@ -1,0 +1,183 @@
+---
+/**
+ * En la ficha de cada lugar: el sello del Pasaporte y el botón para sellarlo estando allí.
+ * La ubicación se pide solo al tocar el botón, se usa en el teléfono para medir la distancia y no se guarda.
+ */
+import Sello from './Sello.astro';
+import { radioDe } from '../../lib/pasaporte';
+import { CATEGORIAS } from '../../lib/lugares';
+
+interface Props {
+  id: string;
+  nombre: string;
+  categoria: keyof typeof CATEGORIAS;
+  coordenadas: [number, number];
+}
+
+const { id, nombre, categoria, coordenadas } = Astro.props;
+const radio = radioDe(categoria);
+---
+
+<section
+  class="sellar"
+  aria-labelledby="titulo-sellar"
+  data-sellar={id}
+  data-lat={coordenadas[0]}
+  data-lon={coordenadas[1]}
+  data-radio={radio}
+>
+  <div class="sellar__dibujo">
+    <Sello id={id} tipo={CATEGORIAS[categoria].singular} icono={CATEGORIAS[categoria].icono} />
+  </div>
+  <div class="sellar__texto">
+    <h2 id="titulo-sellar">Pasaporte de Popayán</h2>
+    <p data-sellar-estado aria-live="polite">Cuando estés aquí, sella {nombre} en tu pasaporte.</p>
+    <div class="sellar__acciones">
+      <button type="button" class="boton boton--lleno" data-sellar-boton>Sellar mi pasaporte</button>
+      <a class="sellar__ver" href="/pasaporte">Ver mi pasaporte</a>
+    </div>
+    <p class="sellar__privacidad">
+      Para comprobar que estás a menos de {radio} m, se usa tu ubicación en el teléfono. No se guarda ni se envía.
+    </p>
+  </div>
+</section>
+
+<script>
+  import { distanciaMetros } from '../../lib/recorrido';
+  import { guardar, hoyLocal, revisarUbicacion, sellar } from '../../lib/pasaporte';
+  import { animarSello, fechaEnTexto, mostrarGanado, sellosGuardados } from '../../lib/sello-cliente';
+
+  for (const caja of document.querySelectorAll<HTMLElement>('[data-sellar]')) {
+    const id = caja.dataset.sellar!;
+    const lugar: [number, number] = [Number(caja.dataset.lat), Number(caja.dataset.lon)];
+    const radio = Number(caja.dataset.radio);
+    const estado = caja.querySelector<HTMLElement>('[data-sellar-estado]')!;
+    const boton = caja.querySelector<HTMLButtonElement>('[data-sellar-boton]')!;
+    const dibujo = caja.querySelector<SVGElement>('.sello')!;
+
+    const yaSellado = (fecha: string) => {
+      estado.textContent = `Sellado el ${fechaEnTexto(fecha)}.`;
+      boton.hidden = true;
+    };
+
+    const previo = sellosGuardados()[id];
+    if (previo) {
+      mostrarGanado(caja, previo);
+      yaSellado(previo.fecha);
+    }
+
+    boton.addEventListener('click', () => {
+      if (!('geolocation' in navigator)) {
+        estado.textContent = 'Este navegador no puede conocer tu ubicación. Si el lugar tiene un código QR del Pasaporte, escanéalo.';
+        return;
+      }
+      boton.disabled = true;
+      estado.textContent = 'Buscando dónde estás…';
+      navigator.geolocation.getCurrentPosition(
+        ({ coords }) => {
+          boton.disabled = false;
+          const distancia = distanciaMetros([coords.latitude, coords.longitude], lugar);
+          const revision = revisarUbicacion(distancia, coords.accuracy, radio);
+          if (revision.estado === 'lejos') {
+            estado.textContent =
+              revision.metros >= 1000
+                ? `Estás a más de ${Math.floor(revision.metros / 1000)} km. Vuelve a intentarlo cuando estés aquí.`
+                : `Te faltan unos ${revision.metros} m. Acércate un poco más y vuelve a intentarlo.`;
+            return;
+          }
+          if (revision.estado === 'impreciso') {
+            estado.textContent = 'La señal del GPS está débil. Sal a un lugar abierto y vuelve a intentarlo.';
+            return;
+          }
+          const sellos = sellar(sellosGuardados(), id, 'ubicacion', hoyLocal());
+          if (!guardar(localStorage, sellos)) {
+            estado.textContent = 'Este navegador no deja guardar el sello (¿estás en modo privado?).';
+            return;
+          }
+          mostrarGanado(caja, sellos[id]);
+          animarSello(dibujo);
+          yaSellado(sellos[id].fecha);
+        },
+        (error) => {
+          boton.disabled = false;
+          estado.textContent =
+            error.code === error.PERMISSION_DENIED
+              ? 'Para sellar hace falta permitir la ubicación en el navegador. Nunca sale de tu teléfono.'
+              : 'No se pudo conocer tu ubicación. Vuelve a intentarlo en un momento.';
+        },
+        { enableHighAccuracy: true, timeout: 15_000, maximumAge: 10_000 },
+      );
+    });
+  }
+</script>
+
+<style>
+  .sellar {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+    gap: 18px;
+    align-items: center;
+    padding: 18px;
+    border-radius: var(--radio-l);
+    background: var(--fondo-elevado);
+  }
+
+  .sellar__dibujo {
+    padding: 4px;
+  }
+
+  .sellar__texto {
+    display: grid;
+    gap: 8px;
+  }
+
+  .sellar h2 {
+    font-family: var(--fuente);
+    font-size: var(--t-nota);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--acento);
+  }
+
+  .sellar [data-sellar-estado] {
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  .sellar__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 16px;
+  }
+
+  .sellar__acciones [hidden] {
+    display: none;
+  }
+
+  .sellar__ver {
+    font-size: var(--t-nota);
+    font-weight: 600;
+    color: var(--acento);
+    text-decoration: none;
+  }
+
+  .sellar__privacidad {
+    font-size: var(--t-mini);
+    color: var(--texto-2);
+  }
+
+  @media (max-width: 26rem) {
+    .sellar {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      text-align: center;
+    }
+    .sellar__dibujo {
+      width: 8.5rem;
+    }
+    .sellar__acciones {
+      justify-content: center;
+    }
+  }
+</style>

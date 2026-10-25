@@ -3,12 +3,14 @@
 interface Props {
   titulo: string;
   bajada?: string;
+  /** El ancho de la columna de la página, para que el título quede alineado con lo que sigue */
+  ancho?: 'angosto' | 'medio' | 'ancho';
 }
 
-const { titulo, bajada } = Astro.props;
+const { titulo, bajada, ancho } = Astro.props;
 ---
 
-<header class="encabezado">
+<header class:list={["encabezado", ancho && `encabezado--${ancho}`]}>
   <h1>{titulo}</h1>
   {bajada && <p>{bajada}</p>}
   <slot />
@@ -21,6 +23,18 @@ const { titulo, bajada } = Astro.props;
     max-width: var(--ancho-max);
     margin-inline: auto;
     padding: calc(3.25rem + env(safe-area-inset-top)) var(--margen) 1.25rem;
+  }
+
+  .encabezado--angosto {
+    max-width: 42rem;
+  }
+
+  .encabezado--medio {
+    max-width: 46rem;
+  }
+
+  .encabezado--ancho {
+    max-width: 52rem;
   }
 
   .encabezado h1 {

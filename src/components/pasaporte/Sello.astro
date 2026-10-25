@@ -1,0 +1,131 @@
+---
+/**
+ * Un sello del Pasaporte, dibujado: borde dentado, el tipo de lugar en el anillo, el ícono en el centro y
+ * la fecha. Sin ganar, se ve como el hueco punteado donde irá. Cada sello cae con una inclinación propia,
+ * fija para cada lugar, como uno puesto a mano.
+ * Mientras no haya ilustraciones de artistas locales, el sistema los dibuja; cuando lleguen, se cambia
+ * este componente y nada más.
+ */
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+interface Props {
+  id: string;
+  /** Lo que va en el anillo: "Templo", "Hacienda"… */
+  tipo: string;
+  icono: string;
+  /** Distingue dos dibujos del mismo sello en una página (un lugar puede estar en dos colecciones) */
+  clave?: string;
+  class?: string;
+}
+
+const { id, tipo, icono, clave = id, class: clase } = Astro.props;
+const svg = readFileSync(join(process.cwd(), 'node_modules/@phosphor-icons/core/assets/fill', `${icono}-fill.svg`), 'utf8');
+const figura = svg.replace(/^<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
+
+// Inclinación fija por lugar, entre −14 y 14 grados
+let h = 0;
+for (const c of id) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+const giro = (h % 29) - 14;
+
+// Se dibuja a escala 3 (360 unidades): así el texto del anillo mide 25 unidades y no "8 px", aunque se vea igual
+// Borde dentado: 40 festones alrededor del círculo
+const festones = 40;
+let borde = '';
+for (let i = 0; i <= festones * 2; i++) {
+  const a = (i / (festones * 2)) * Math.PI * 2;
+  const r = i % 2 === 0 ? 171 : 162;
+  borde += `${i === 0 ? 'M' : 'L'}${(180 + r * Math.cos(a)).toFixed(1)} ${(180 + r * Math.sin(a)).toFixed(1)}`;
+}
+borde += 'Z';
+// El anillo da la vuelta completa: los nombres cortos se repiten dos veces para llenarlo
+const una = `${tipo} · Popayán · `.toUpperCase();
+const anillo = una.length <= 22 ? una + una : una;
+---
+
+<svg class:list={['sello', clase]} viewBox="0 0 360 360" aria-hidden="true" data-sello={id}>
+  <defs>
+    <path id={`arco-${clave}`} d="M180 180 m-132 0 a132 132 0 1 1 264 0 a132 132 0 1 1 -264 0"></path>
+    <!-- La tinta no cubre parejo: un poco de grano la hace parecer impresa -->
+    <filter id={`tinta-${clave}`} x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.28" numOctaves="2" seed={h % 97} result="grano"></feTurbulence>
+      <feColorMatrix in="grano" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -0.85 1.4" result="huecos"></feColorMatrix>
+      <feComposite in="SourceGraphic" in2="huecos" operator="in"></feComposite>
+    </filter>
+  </defs>
+  <g transform={`rotate(${giro} 180 180)`}>
+    <g class="sello__tinta" filter={`url(#tinta-${clave})`}>
+      <path class="sello__borde" d={borde}></path>
+      <circle class="sello__aro" cx="180" cy="180" r="105"></circle>
+      <text class="sello__anillo">
+        <textPath href={`#arco-${clave}`} textLength="816" lengthAdjust="spacing">{anillo}</textPath>
+      </text>
+      <g transform="translate(129 102) scale(0.4)" class="sello__icono" set:html={figura} />
+      <text class="sello__fecha" x="180" y="252" text-anchor="middle" data-sello-fecha></text>
+    </g>
+  </g>
+</svg>
+
+<style>
+  .sello {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    color: var(--texto-3);
+  }
+
+  .sello__borde {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 6.6;
+    stroke-dasharray: 9 12;
+  }
+
+  .sello__aro {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 4.2;
+    stroke-dasharray: 6 12;
+  }
+
+  .sello__anillo {
+    fill: currentColor;
+    font-family: var(--fuente);
+    font-size: 25.2px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+  }
+
+  .sello__icono {
+    fill: currentColor;
+    opacity: 0.5;
+  }
+
+  .sello__fecha {
+    fill: currentColor;
+    font-family: var(--fuente);
+    font-size: 24px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.04em;
+  }
+
+  /* Ganado: tinta llena, en terracota */
+  :global(.sello-ganado) .sello {
+    color: var(--acento);
+  }
+
+  :global(.sello-ganado) .sello__borde,
+  :global(.sello-ganado) .sello__aro {
+    stroke-dasharray: none;
+  }
+
+  :global(.sello-ganado) .sello__borde {
+    fill: color-mix(in srgb, var(--acento) 12%, transparent);
+  }
+
+  :global(.sello-ganado) .sello__icono {
+    opacity: 1;
+  }
+</style>

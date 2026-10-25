@@ -1,0 +1,114 @@
+---
+/**
+ * Hoja para imprimir los códigos QR del Pasaporte, uno por lugar, para pegarlos donde el GPS no alcanza.
+ * No aparece en los buscadores ni en los menús: es una herramienta para quien instale los códigos.
+ */
+import { getCollection } from 'astro:content';
+import QRCode from 'qrcode';
+import Base from '../../layouts/Base.astro';
+import Encabezado from '../../components/vidrio/Encabezado.astro';
+import { codigoDeSello } from '../../lib/codigo-sello';
+
+const lugares = (await getCollection('lugares')).sort((a, b) => a.data.nombre.localeCompare(b.data.nombre, 'es'));
+const fichas = await Promise.all(
+  lugares.map(async (l) => {
+    const url = new URL(`/sello/${l.id}?c=${codigoDeSello(l.id)}`, Astro.site).href;
+    const qr = await QRCode.toString(url, { type: 'svg', margin: 0, errorCorrectionLevel: 'M', color: { dark: '#1d1d1f', light: '#ffffff' } });
+    return { id: l.id, nombre: l.data.nombre, qr };
+  }),
+);
+---
+
+<Base titulo="Códigos QR del Pasaporte" indexar={false} descripcion="Códigos QR del Pasaporte de Popayán para imprimir.">
+  <Encabezado
+    titulo="Códigos del Pasaporte"
+    bajada={`Un código QR por lugar (${fichas.length}). Imprime esta página en papel adhesivo y pega cada código en su lugar, con permiso de quien lo administra.`}
+  />
+  <ol class="hoja">
+    {
+      fichas.map((f) => (
+        <li class="ficha">
+          <span class="ficha__marca isotipo" aria-hidden="true" />
+          <span class="ficha__qr" set:html={f.qr} />
+          <span class="ficha__nombre">{f.nombre}</span>
+          <span class="ficha__pie">Escanéalo para sellar tu Pasaporte de Popayán</span>
+        </li>
+      ))
+    }
+  </ol>
+</Base>
+
+<style>
+  .hoja {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    gap: 14px;
+    max-width: var(--ancho-max);
+    margin-inline: auto;
+    padding: 0.5rem var(--margen) 0;
+    list-style: none;
+  }
+
+  /* La ficha es blanca siempre: se imprime */
+  .ficha {
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    padding: 16px 14px 14px;
+    border-radius: var(--radio-m);
+    background: #ffffff;
+    color: #1d1d1f;
+    text-align: center;
+    break-inside: avoid;
+  }
+
+  .ficha__marca {
+    width: 22px;
+    height: 26px;
+    color: #c4532c;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .ficha__qr {
+    width: 100%;
+    max-width: 9rem;
+  }
+
+  .ficha__qr :global(svg) {
+    width: 100%;
+    height: auto;
+  }
+
+  .ficha__nombre {
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+  }
+
+  .ficha__pie {
+    font-size: 0.6875rem;
+    color: #6e6e73;
+  }
+
+  @media print {
+    :global(.pestanas),
+    :global(.pie),
+    :global(.marca),
+    :global(.encabezado) {
+      display: none !important;
+    }
+    :global(body) {
+      background: #ffffff;
+    }
+    .hoja {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      padding: 0;
+    }
+    .ficha {
+      border: 1px dashed #c7c7cc;
+      border-radius: 0;
+    }
+  }
+</style>

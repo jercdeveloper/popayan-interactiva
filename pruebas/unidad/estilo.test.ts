@@ -61,3 +61,10 @@ describe('código de la interfaz', () => {
     for (const { archivo, texto } of archivos) expect(texto, archivo).not.toMatch(/tile\.openstreetmap\.org/);
   });
 });
+
+describe('archivos copiados', () => {
+  it('la torre de public/ es la misma del logo', async () => {
+    const { readFileSync } = await import('node:fs');
+    expect(readFileSync('public/marca/isotipo.svg', 'utf8')).toBe(readFileSync('src/assets/marca/isotipo.svg', 'utf8'));
+  });
+});

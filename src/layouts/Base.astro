@@ -7,7 +7,6 @@ import '../styles/vidrio.css';
 import BarraPestanas, { type Pestana } from '../components/vidrio/BarraPestanas.astro';
 import Pie from '../components/Pie.astro';
 import RegistroSW from '../components/RegistroSW.astro';
-import isotipo from '../assets/marca/isotipo.svg?raw';
 
 interface Props {
   titulo?: string;
@@ -20,6 +19,8 @@ interface Props {
   pantallaCompleta?: boolean;
   /** Tema de noche de procesión (Semana Santa), sea cual sea el tema del sistema */
   noche?: boolean;
+  /** false en las páginas que no deben salir en los buscadores (los sellos por QR, la hoja de códigos) */
+  indexar?: boolean;
 }
 
 const {
@@ -29,6 +30,7 @@ const {
   imagen = '/tarjetas/og/inicio.jpg',
   pantallaCompleta = false,
   noche = false,
+  indexar = true,
 } = Astro.props;
 const tituloCompleto = titulo ? `${titulo} · Popayán Interactiva` : 'Popayán Interactiva';
 const canonica = new URL(Astro.url.pathname, Astro.site);
@@ -43,6 +45,7 @@ const vistaPrevia = new URL(imagen, Astro.site);
     <title>{tituloCompleto}</title>
     <meta name="description" content={descripcion} />
     <link rel="canonical" href={canonica} />
+    {!indexar && <meta name="robots" content="noindex" />}
     {
       noche ? (
         <meta name="theme-color" content="#120e18" />
@@ -73,7 +76,7 @@ const vistaPrevia = new URL(imagen, Astro.site);
 
     <!-- En escritorio la marca flota arriba a la izquierda; en el celular cada página decide -->
     <a class="marca vidrio" href="/" aria-label="Popayán Interactiva, inicio">
-      <span class="marca__torre" set:html={isotipo} />
+      <span class="marca__torre isotipo" aria-hidden="true"></span>
       <span>Popayán Interactiva</span>
     </a>
 
@@ -129,11 +132,6 @@ const vistaPrevia = new URL(imagen, Astro.site);
     display: block;
     width: 28px;
     height: 32px;
-  }
-
-  .marca__torre :global(svg) {
-    width: 100%;
-    height: 100%;
   }
 
   @media (min-width: 64rem) {

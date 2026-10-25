@@ -29,7 +29,8 @@ const { count, size, warnings } = await generateSW({
   globPatterns: ['**/*.{html,js,css,svg,png,ico,woff2,webmanifest}'],
   // Subconjuntos de fuentes que el español no usa (símbolos y matemáticas)
   // Las tarjetas para compartir se descargan solo cuando alguien comparte
-  globIgnores: ['mapa/**', 'tarjetas/**', '_astro/*-math-*', '_astro/*-symbols-*'],
+  // La hoja de códigos QR es para quien los instala, no para el visitante: no va sin conexión
+  globIgnores: ['mapa/**', 'tarjetas/**', 'pasaporte/codigos/**', '_astro/*-math-*', '_astro/*-symbols-*'],
   swDest: join(DIST, 'sw.js'),
   mode: 'production',
   sourcemap: false,

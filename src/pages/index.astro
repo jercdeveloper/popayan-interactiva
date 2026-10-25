@@ -6,7 +6,6 @@ import { getCollection } from 'astro:content';
 import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Icono from '../components/Icono.astro';
-import isotipo from '../assets/marca/isotipo.svg?raw';
 import { rutasOrdenadas, formatearDuracion } from '../lib/rutas';
 import { diaDelMes, nombreDelMes } from '../lib/fechas';
 import { fotoDe, lineaCredito } from '../lib/fotos';
@@ -37,7 +36,7 @@ const semanaSanta = momento(new Intl.DateTimeFormat('en-CA', { timeZone: 'Americ
     <div class="portada__velo" aria-hidden="true"></div>
 
     <a class="marca-movil vidrio" href="/" aria-label="Popayán Interactiva, inicio">
-      <span class="marca-movil__torre" set:html={isotipo} />
+      <span class="marca-movil__torre isotipo" aria-hidden="true"></span>
       <span>Popayán Interactiva</span>
     </a>
 
@@ -185,6 +184,14 @@ const semanaSanta = momento(new Intl.DateTimeFormat('en-CA', { timeZone: 'Americ
         </p>
         <span class="widget__mas">Las procesiones noche por noche</span>
       </a>
+
+      <a class="widget widget--pasaporte" href="/pasaporte">
+        <h3>Pasaporte</h3>
+        <p class="widget__dato" data-pasaporte-texto data-total={lugares.length}>
+          <strong>{lugares.length} lugares</strong> para sellar estando en ellos
+        </p>
+        <span class="widget__mas">Ver mi pasaporte</span>
+      </a>
     </div>
   </section>
 
@@ -209,6 +216,7 @@ const semanaSanta = momento(new Intl.DateTimeFormat('en-CA', { timeZone: 'Americ
 <script>
   import { animate } from 'motion';
   import { momento } from '../lib/semana-santa';
+  import { sellosGuardados } from '../lib/sello-cliente';
 
   // ---------- La hora de Popayán ----------
   const NUMEROS = ['doce', 'una', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez', 'once'];
@@ -276,6 +284,17 @@ const semanaSanta = momento(new Intl.DateTimeFormat('en-CA', { timeZone: 'Americ
     } else {
       semanaSanta.replaceChildren(fuerte('Es Semana Santa'), ': mira la procesión de hoy');
     }
+  }
+
+  // ---------- Cuántos sellos lleva el visitante (se guardan en su teléfono) ----------
+  const pasaporte = document.querySelector<HTMLElement>('[data-pasaporte-texto]');
+  const sellos = Object.keys(sellosGuardados()).length;
+  if (pasaporte && sellos > 0) {
+    pasaporte.replaceChildren(
+      'Llevas ',
+      Object.assign(document.createElement('strong'), { textContent: `${sellos} de ${pasaporte.dataset.total}` }),
+      ' sellos',
+    );
   }
 
   // ---------- Un dato distinto en cada visita ----------
@@ -346,11 +365,6 @@ const semanaSanta = momento(new Intl.DateTimeFormat('en-CA', { timeZone: 'Americ
     display: block;
     width: 28px;
     height: 32px;
-  }
-
-  .marca-movil__torre :global(svg) {
-    width: 100%;
-    height: 100%;
   }
 
   .portada__texto {
@@ -717,6 +731,14 @@ const semanaSanta = momento(new Intl.DateTimeFormat('en-CA', { timeZone: 'Americ
     color: #ff8a5c;
   }
 
+  .widget--pasaporte {
+    min-height: 0;
+  }
+
+  .widget--pasaporte :global(strong) {
+    color: var(--acento);
+  }
+
   .widget__noche {
     font-family: var(--fuente-titulos);
     font-size: 1.5rem;
@@ -730,7 +752,7 @@ const semanaSanta = momento(new Intl.DateTimeFormat('en-CA', { timeZone: 'Americ
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
     .widget--noche {
-      grid-column: 1 / -1;
+      grid-column: span 2;
     }
   }
 

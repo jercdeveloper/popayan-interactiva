@@ -157,6 +157,17 @@ a {
   white-space: nowrap;
 }
 
+/*
+ * La torre del logo, como máscara: un solo archivo en caché para todas las páginas (en línea pesaba
+ * 26 KB en cada una) y toma el color del texto, en claro y en oscuro.
+ */
+.isotipo {
+  display: block;
+  background: currentColor;
+  -webkit-mask: url('/marca/isotipo.svg') center / contain no-repeat;
+  mask: url('/marca/isotipo.svg') center / contain no-repeat;
+}
+
 /* ---------- El vidrio ---------- */
 /*
  * Capa funcional que flota sobre el contenido. Tiene tres partes: el desenfoque que deja ver lo que
